@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import { ArrowDown, ArrowRight, Check, HeartPulse, Menu, Phone, ShieldCheck, Sparkles, Stethoscope } from "lucide-react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { HeroSequence, ProtectionWorld, StabilizationSequence, type ProtectionState } from "./cinematic";
 
@@ -22,6 +22,8 @@ function TiltCard({ children }: { children: React.ReactNode }) {
 
 export default function LandingPage() {
   const hero = useRef<HTMLElement>(null); const [open, setOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const closeProduct = useCallback(() => setSelectedProduct(null), []);
   const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end start"] });
   const copyY = useTransform(scrollYProgress, [0, 1], [0, 180]); const sceneY = useTransform(scrollYProgress, [0, 1], [0, 320]); const sceneScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]); const fade = useTransform(scrollYProgress, [0, .8], [1, 0]);
   return <main>
@@ -77,5 +79,6 @@ export default function LandingPage() {
     <section id="contacto" className="relative overflow-hidden bg-cyan px-5 py-28 text-navy md:py-40"><div className="pointer-events-none absolute inset-y-0 right-0 w-[58%] opacity-25"><StabilizationSequence/></div><div className="absolute -right-28 -top-40 h-[520px] w-[520px] rounded-full border border-navy/10"/><div className="absolute -right-12 -top-20 h-[360px] w-[360px] rounded-full border border-navy/10"/><motion.div {...reveal} className="relative mx-auto max-w-5xl text-center"><p className="text-xs font-extrabold uppercase tracking-[.24em]">Tu familia. Tu historia. Tu protección.</p><h2 className="mt-6 text-balance font-display text-5xl leading-none tracking-tight md:text-8xl">Hoy es un buen día para cuidar el mañana.</h2><p className="mx-auto mt-7 max-w-xl text-base font-medium text-navy/65">Habla con alguien que te escuche, en tu idioma y sin compromiso.</p><a href="tel:+18325550147" className="mx-auto mt-10 flex w-fit items-center gap-3 rounded-full bg-navy px-8 py-5 text-sm font-extrabold text-white shadow-[0_20px_50px_rgba(6,20,49,.25)] transition hover:-translate-y-1"><Phone size={18}/> Hablar con un asesor</a></motion.div></section>
 
     <footer className="bg-navy px-5 py-12 text-white"><div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-end md:justify-between"><div><Logo light/><p className="mt-6 max-w-sm text-xs leading-relaxed text-white/40">Alleanza Insurance acompaña a familias con soluciones de protección complementaria. La disponibilidad de productos puede variar.</p></div><div className="flex flex-wrap gap-6 text-xs text-white/50"><a href="#">Privacidad</a><a href="#">Términos</a><a href="#">Licencias</a><span>© {new Date().getFullYear()} Alleanza Insurance</span></div></div></footer>
+    <ProductDialog product={selectedProduct} onClose={closeProduct} />
   </main>;
 }
