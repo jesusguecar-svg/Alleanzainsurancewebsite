@@ -2,8 +2,10 @@
 
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import { ArrowDown, ArrowRight, Check, HeartPulse, Menu, Phone, ShieldCheck, Sparkles, Stethoscope } from "lucide-react";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Logo } from "./Logo";
+import { ProductDialog } from "./ui/ProductDialog";
+import { products, type Product } from "@/lib/content/products";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const reveal = { initial: { opacity: 0, y: 50 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: "-80px" }, transition: { duration: .9, ease } };
@@ -21,6 +23,8 @@ function TiltCard({ children }: { children: React.ReactNode }) {
 
 export default function LandingPage() {
   const hero = useRef<HTMLElement>(null); const [open, setOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const closeProduct = useCallback(() => setSelectedProduct(null), []);
   const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end start"] });
   const copyY = useTransform(scrollYProgress, [0, 1], [0, 180]); const sceneY = useTransform(scrollYProgress, [0, 1], [0, 320]); const sceneScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]); const fade = useTransform(scrollYProgress, [0, .8], [1, 0]);
   return <main>
@@ -62,10 +66,10 @@ export default function LandingPage() {
 
     <section id="proteccion" className="px-5 py-32 md:py-44"><div className="mx-auto max-w-7xl"><motion.div {...reveal} className="max-w-3xl"><p className="text-xs font-extrabold uppercase tracking-[.22em] text-cyan">Protección esencial</p><h2 className="mt-5 font-display text-5xl tracking-tight md:text-7xl">Tres formas de cuidar lo irremplazable.</h2></motion.div>
       <div className="perspective mt-16 grid gap-6 md:grid-cols-3">{[
-        {icon:HeartPulse,n:"Cardíaca",t:"Apoyo económico ante eventos cardíacos cubiertos, para respirar y enfocarte en sanar.",tag:"Corazón protegido"},
-        {icon:Stethoscope,n:"Cuidados intensivos",t:"Respaldo diario durante una estadía cubierta en cuidados intensivos.",tag:"Apoyo hospitalario"},
-        {icon:Sparkles,n:"Cáncer",t:"Protección pensada para acompañarte desde un diagnóstico cubierto y durante el proceso.",tag:"Fuerza para seguir"}
-      ].map((p,i)=><motion.div key={p.n} {...reveal} transition={{ duration: .8, delay: i*.1, ease }}><TiltCard><div style={{ transform:"translateZ(32px)" }}><div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-navy text-cyan"><p.icon size={26}/></div><p className="mt-12 text-[10px] font-extrabold uppercase tracking-[.2em] text-cyan">{p.tag}</p><h3 className="mt-3 font-display text-4xl">{p.n}</h3><p className="mt-5 min-h-24 text-sm leading-relaxed text-navy/55">{p.t}</p><button className="mt-8 flex items-center gap-2 text-sm font-extrabold">Conocer protección <ArrowRight size={16} className="transition group-hover:translate-x-1"/></button></div><div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-cyan/0 blur-2xl transition duration-500 group-hover:bg-cyan/30"/></TiltCard></motion.div>)}</div>
+        {icon:HeartPulse,n:"Cardíaca",t:"Apoyo económico ante eventos cardíacos cubiertos, para respirar y enfocarte en sanar.",tag:"Corazón protegido",productId:"cardiaca" as const},
+        {icon:Stethoscope,n:"Cuidados intensivos",t:"Respaldo diario durante una estadía cubierta en cuidados intensivos.",tag:"Apoyo hospitalario",productId:"cuidados-intensivos" as const},
+        {icon:Sparkles,n:"Cáncer",t:"Protección pensada para acompañarte desde un diagnóstico cubierto y durante el proceso.",tag:"Fuerza para seguir",productId:"cancer" as const}
+      ].map((p,i)=><motion.div key={p.n} {...reveal} transition={{ duration: .8, delay: i*.1, ease }}><TiltCard><div style={{ transform:"translateZ(32px)" }}><div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-navy text-cyan"><p.icon size={26}/></div><p className="mt-12 text-[10px] font-extrabold uppercase tracking-[.2em] text-cyan">{p.tag}</p><h3 className="mt-3 font-display text-4xl">{p.n}</h3><p className="mt-5 min-h-24 text-sm leading-relaxed text-navy/55">{p.t}</p><button type="button" onClick={() => setSelectedProduct(products.find((product) => product.id === p.productId) ?? null)} aria-haspopup="dialog" className="mt-8 flex items-center gap-2 text-sm font-extrabold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan">Conocer esta protección <ArrowRight size={16} className="transition group-hover:translate-x-1"/></button></div><div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-cyan/0 blur-2xl transition duration-500 group-hover:bg-cyan/30"/></TiltCard></motion.div>)}</div>
       <p className="mt-8 text-center text-[11px] text-navy/40">Beneficios sujetos a términos, condiciones, limitaciones y exclusiones de la póliza.</p>
     </div></section>
 
@@ -76,5 +80,6 @@ export default function LandingPage() {
     <section id="contacto" className="relative overflow-hidden bg-cyan px-5 py-28 text-navy md:py-40"><div className="absolute -right-28 -top-40 h-[520px] w-[520px] rounded-full border border-navy/10"/><div className="absolute -right-12 -top-20 h-[360px] w-[360px] rounded-full border border-navy/10"/><motion.div {...reveal} className="relative mx-auto max-w-5xl text-center"><p className="text-xs font-extrabold uppercase tracking-[.24em]">Tu familia. Tu historia. Tu protección.</p><h2 className="mt-6 text-balance font-display text-5xl leading-none tracking-tight md:text-8xl">Hoy es un buen día para cuidar el mañana.</h2><p className="mx-auto mt-7 max-w-xl text-base font-medium text-navy/65">Habla con alguien que te escuche, en tu idioma y sin compromiso.</p><a href="tel:+18325550147" className="mx-auto mt-10 flex w-fit items-center gap-3 rounded-full bg-navy px-8 py-5 text-sm font-extrabold text-white shadow-[0_20px_50px_rgba(6,20,49,.25)] transition hover:-translate-y-1"><Phone size={18}/> Hablar con un asesor</a></motion.div></section>
 
     <footer className="bg-navy px-5 py-12 text-white"><div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-end md:justify-between"><div><Logo light/><p className="mt-6 max-w-sm text-xs leading-relaxed text-white/40">Alleanza Insurance acompaña a familias con soluciones de protección complementaria. La disponibilidad de productos puede variar.</p></div><div className="flex flex-wrap gap-6 text-xs text-white/50"><a href="#">Privacidad</a><a href="#">Términos</a><a href="#">Licencias</a><span>© {new Date().getFullYear()} Alleanza Insurance</span></div></div></footer>
+    <ProductDialog product={selectedProduct} onClose={closeProduct} />
   </main>;
 }
