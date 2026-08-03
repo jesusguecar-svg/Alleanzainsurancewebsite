@@ -58,12 +58,13 @@ export default function LandingPage() {
       </motion.div>
     </section>
 
-    <div className="relative z-20 -mt-8 mx-4 rounded-3xl bg-white px-6 py-7 shadow-[0_25px_70px_rgba(6,20,49,.12)] md:mx-8"><div className="mx-auto grid max-w-6xl grid-cols-2 gap-7 text-center md:grid-cols-4"><div><b className="text-xl">Atención humana</b><p className="mt-1 text-xs text-navy/50">Siempre en español</p></div><div><b className="text-xl">Texas</b><p className="mt-1 text-xs text-navy/50">Protección local</p></div><div><b className="text-xl">Sin rodeos</b><p className="mt-1 text-xs text-navy/50">Claridad primero</p></div><div><b className="text-xl">A tu lado</b><p className="mt-1 text-xs text-navy/50">Cuando importa</p></div></div></div>
-
     <section className="relative overflow-hidden px-5 py-32 md:py-48"><div className="absolute right-[-10%] top-20 h-80 w-80 rounded-full bg-cyan/10 blur-3xl"/><div className="mx-auto grid max-w-7xl gap-14 md:grid-cols-2 md:items-center">
       <motion.div {...reveal(reduceMotion)}><p className="mb-5 text-xs font-extrabold uppercase tracking-[.22em] text-cyan">La vida no avisa</p><h2 className="text-balance font-display text-5xl leading-[1.02] tracking-tight md:text-7xl">Un diagnóstico no debería decidir el futuro de tu familia.</h2></motion.div>
       <motion.div {...reveal(reduceMotion)} transition={{ duration: .9, delay: .15, ease }} className="relative md:pl-20"><div className="absolute bottom-0 left-0 top-0 hidden w-px bg-gradient-to-b from-transparent via-cyan to-transparent md:block"/><p className="text-xl leading-relaxed text-navy/65">Las cuentas siguen llegando. La renta, la comida, el cuidado de los tuyos. Por eso creamos una protección que te entrega apoyo directo, para que tu energía esté donde debe estar: <strong className="text-navy">en recuperarte y seguir juntos.</strong></p></motion.div>
     </div></section>
+
+    <DirectSupportSection />
+    <QualificationSection />
 
     <section id="promesa" className="relative overflow-hidden bg-navy px-5 py-32 text-white md:py-44"><Wing className="-left-20 top-10 h-80 w-56 -rotate-12 opacity-30"/><div className="mx-auto max-w-7xl">
       <motion.div {...reveal(reduceMotion)} className="mx-auto max-w-3xl text-center"><div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan text-navy shadow-[0_0_45px_rgba(4,192,254,.35)]"><ShieldCheck size={31}/></div><p className="text-xs font-extrabold uppercase tracking-[.22em] text-cyan">La promesa Alleanza</p><h2 className="mt-5 font-display text-5xl tracking-tight md:text-7xl">Protección que se siente cerca.</h2><p className="mt-7 text-lg leading-relaxed text-white/60">No vendemos miedo. Construimos tranquilidad con conversaciones honestas, opciones comprensibles y un equipo que conoce tu historia.</p></motion.div>
