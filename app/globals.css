@@ -12,4 +12,10 @@ body { margin: 0; color: var(--navy); background: #f7fbfd; overflow-x: hidden; f
 .perspective { perspective: 1200px; }
 .text-balance { text-wrap: balance; }
 .grid-lines { background-image: linear-gradient(rgba(4,192,254,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(4,192,254,.055) 1px, transparent 1px); background-size: 72px 72px; mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent); }
+.cinematic-fallback { overflow: hidden; background: radial-gradient(circle at 55% 50%, rgba(4,192,254,.2), transparent 28%); }
+.cinematic-fallback span { position: absolute; display: block; left: 55%; top: 50%; transform: translate(-50%,-50%); }
+.cinematic-core { width: 3.5rem; height: 5rem; border-radius: 48% 48% 42% 42%; background: linear-gradient(#eefbff, rgba(4,192,254,.58)); box-shadow: 0 0 50px rgba(4,192,254,.4); }
+.cinematic-orbit { border: 1px solid rgba(4,192,254,.38); border-radius: 50%; }
+.cinematic-orbit--one { width: 15rem; height: 15rem; }
+.cinematic-orbit--two { width: 22rem; height: 22rem; border-width: 12px; opacity: .18; border-left-color: transparent; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
