@@ -3,7 +3,7 @@
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
 import { Activity, ArrowRight, BedDouble, HeartPulse, Landmark, Lock, ShieldAlert, Sparkles, Stethoscope, Users, type LucideIcon } from "lucide-react";
 import { ProtectionWorld, type ProtectionState } from "../cinematic";
-import { additionalProducts, featuredProducts, type Product, type ProductId } from "@/lib/content/products";
+import { additionalHealthProducts, featuredHealthProducts, type Product, type ProductId } from "@/lib/content/products";
 import { ease, useReveal } from "@/lib/motion";
 
 const icons: Record<ProductId, LucideIcon> = {
@@ -70,21 +70,37 @@ function CompactCard({ product, onSelect }: CardProps) {
   );
 }
 
-export function ProductsSection({ onSelect }: { onSelect: (product: Product) => void }) {
+type ProductsSectionProps = {
+  onSelect: (product: Product) => void;
+  featured?: Product[];
+  additional?: Product[];
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+};
+
+export function ProductsSection({
+  onSelect,
+  featured = featuredHealthProducts,
+  additional = additionalHealthProducts,
+  eyebrow = "Nuestras coberturas",
+  heading = "Compara tus opciones de salud.",
+  intro = "Desde el Mercado de Salud hasta coberturas complementarias que acompañan un diagnóstico. Te explicamos cada opción en español, con sus alcances y sus límites.",
+}: ProductsSectionProps) {
   const reveal = useReveal();
 
   return (
     <section id="productos" className="px-5 py-32 md:py-44">
       <div className="mx-auto max-w-7xl">
         <motion.div {...reveal} className="max-w-3xl">
-          <p className="text-xs font-bold uppercase tracking-[.22em] text-cyan">Nuestras coberturas</p>
-          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-7xl font-bold">Protección para cada etapa de tu familia.</h2>
-          <p className="mt-6 text-lg leading-relaxed text-navy/60">Desde salud y vida hasta coberturas complementarias que acompañan los momentos difíciles. Te explicamos cada opción en español, con sus alcances y sus límites.</p>
+          <p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">{eyebrow}</p>
+          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-6xl font-bold">{heading}</h2>
+          <p className="mt-6 text-lg leading-relaxed text-navy/60">{intro}</p>
         </motion.div>
 
         <h3 className="sr-only">Protección esencial</h3>
         <div className="perspective mt-16 grid gap-6 md:grid-cols-3">
-          {featuredProducts.map((product, i) => (
+          {featured.map((product, i) => (
             <motion.div key={product.id} {...reveal} transition={{ duration: .8, delay: i * .1, ease }}>
               <FeaturedCard product={product} onSelect={onSelect} />
             </motion.div>
@@ -94,7 +110,7 @@ export function ProductsSection({ onSelect }: { onSelect: (product: Product) => 
         <motion.div {...reveal} className="mt-20">
           <h3 className="font-display text-3xl tracking-tight md:text-4xl font-semibold">También te acompañamos con</h3>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {additionalProducts.map((product, i) => (
+            {additional.map((product, i) => (
               <motion.div key={product.id} {...reveal} transition={{ duration: .7, delay: Math.min(i, 3) * .08, ease }}>
                 <CompactCard product={product} onSelect={onSelect} />
               </motion.div>
