@@ -4,4 +4,8 @@ out/
 *.log
 .DS_Store
 
+# Local environment files — .env.example is the committed template
+.env
+.env*.local
+
 *.tsbuildinfo
