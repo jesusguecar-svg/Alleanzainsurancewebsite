@@ -1,12 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Check } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Check, Clock, MapPin, Phone } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { StabilizationSequence } from "../cinematic";
 import { consentText, productOptions, validateContact, type FieldErrors } from "@/lib/content/contact";
-
-const ease = [0.22, 1, 0.36, 1] as const;
+import { officeAddressLines, officeHours, phones } from "@/lib/config/contact";
+import { useReveal } from "@/lib/motion";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -14,21 +14,12 @@ const fieldClass =
   "mt-2 w-full rounded-2xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none transition focus:border-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy";
 
 export function ContactSection() {
-  const reduceMotion = useReducedMotion();
+  const reveal = useReveal({ y: 40 });
   const formId = useId();
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<Status>("idle");
   const [formError, setFormError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
-
-  const reveal = reduceMotion
-    ? { initial: false as const }
-    : {
-        initial: { opacity: 0, y: 40 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, margin: "-80px" },
-        transition: { duration: .9, ease },
-      };
 
   const fieldId = (name: string) => `${formId}-${name}`;
   const errorId = (name: string) => `${formId}-${name}-error`;
@@ -89,11 +80,43 @@ export function ContactSection() {
       <div className="absolute -right-28 -top-40 h-[520px] w-[520px] rounded-full border border-navy/10" />
       <div className="absolute -right-12 -top-20 h-[360px] w-[360px] rounded-full border border-navy/10" />
 
-      <motion.div {...reveal} className="relative mx-auto grid max-w-6xl gap-12 md:grid-cols-2 md:items-center">
+      <motion.div {...reveal} className="relative mx-auto grid max-w-6xl gap-12 md:grid-cols-2 md:items-start">
         <div>
           <p className="text-xs font-extrabold uppercase tracking-[.24em]">Tu familia. Tu historia. Tu protección.</p>
           <h2 className="mt-6 text-balance font-display text-5xl leading-none tracking-tight md:text-7xl">Hoy es un buen día para cuidar el mañana.</h2>
-          <p className="mt-7 max-w-md text-base font-medium text-navy/65">Déjanos tus datos y un agente de seguros con licencia te contactará, en tu idioma y sin compromiso.</p>
+          <p className="mt-7 max-w-md text-base font-medium text-navy/65">Déjanos tus datos y un agente de seguros con licencia te contactará, en tu idioma y sin compromiso. También puedes llamarnos o visitarnos.</p>
+
+          <div className="mt-10 grid gap-7 sm:grid-cols-2">
+            <div>
+              <h3 className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.18em]"><MapPin aria-hidden="true" size={15} /> Oficina</h3>
+              <address className="mt-3 text-sm not-italic leading-relaxed text-navy/70">
+                {officeAddressLines.map((line) => <span key={line} className="block">{line}</span>)}
+              </address>
+            </div>
+
+            <div>
+              <h3 className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.18em]"><Clock aria-hidden="true" size={15} /> Horario</h3>
+              <dl className="mt-3 text-sm leading-relaxed text-navy/70">
+                {officeHours.map((entry) => (
+                  <div key={entry.days} className="flex flex-wrap gap-x-2">
+                    <dt className="font-semibold">{entry.days}:</dt>
+                    <dd>{entry.hours}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            <div className="sm:col-span-2">
+              <h3 className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-[.18em]"><Phone aria-hidden="true" size={15} /> Teléfonos</h3>
+              <ul className="mt-3 grid gap-x-6 gap-y-1 text-sm text-navy/70 sm:grid-cols-2">
+                {phones.map((phone) => (
+                  <li key={phone.href}>
+                    <a href={`tel:${phone.href}`} className="font-semibold underline-offset-4 transition hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">{phone.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
 
         <div className="rounded-[2rem] bg-white p-7 shadow-[0_30px_80px_-40px_rgba(6,20,49,.45)] md:p-9">

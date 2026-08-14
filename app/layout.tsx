@@ -4,7 +4,7 @@ import "./globals.css";
 
 const title = "Alleanza Insurance | Tu familia, protegida";
 const description =
-  "Protección complementaria para familias hispanas en Texas. Coberturas para eventos cardíacos, cuidados intensivos y cáncer, explicadas en español por agentes con licencia.";
+  "Seguros para familias hispanas en Texas: seguro médico, Obamacare (ACA), seguro de vida y coberturas complementarias como accidentes, hospitalización, cáncer y eventos cardíacos. Te lo explicamos en español, con agentes de seguros con licencia.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
