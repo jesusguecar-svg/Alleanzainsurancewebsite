@@ -114,7 +114,7 @@ export function ProductDialog({ product, onClose }: ProductDialogProps) {
 
           <div className="mt-8 rounded-2xl bg-navy p-6 text-white md:flex md:items-center md:justify-between md:gap-8">
             <div><h3 className="text-xl font-bold">Confirma qué opción es adecuada para ti.</h3><p className="mt-2 text-sm text-white/60">Recibe orientación personal de un agente de seguros con licencia.</p></div>
-            <a href="tel:+18325550147" className="mt-5 inline-flex shrink-0 items-center gap-2 rounded-full bg-cyan px-6 py-4 text-sm font-extrabold text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:mt-0">Contactar a un agente con licencia <ArrowRight aria-hidden="true" size={16} /></a>
+            <a href="#contacto" onClick={onClose} className="mt-5 inline-flex shrink-0 items-center gap-2 rounded-full bg-cyan px-6 py-4 text-sm font-extrabold text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:mt-0">Contactar a un agente con licencia <ArrowRight aria-hidden="true" size={16} /></a>
           </div>
         </div>
       </div>
