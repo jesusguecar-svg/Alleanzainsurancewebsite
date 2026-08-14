@@ -1,10 +1,25 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { ImageResponse } from "next/og";
 
 export const alt = "Alleanza Insurance — Que la vida siga. Nosotros protegemos.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpengraphImage() {
+const brandRoot = path.join(process.cwd(), "public");
+
+export default async function OpengraphImage() {
+  // Official white lockup on azul marino — a sanctioned combination, with the
+  // artwork used unmodified and the descriptor intact.
+  // satori cannot parse the variable font, so the card uses static Inter
+  // instances subsetted to the glyphs it renders (see docs/brand/README.md).
+  const [logo, interRegular, interBold] = await Promise.all([
+    readFile(path.join(brandRoot, "brand/alleanza/logo-light-horizontal.svg")),
+    readFile(path.join(brandRoot, "fonts/Inter-Regular-og.ttf")),
+    readFile(path.join(brandRoot, "fonts/Inter-Bold-og.ttf")),
+  ]);
+  const logoSrc = `data:image/svg+xml;base64,${logo.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -18,35 +33,28 @@ export default function OpengraphImage() {
           padding: "72px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-          <svg width="52" height="64" viewBox="0 0 39 48">
-            <path d="M3 7C13 8 19 13 20 23C11 22 5 17 3 7Z" fill="#04c0fe" />
-            <path d="M36 3C24 7 18 15 20 28C31 24 36 16 36 3Z" fill="#ffffff" />
-            <path d="M7 25C13 27 18 32 19 43C10 39 6 33 7 25Z" fill="#04c0fe" opacity=".7" />
-          </svg>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ color: "#ffffff", fontSize: 30, fontWeight: 800, letterSpacing: "0.22em" }}>
-              ALLEANZA
-            </div>
-            <div style={{ color: "#04c0fe", fontSize: 16, fontWeight: 700, letterSpacing: "0.42em" }}>
-              INSURANCE
-            </div>
-          </div>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element -- satori renders a plain img */}
+        <img src={logoSrc} width={420} height={68} alt="" />
 
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ color: "#ffffff", fontSize: 78, fontWeight: 700, lineHeight: 1.05 }}>
+          <div style={{ color: "#FFFFFF", fontSize: 76, fontWeight: 700, lineHeight: 1.05 }}>
             Que la vida siga.
           </div>
-          <div style={{ color: "#04c0fe", fontSize: 78, fontWeight: 700, lineHeight: 1.05 }}>
+          <div style={{ color: "#04C0FE", fontSize: 76, fontWeight: 700, lineHeight: 1.05 }}>
             Nosotros protegemos.
           </div>
-          <div style={{ color: "rgba(255,255,255,.62)", fontSize: 28, marginTop: 28 }}>
-            Protección complementaria para familias hispanas en Texas.
+          <div style={{ color: "rgba(255,255,255,.65)", fontSize: 27, marginTop: 28, fontWeight: 400 }}>
+            Salud, vida y protección complementaria para tu familia en Texas.
           </div>
         </div>
       </div>
     ),
-    size,
+    {
+      ...size,
+      fonts: [
+        { name: "Inter", data: interRegular, weight: 400, style: "normal" },
+        { name: "Inter", data: interBold, weight: 700, style: "normal" },
+      ],
+    },
   );
 }

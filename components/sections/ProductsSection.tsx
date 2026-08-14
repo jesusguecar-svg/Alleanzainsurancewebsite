@@ -43,10 +43,10 @@ function FeaturedCard({ product, onSelect }: CardProps) {
       {state && <ProtectionWorld state={state} />}
       <div style={{ transform: "translateZ(32px)" }}>
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-navy text-cyan"><Icon aria-hidden="true" size={26} /></div>
-        <p className="mt-12 text-[10px] font-extrabold uppercase tracking-[.2em] text-cyan">{product.eyebrow}</p>
-        <h3 className="mt-3 font-display text-4xl">{product.shortName}</h3>
+        <p className="mt-12 text-[10px] font-bold uppercase tracking-[.2em] text-cyan">{product.eyebrow}</p>
+        <h3 className="mt-3 font-display text-4xl font-semibold">{product.shortName}</h3>
         <p className="mt-5 min-h-24 text-sm leading-relaxed text-navy/55">{product.summary}</p>
-        <button type="button" onClick={() => onSelect(product)} aria-haspopup="dialog" aria-label={`Conocer protección ${product.shortName}`} className="mt-8 flex items-center gap-2 text-sm font-extrabold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan">
+        <button type="button" onClick={() => onSelect(product)} aria-haspopup="dialog" aria-label={`Conocer protección ${product.shortName}`} className="mt-8 flex items-center gap-2 text-sm font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan">
           Conocer protección <ArrowRight aria-hidden="true" size={16} className="transition group-hover:translate-x-1" />
         </button>
       </div>
@@ -60,10 +60,10 @@ function CompactCard({ product, onSelect }: CardProps) {
   return (
     <article className="group flex h-full flex-col rounded-[1.75rem] border border-navy/10 bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-cyan/40 hover:shadow-[0_25px_60px_-35px_rgba(6,20,49,.4)]">
       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan/12 text-navy"><Icon aria-hidden="true" size={22} /></div>
-      <p className="mt-6 text-[10px] font-extrabold uppercase tracking-[.2em] text-cyan">{product.eyebrow}</p>
-      <h3 className="mt-2 text-2xl font-extrabold leading-tight">{product.shortName}</h3>
+      <p className="mt-6 text-[10px] font-bold uppercase tracking-[.2em] text-cyan">{product.eyebrow}</p>
+      <h3 className="mt-2 text-2xl font-bold leading-tight">{product.shortName}</h3>
       <p className="mt-3 flex-1 text-sm leading-relaxed text-navy/55">{product.summary}</p>
-      <button type="button" onClick={() => onSelect(product)} aria-haspopup="dialog" aria-label={`Conocer más sobre ${product.name}`} className="mt-6 flex items-center gap-2 text-sm font-extrabold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan">
+      <button type="button" onClick={() => onSelect(product)} aria-haspopup="dialog" aria-label={`Conocer más sobre ${product.name}`} className="mt-6 flex items-center gap-2 text-sm font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan">
         Conocer más <ArrowRight aria-hidden="true" size={15} className="transition group-hover:translate-x-1" />
       </button>
     </article>
@@ -77,8 +77,8 @@ export function ProductsSection({ onSelect }: { onSelect: (product: Product) => 
     <section id="productos" className="px-5 py-32 md:py-44">
       <div className="mx-auto max-w-7xl">
         <motion.div {...reveal} className="max-w-3xl">
-          <p className="text-xs font-extrabold uppercase tracking-[.22em] text-cyan">Nuestras coberturas</p>
-          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-7xl">Protección para cada etapa de tu familia.</h2>
+          <p className="text-xs font-bold uppercase tracking-[.22em] text-cyan">Nuestras coberturas</p>
+          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-7xl font-bold">Protección para cada etapa de tu familia.</h2>
           <p className="mt-6 text-lg leading-relaxed text-navy/60">Desde salud y vida hasta coberturas complementarias que acompañan los momentos difíciles. Te explicamos cada opción en español, con sus alcances y sus límites.</p>
         </motion.div>
 
@@ -92,7 +92,7 @@ export function ProductsSection({ onSelect }: { onSelect: (product: Product) => 
         </div>
 
         <motion.div {...reveal} className="mt-20">
-          <h3 className="font-display text-3xl tracking-tight md:text-4xl">También te acompañamos con</h3>
+          <h3 className="font-display text-3xl tracking-tight md:text-4xl font-semibold">También te acompañamos con</h3>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {additionalProducts.map((product, i) => (
               <motion.div key={product.id} {...reveal} transition={{ duration: .7, delay: Math.min(i, 3) * .08, ease }}>

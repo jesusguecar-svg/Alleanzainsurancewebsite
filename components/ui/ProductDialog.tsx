@@ -83,38 +83,38 @@ export function ProductDialog({ product, onClose }: ProductDialogProps) {
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         tabIndex={-1}
-        className="relative max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-t-[2rem] bg-[#f7fbfd] shadow-2xl outline-none sm:rounded-[2rem]"
+        className="relative max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-t-[2rem] bg-white shadow-2xl outline-none sm:rounded-[2rem]"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-navy/10 bg-[#f7fbfd]/95 px-6 py-4 backdrop-blur md:px-10">
-          <p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-cyan">{product.eyebrow}</p>
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-navy/10 bg-white/95 px-6 py-4 backdrop-blur md:px-10">
+          <p className="text-[10px] font-bold uppercase tracking-[.2em] text-cyan">{product.eyebrow}</p>
           <button ref={closeRef} type="button" onClick={onClose} aria-label={`Cerrar detalles de ${product.name}`} className="flex h-11 w-11 items-center justify-center rounded-full border border-navy/15 bg-white transition hover:bg-navy hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan">
             <X aria-hidden="true" size={20} />
           </button>
         </div>
         <div className="px-6 pb-10 pt-8 md:px-10 md:pb-12">
-          <h2 id={titleId} className="font-display text-4xl leading-tight tracking-tight md:text-6xl">{product.name}</h2>
+          <h2 id={titleId} className="font-display text-4xl leading-tight tracking-tight md:text-6xl font-bold">{product.name}</h2>
           <p id={descriptionId} className="mt-5 text-base leading-relaxed text-navy/65 md:text-lg">{product.overview}</p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <section className="rounded-2xl bg-white p-6 shadow-sm" aria-labelledby={`${titleId}-example`}>
-              <h3 id={`${titleId}-example`} className="text-sm font-extrabold">Un ejemplo sencillo</h3>
+              <h3 id={`${titleId}-example`} className="text-sm font-bold">Un ejemplo sencillo</h3>
               <p className="mt-3 text-sm leading-relaxed text-navy/60">{product.useCase}</p>
               <p className="mt-3 text-xs italic text-navy/45">Ejemplo ilustrativo, no es una promesa de cobertura ni expresa un monto de beneficio.</p>
             </section>
             <section className="rounded-2xl border border-cyan/30 bg-cyan/10 p-6" aria-labelledby={`${titleId}-eligibility`}>
-              <h3 id={`${titleId}-eligibility`} className="text-sm font-extrabold">Elegibilidad — confirmar con la compañía aseguradora</h3>
+              <h3 id={`${titleId}-eligibility`} className="text-sm font-bold">Elegibilidad — confirmar con la compañía aseguradora</h3>
               <p className="mt-3 text-sm leading-relaxed text-navy/60">{product.eligibility}</p>
             </section>
           </div>
 
           <section className="mt-6 rounded-2xl border border-navy/10 p-6" aria-labelledby={`${titleId}-disclosure`}>
-            <h3 id={`${titleId}-disclosure`} className="text-sm font-extrabold">Divulgación de la póliza</h3>
+            <h3 id={`${titleId}-disclosure`} className="text-sm font-bold">Divulgación de la póliza</h3>
             <p className="mt-3 text-xs leading-relaxed text-navy/55">{policyDisclosure}</p>
           </section>
 
           <div className="mt-8 rounded-2xl bg-navy p-6 text-white md:flex md:items-center md:justify-between md:gap-8">
             <div><h3 className="text-xl font-bold">Confirma qué opción es adecuada para ti.</h3><p className="mt-2 text-sm text-white/60">Recibe orientación personal de un agente de seguros con licencia.</p></div>
-            <a href="#contacto" onClick={onClose} className="mt-5 inline-flex shrink-0 items-center gap-2 rounded-full bg-cyan px-6 py-4 text-sm font-extrabold text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:mt-0">Contactar a un agente con licencia <ArrowRight aria-hidden="true" size={16} /></a>
+            <a href="#contacto" onClick={onClose} className="mt-5 inline-flex shrink-0 items-center gap-2 rounded-full bg-cyan px-6 py-4 text-sm font-semibold text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:mt-0">Contactar a un agente con licencia <ArrowRight aria-hidden="true" size={16} /></a>
           </div>
         </div>
       </div>
