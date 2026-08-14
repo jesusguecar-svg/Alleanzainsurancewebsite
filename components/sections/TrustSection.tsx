@@ -2,6 +2,7 @@
 
 import { companyFacts, type CompanyFacts, type VerifiedFact } from "@/lib/config/company";
 import { motion } from "framer-motion";
+import { useReveal } from "@/lib/motion";
 
 const pending = "Pendiente de confirmación";
 
@@ -19,10 +20,12 @@ const factRows: { label: string; key: keyof CompanyFacts; format: (value: never)
 ];
 
 export function TrustSection() {
+  const reveal = useReveal({ y: 32 });
+
   return (
     <section id="confianza" className="bg-navy px-5 py-28 text-white md:py-40">
       <div className="mx-auto max-w-7xl">
-        <motion.div initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-3xl">
+        <motion.div {...reveal} className="max-w-3xl">
           <p className="text-xs font-extrabold uppercase tracking-[.22em] text-cyan">Transparencia primero</p>
           <h2 className="mt-5 font-display text-5xl tracking-tight md:text-7xl">La confianza se demuestra con datos verificados.</h2>
           <p className="mt-6 leading-relaxed text-white/60">No publicamos cifras, relaciones ni historias hasta completar su verificación.</p>
