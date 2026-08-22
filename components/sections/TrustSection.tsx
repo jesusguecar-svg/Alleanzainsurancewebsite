@@ -26,8 +26,8 @@ export function TrustSection() {
     <section id="confianza" className="bg-navy px-5 py-28 text-white md:py-40">
       <div className="mx-auto max-w-7xl">
         <motion.div {...reveal} className="max-w-3xl">
-          <p className="text-xs font-extrabold uppercase tracking-[.22em] text-cyan">Transparencia primero</p>
-          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-7xl">La confianza se demuestra con datos verificados.</h2>
+          <p className="text-xs font-bold uppercase tracking-[.22em] text-cyan">Transparencia primero</p>
+          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-7xl font-bold">La confianza se demuestra con datos verificados.</h2>
           <p className="mt-6 leading-relaxed text-white/60">No publicamos cifras, relaciones ni historias hasta completar su verificación.</p>
         </motion.div>
         <div aria-label="Revisión de publicación" className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

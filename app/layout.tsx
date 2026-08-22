@@ -1,6 +1,18 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { siteUrl } from "@/lib/config/site";
 import "./globals.css";
+
+/**
+ * Inter is the brand's only typeface (brandbook pp. 21-22). Self-hosted from the
+ * committed variable font so the site never depends on a third-party font CDN.
+ */
+const inter = localFont({
+  src: "../public/fonts/Inter-V.ttf",
+  variable: "--font-inter",
+  weight: "100 900",
+  display: "swap",
+});
 
 const title = "Alleanza Insurance | Tu familia, protegida";
 const description =
@@ -25,7 +37,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className="scroll-smooth">
+    <html lang="es" className={`${inter.variable} scroll-smooth`}>
       <body>{children}</body>
     </html>
   );

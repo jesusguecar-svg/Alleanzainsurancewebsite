@@ -27,6 +27,8 @@ export type Product = {
    * readable as the catalogue grows.
    */
   featured: boolean;
+  /** Which portal spoke the product belongs to. */
+  line: "health" | "life";
 };
 
 export const policyDisclosure =
@@ -46,6 +48,7 @@ export const products: Product[] = [
     eligibility:
       "La edad de solicitud, el estado de residencia, las preguntas de salud, los períodos de espera y cualquier otra condición de elegibilidad deben ser confirmados directamente con la compañía aseguradora antes de presentar una solicitud.",
     featured: true,
+    line: "health",
   },
   {
     id: "cuidados-intensivos",
@@ -60,6 +63,7 @@ export const products: Product[] = [
     eligibility:
       "La edad de solicitud, el tipo de unidad hospitalaria admitida, la duración de la estadía, el estado de residencia, las preguntas de salud y demás requisitos deben ser confirmados directamente con la compañía aseguradora.",
     featured: true,
+    line: "health",
   },
   {
     id: "cancer",
@@ -74,6 +78,7 @@ export const products: Product[] = [
     eligibility:
       "La edad de solicitud, el estado de residencia, los antecedentes y preguntas de salud, los períodos de espera, las definiciones de diagnóstico y cualquier otro requisito deben ser confirmados directamente con la compañía aseguradora.",
     featured: true,
+    line: "health",
   },
   {
     id: "accidentes",
@@ -88,6 +93,7 @@ export const products: Product[] = [
     eligibility:
       "La edad de solicitud, el estado de residencia, la definición de accidente cubierto, los períodos de espera y las exclusiones aplicables deben confirmarse directamente con la compañía aseguradora antes de solicitar.",
     featured: false,
+    line: "health",
   },
   {
     id: "indemnizacion-hospitalaria",
@@ -102,6 +108,7 @@ export const products: Product[] = [
     eligibility:
       "Los eventos y días cubiertos, los máximos aplicables, los períodos de espera, la edad de solicitud y el estado de residencia deben confirmarse directamente con la compañía aseguradora.",
     featured: false,
+    line: "health",
   },
   {
     id: "aca-obamacare",
@@ -116,6 +123,7 @@ export const products: Product[] = [
     eligibility:
       "La elegibilidad, las ayudas económicas y las fechas de inscripción las define el Mercado de Salud según tus ingresos, tu hogar y tu estado. Un agente de seguros con licencia puede explicarte el proceso y confirmar los requisitos vigentes.",
     featured: false,
+    line: "health",
   },
   {
     id: "seguro-medico",
@@ -130,6 +138,7 @@ export const products: Product[] = [
     eligibility:
       "La disponibilidad de planes, las redes médicas, los requisitos y los costos varían según el estado, la compañía y el momento del año. Un agente de seguros con licencia puede confirmar qué aplica en tu caso.",
     featured: false,
+    line: "health",
   },
   {
     id: "seguro-privado",
@@ -144,6 +153,7 @@ export const products: Product[] = [
     eligibility:
       "Estos planes tienen reglas, límites y exclusiones propias que pueden diferir de un plan del Mercado de Salud. Las condiciones deben revisarse con un agente de seguros con licencia y confirmarse con la compañía antes de contratar.",
     featured: false,
+    line: "health",
   },
   {
     id: "seguro-vida",
@@ -158,11 +168,16 @@ export const products: Product[] = [
     eligibility:
       "El monto, la modalidad, la edad de solicitud, las preguntas de salud, los períodos de contestabilidad y las exclusiones se definen en la póliza y deben confirmarse directamente con la compañía aseguradora.",
     featured: false,
+    line: "life",
   },
 ];
 
-export const featuredProducts = products.filter((product) => product.featured);
-export const additionalProducts = products.filter((product) => !product.featured);
+/** Everything shown on /health — the life policy lives on its own spoke. */
+export const healthProducts = products.filter((product) => product.line === "health");
+export const lifeProducts = products.filter((product) => product.line === "life");
+
+export const featuredHealthProducts = healthProducts.filter((product) => product.featured);
+export const additionalHealthProducts = healthProducts.filter((product) => !product.featured);
 
 export function getProduct(id: ProductId) {
   return products.find((product) => product.id === id);

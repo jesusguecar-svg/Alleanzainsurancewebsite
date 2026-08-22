@@ -36,17 +36,17 @@ export function FaqSection() {
   const reveal = useReveal({ y: 40 });
 
   return (
-    <section id="preguntas" className="bg-[#eaf8fd] px-5 py-28 md:py-40">
+    <section id="preguntas" className="bg-mist px-5 py-28 md:py-40">
       <div className="mx-auto max-w-4xl">
         <motion.div {...reveal} className="max-w-2xl">
-          <p className="text-xs font-extrabold uppercase tracking-[.22em] text-cyan">Preguntas frecuentes</p>
-          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-6xl">Lo que suelen preguntarnos.</h2>
+          <p className="text-xs font-bold uppercase tracking-[.22em] text-cyan">Preguntas frecuentes</p>
+          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-6xl font-bold">Lo que suelen preguntarnos.</h2>
         </motion.div>
 
         <motion.div {...reveal} className="mt-12 flex flex-col gap-3">
           {faqs.map((faq) => (
             <details key={faq.question} className="group rounded-3xl border border-navy/10 bg-white px-6 py-5 md:px-8 md:py-6 [&_summary::-webkit-details-marker]:hidden">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-left text-lg font-extrabold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-left text-lg font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan">
                 {faq.question}
                 <Plus aria-hidden="true" size={22} className="shrink-0 text-cyan transition duration-300 group-open:rotate-45" />
               </summary>
