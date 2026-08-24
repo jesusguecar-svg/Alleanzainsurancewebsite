@@ -1,10 +1,12 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { animate as animateMotion, AnimatePresence, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from "framer-motion";
 import { ArrowLeft, ArrowRight, Grid2X2 } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
+import { LiquidHeadline } from "./cinematic/LiquidHeadline";
+import { LiquidGallerySurface } from "./cinematic/LiquidGallerySurface";
 
 type GalleryItem = { label: string; kicker: string; description: string; href: string; src: string; secondarySrc?: string; kind?: "video"; position?: string };
 
@@ -22,37 +24,70 @@ function GalleryMedia({ item, active }: { item: GalleryItem; active: boolean }) 
   return <Image src={item.src} alt={active ? `Cobertura de ${item.label} de Alleanza` : ""} fill priority={item.label === "Salud"} sizes="(min-width: 768px) 62vw, 88vw" className="object-cover" style={{ objectPosition: item.position ?? "center" }} />;
 }
 
+function MagneticLink({ href }: { href: string }) {
+  const x = useMotionValue(0), y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 190, damping: 18, mass: .55 });
+  const springY = useSpring(y, { stiffness: 190, damping: 18, mass: .55 });
+  return <span className="gallery-magnetic-zone" onPointerMove={(event) => { const box = event.currentTarget.getBoundingClientRect(); x.set(Math.max(-13, Math.min(13, (event.clientX - box.left - box.width / 2) * .22))); y.set(Math.max(-9, Math.min(9, (event.clientY - box.top - box.height / 2) * .22))); }} onPointerLeave={() => { x.set(0); y.set(0); }}><motion.a href={href} style={{ x: springX, y: springY }}>Ver cobertura</motion.a></span>;
+}
+
 export default function PortalHub() {
-  const [turn, setTurn] = useState(0);
-  const [dragStart, setDragStart] = useState<number | null>(null);
-  const [dragOffset, setDragOffset] = useState(0);
+  const [active, setActive] = useState(0);
+  const [dragging, setDragging] = useState(false);
   const [intro, setIntro] = useState(true);
-  const [wordPointer, setWordPointer] = useState({ active: false, x: .5, y: .5 });
-  const lastWheel = useRef(0);
+  const rotation = useMotionValue(0);
+  const orbitRef = useRef<HTMLDivElement>(null);
+  const motionControl = useRef<ReturnType<typeof animateMotion> | null>(null);
+  const wheelSettle = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wheelVelocity = useRef(0);
+  const drag = useRef({ startX: 0, startRotation: 0, lastX: 0, lastTime: 0, velocity: 0 });
+  const velocity = useRef({ value: 0, time: 0, timer: null as ReturnType<typeof setTimeout> | null });
+  const liquidVelocity = useRef(0);
   const reduceMotion = useReducedMotion();
-  const active = ((turn % gallery.length) + gallery.length) % gallery.length;
   const current = gallery[active];
-  const move = useCallback((step: number) => setTurn((value) => value + step), []);
-  const choose = useCallback((index: number) => setTurn((value) => {
-    const selected = ((value % gallery.length) + gallery.length) % gallery.length;
+  const settle = useCallback((projected: number) => {
+    const target = Math.round(projected / 72) * 72;
+    motionControl.current?.stop();
+    motionControl.current = animateMotion(rotation, target, reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 72, damping: 16, mass: .9, velocity: wheelVelocity.current });
+    wheelVelocity.current = 0;
+  }, [reduceMotion, rotation]);
+  const move = useCallback((step: number) => settle(Math.round(rotation.get() / 72) * 72 - step * 72), [rotation, settle]);
+  const choose = useCallback((index: number) => {
+    const selected = ((Math.round(-rotation.get() / 72) % gallery.length) + gallery.length) % gallery.length;
     let delta = index - selected;
     if (delta > gallery.length / 2) delta -= gallery.length;
     if (delta < -gallery.length / 2) delta += gallery.length;
-    return value + delta;
-  }), []);
+    settle(Math.round(rotation.get() / 72) * 72 - delta * 72);
+  }, [rotation, settle]);
   useEffect(() => { const timer = window.setTimeout(() => setIntro(false), 1900); return () => window.clearTimeout(timer); }, []);
+  useMotionValueEvent(rotation, "change", (value) => {
+    const index = ((Math.round(-value / 72) % gallery.length) + gallery.length) % gallery.length;
+    setActive((currentIndex) => currentIndex === index ? currentIndex : index);
+    const now = performance.now();
+    const elapsed = Math.max(8, now - velocity.current.time);
+    const raw = (value - velocity.current.value) / elapsed;
+    const normalized = Math.max(-1, Math.min(1, raw * 5));
+    liquidVelocity.current = normalized;
+    orbitRef.current?.style.setProperty("--ribbon-velocity", normalized.toFixed(3));
+    orbitRef.current?.style.setProperty("--ribbon-speed", Math.abs(normalized).toFixed(3));
+    velocity.current.value = value;
+    velocity.current.time = now;
+    if (velocity.current.timer) clearTimeout(velocity.current.timer);
+    velocity.current.timer = setTimeout(() => { liquidVelocity.current = 0; orbitRef.current?.style.setProperty("--ribbon-velocity", "0"); orbitRef.current?.style.setProperty("--ribbon-speed", "0"); }, 90);
+  });
 
   const handleWheel = (event: React.WheelEvent) => {
-    const now = Date.now();
     const distance = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-    if (now - lastWheel.current < 520 || Math.abs(distance) < 12) return;
-    lastWheel.current = now;
-    move(distance > 0 ? 1 : -1);
+    if (Math.abs(distance) < 1) return;
+    motionControl.current?.stop();
+    wheelVelocity.current = wheelVelocity.current * .72 - distance * .018;
+    rotation.set(rotation.get() - distance * .075);
+    if (wheelSettle.current) clearTimeout(wheelSettle.current);
+    wheelSettle.current = setTimeout(() => settle(rotation.get() + wheelVelocity.current * 18), 125);
   };
 
   return (
     <main className="gallery-home" onWheel={handleWheel}>
-      <svg className="gallery-filters" aria-hidden="true"><filter id="gallery-wave"><feTurbulence type="fractalNoise" baseFrequency={`${(.004 + wordPointer.x * .009).toFixed(4)} ${(.012 + wordPointer.y * .026).toFixed(4)}`} numOctaves="2" seed={Math.round(4 + wordPointer.x * 18)} result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale={wordPointer.active && !reduceMotion ? 16 + wordPointer.x * 24 : 0} xChannelSelector="R" yChannelSelector="B" /></filter></svg>
       <AnimatePresence>{intro && <motion.div className="gallery-intro" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.12 }} transition={{ duration: .75, ease: [.76,0,.24,1] }}><motion.div className="gallery-intro-ring" initial={{ rotate: -110, scale: .72 }} animate={{ rotate: 250, scale: 1 }} transition={{ duration: 1.65, ease: [.16,1,.3,1] }}><i/><i/><i/><i/><i/></motion.div><motion.div initial={{ opacity: 0, filter: "blur(8px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ delay: .35 }}><Logo width={190}/><span>PROTECCIÓN EN MOVIMIENTO</span></motion.div></motion.div>}</AnimatePresence>
       <header className="gallery-header">
         <a href="/" aria-label="Alleanza — inicio"><Logo width={160} /></a>
@@ -61,19 +96,19 @@ export default function PortalHub() {
       </header>
 
       <section id="galeria" className="gallery-stage" aria-label="Áreas de protección de Alleanza">
-        <div className={`gallery-display-word ${wordPointer.active ? "is-liquid" : ""}`} aria-hidden="true" style={{ transform: wordPointer.active && !reduceMotion ? `skewX(${(wordPointer.x - .5) * 3}deg) scaleY(${.985 + wordPointer.y * .03})` : "none" }} onPointerEnter={() => setWordPointer((value) => ({ ...value, active: true }))} onPointerMove={(event) => { const box = event.currentTarget.getBoundingClientRect(); setWordPointer({ active: true, x: Math.max(0, Math.min(1, (event.clientX - box.left) / box.width)), y: Math.max(0, Math.min(1, (event.clientY - box.top) / box.height)) }); }} onPointerLeave={() => setWordPointer((value) => ({ ...value, active: false }))}>PROTECCIÓN</div>
+        <LiquidHeadline text="PROTECCIÓN" />
         <div className="gallery-aura" aria-hidden="true" />
-        <motion.div className="gallery-orbit" animate={{ rotateY: turn * -72 + dragOffset * .18, rotateX: reduceMotion ? 0 : [0, 1.4, -.65, 0], y: reduceMotion ? 0 : [0, -8, 5, 0] }} transition={{ rotateY: dragStart === null ? { duration: 1.15, ease: [.16, 1, .3, 1] } : { duration: 0 }, rotateX: { duration: 1.05, ease: [.16, 1, .3, 1] }, y: { duration: 1.05, ease: [.16, 1, .3, 1] } }} onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); setDragStart(event.clientX); setDragOffset(0); }} onPointerMove={(event) => { if (dragStart !== null) setDragOffset(event.clientX - dragStart); }} onPointerUp={(event) => { if (dragStart === null) return; const delta = event.clientX - dragStart; if (Math.abs(delta) > 45) move(delta < 0 ? 1 : -1); setDragStart(null); setDragOffset(0); }} onPointerCancel={() => { setDragStart(null); setDragOffset(0); }}>
+        <motion.div ref={orbitRef} className="gallery-orbit" style={{ rotateY: rotation }} onPointerDown={(event) => { motionControl.current?.stop(); event.currentTarget.setPointerCapture(event.pointerId); const now = performance.now(); drag.current = { startX: event.clientX, startRotation: rotation.get(), lastX: event.clientX, lastTime: now, velocity: 0 }; setDragging(true); }} onPointerMove={(event) => { if (!dragging) return; const now = performance.now(); const elapsed = Math.max(8, now - drag.current.lastTime); drag.current.velocity = (event.clientX - drag.current.lastX) / elapsed; drag.current.lastX = event.clientX; drag.current.lastTime = now; rotation.set(drag.current.startRotation + (event.clientX - drag.current.startX) * .18); }} onPointerUp={() => { if (!dragging) return; setDragging(false); settle(rotation.get() + drag.current.velocity * 90); }} onPointerCancel={() => { setDragging(false); settle(rotation.get()); }}>
           {gallery.map((item, index) => {
             return <a key={`${item.label}-${item.src}`} href={item.href} aria-label={`Explorar ${item.label}`} aria-hidden={index !== active} aria-current={index === active ? "true" : undefined} data-active={index === active} tabIndex={index === active ? 0 : -1} className="gallery-card" style={{ "--panel-angle": `${index * 72}deg` } as React.CSSProperties} onPointerMove={(event) => { if (index !== active) return; const box = event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--spot-x", `${Math.max(0, Math.min(100, (event.clientX - box.left) / box.width * 100))}%`); event.currentTarget.style.setProperty("--spot-y", `${Math.max(0, Math.min(100, (event.clientY - box.top) / box.height * 100))}%`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--spot-x", "52%"); event.currentTarget.style.setProperty("--spot-y", "39%"); }} onClick={(event) => { if (index !== active) { event.preventDefault(); choose(index); } }}>
-              <GalleryMedia item={item} active={index === active} /><div className={`gallery-deep-light ${index === active ? "is-active" : ""}`} /><div className="gallery-card-shine" />
+              <span className="gallery-card-surface"><GalleryMedia item={item} active={index === active} /><LiquidGallerySurface src={item.src} secondarySrc={item.secondarySrc} kind={item.kind} position={item.position} velocity={liquidVelocity} /><div className={`gallery-deep-light ${index === active ? "is-active" : ""}`} /><div className="gallery-card-shine" /></span>
             </a>;
           })}
         </motion.div>
 
         <AnimatePresence mode="wait"><motion.div key={`reflejo-${current.label}`} className="gallery-reflection" initial={{ opacity: 0 }} animate={{ opacity: .58 }} exit={{ opacity: 0 }} transition={{ duration: .75 }}><div className="gallery-reflection-media"><GalleryMedia item={current} active /></div><div className="gallery-reflection-ripples" /></motion.div></AnimatePresence>
         <Image src="/cinematic/gallery/glass-plinth.png" alt="Plataforma tridimensional de vidrio creada para Alleanza" width={1800} height={1100} className="gallery-plinth" priority />
-        <AnimatePresence mode="wait"><motion.div key={current.label} className="gallery-card-title" initial={{ opacity: 0, y: 18, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: .55 }}><span>{current.kicker}</span><strong>{current.label}</strong><p>{current.description}</p><a href={current.href}>Ver cobertura</a></motion.div></AnimatePresence>
+        <AnimatePresence mode="wait"><motion.div key={current.label} className="gallery-card-title" initial={{ opacity: 0, y: 18, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: .55 }}><span>{current.kicker}</span><strong>{current.label}</strong><p>{current.description}</p><MagneticLink href={current.href}/></motion.div></AnimatePresence>
       </section>
 
       <nav className="gallery-options" aria-label="Seleccionar una categoría">
