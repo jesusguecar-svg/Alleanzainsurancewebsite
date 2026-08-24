@@ -27,6 +27,7 @@ export default function PortalHub() {
   const [dragStart, setDragStart] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState(0);
   const [intro, setIntro] = useState(true);
+  const [wordPointer, setWordPointer] = useState({ active: false, x: .5, y: .5 });
   const lastWheel = useRef(0);
   const reduceMotion = useReducedMotion();
   const active = ((turn % gallery.length) + gallery.length) % gallery.length;
@@ -51,7 +52,7 @@ export default function PortalHub() {
 
   return (
     <main className="gallery-home" onWheel={handleWheel}>
-      <svg className="gallery-filters" aria-hidden="true"><filter id="gallery-wave"><feTurbulence type="fractalNoise" baseFrequency="0.005 0.018" numOctaves="2" seed="7" result="noise"><animate attributeName="baseFrequency" dur="3.4s" values="0.005 0.018;0.009 0.028;0.004 0.014;0.005 0.018" repeatCount="indefinite" /></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="B" /></filter></svg>
+      <svg className="gallery-filters" aria-hidden="true"><filter id="gallery-wave"><feTurbulence type="fractalNoise" baseFrequency={`${(.004 + wordPointer.x * .009).toFixed(4)} ${(.012 + wordPointer.y * .026).toFixed(4)}`} numOctaves="2" seed={Math.round(4 + wordPointer.x * 18)} result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale={wordPointer.active && !reduceMotion ? 16 + wordPointer.x * 24 : 0} xChannelSelector="R" yChannelSelector="B" /></filter></svg>
       <AnimatePresence>{intro && <motion.div className="gallery-intro" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.12 }} transition={{ duration: .75, ease: [.76,0,.24,1] }}><motion.div className="gallery-intro-ring" initial={{ rotate: -110, scale: .72 }} animate={{ rotate: 250, scale: 1 }} transition={{ duration: 1.65, ease: [.16,1,.3,1] }}><i/><i/><i/><i/><i/></motion.div><motion.div initial={{ opacity: 0, filter: "blur(8px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ delay: .35 }}><Logo width={190}/><span>PROTECCIÓN EN MOVIMIENTO</span></motion.div></motion.div>}</AnimatePresence>
       <header className="gallery-header">
         <a href="/" aria-label="Alleanza — inicio"><Logo width={160} /></a>
@@ -60,11 +61,11 @@ export default function PortalHub() {
       </header>
 
       <section id="galeria" className="gallery-stage" aria-label="Áreas de protección de Alleanza">
-        <div className="gallery-display-word" aria-hidden="true">PROTECCIÓN</div>
+        <div className={`gallery-display-word ${wordPointer.active ? "is-liquid" : ""}`} aria-hidden="true" style={{ transform: wordPointer.active && !reduceMotion ? `skewX(${(wordPointer.x - .5) * 3}deg) scaleY(${.985 + wordPointer.y * .03})` : "none" }} onPointerEnter={() => setWordPointer((value) => ({ ...value, active: true }))} onPointerMove={(event) => { const box = event.currentTarget.getBoundingClientRect(); setWordPointer({ active: true, x: Math.max(0, Math.min(1, (event.clientX - box.left) / box.width)), y: Math.max(0, Math.min(1, (event.clientY - box.top) / box.height)) }); }} onPointerLeave={() => setWordPointer((value) => ({ ...value, active: false }))}>PROTECCIÓN</div>
         <div className="gallery-aura" aria-hidden="true" />
         <motion.div className="gallery-orbit" animate={{ rotateY: turn * -72 + dragOffset * .18, rotateX: reduceMotion ? 0 : [0, 1.4, -.65, 0], y: reduceMotion ? 0 : [0, -8, 5, 0] }} transition={{ rotateY: dragStart === null ? { duration: 1.15, ease: [.16, 1, .3, 1] } : { duration: 0 }, rotateX: { duration: 1.05, ease: [.16, 1, .3, 1] }, y: { duration: 1.05, ease: [.16, 1, .3, 1] } }} onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); setDragStart(event.clientX); setDragOffset(0); }} onPointerMove={(event) => { if (dragStart !== null) setDragOffset(event.clientX - dragStart); }} onPointerUp={(event) => { if (dragStart === null) return; const delta = event.clientX - dragStart; if (Math.abs(delta) > 45) move(delta < 0 ? 1 : -1); setDragStart(null); setDragOffset(0); }} onPointerCancel={() => { setDragStart(null); setDragOffset(0); }}>
           {gallery.map((item, index) => {
-            return <a key={`${item.label}-${item.src}`} href={item.href} aria-label={`Explorar ${item.label}`} aria-hidden={index !== active} aria-current={index === active ? "true" : undefined} data-active={index === active} tabIndex={index === active ? 0 : -1} className="gallery-card" style={{ "--panel-angle": `${index * 72}deg` } as React.CSSProperties} onClick={(event) => { if (index !== active) { event.preventDefault(); choose(index); } }}>
+            return <a key={`${item.label}-${item.src}`} href={item.href} aria-label={`Explorar ${item.label}`} aria-hidden={index !== active} aria-current={index === active ? "true" : undefined} data-active={index === active} tabIndex={index === active ? 0 : -1} className="gallery-card" style={{ "--panel-angle": `${index * 72}deg` } as React.CSSProperties} onPointerMove={(event) => { if (index !== active) return; const box = event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--spot-x", `${Math.max(0, Math.min(100, (event.clientX - box.left) / box.width * 100))}%`); event.currentTarget.style.setProperty("--spot-y", `${Math.max(0, Math.min(100, (event.clientY - box.top) / box.height * 100))}%`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--spot-x", "52%"); event.currentTarget.style.setProperty("--spot-y", "39%"); }} onClick={(event) => { if (index !== active) { event.preventDefault(); choose(index); } }}>
               <GalleryMedia item={item} active={index === active} /><div className={`gallery-deep-light ${index === active ? "is-active" : ""}`} /><div className="gallery-card-shine" />
             </a>;
           })}
