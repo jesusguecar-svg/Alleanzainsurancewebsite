@@ -2,6 +2,7 @@
 
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { ArrowDown, ArrowRight, Briefcase, GraduationCap, HeartPulse, Home, Users, type LucideIcon } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useRef, useState } from "react";
 import { CinematicCanvas } from "./cinematic/CinematicCanvas";
 import type { CinematicRenderContext } from "./cinematic/types";
@@ -19,6 +20,13 @@ const worlds = [
   { accent: [146, 112, 255], label: "Crecimiento", numeral: "04" },
   { accent: [255, 188, 88], label: "Futuro", numeral: "05" },
 ] as const;
+const renderedWorlds: Record<PortalRoute["id"], { src: string; alt: string }> = {
+  health: { src: "/cinematic/business-worlds/salud.webp", alt: "Escultura tridimensional de salud dentro de una esfera protectora" },
+  life: { src: "/cinematic/business-worlds/vida.webp", alt: "Escultura tridimensional de una familia rodeada por un abrazo protector" },
+  "property-casualty": { src: "/cinematic/business-worlds/property-casualty.webp", alt: "Escultura tridimensional de un hogar protegido por anillos luminosos" },
+  academy: { src: "/cinematic/business-worlds/academia.webp", alt: "Escultura tridimensional de escalones ascendentes hacia una meta" },
+  work: { src: "/cinematic/business-worlds/work.webp", alt: "Escultura tridimensional de una trayectoria profesional en ascenso" },
+};
 const clamp = (n: number) => Math.max(0, Math.min(1, n));
 
 function drawPortal({ ctx, width, height, progress, time, mobile }: CinematicRenderContext) {
@@ -69,6 +77,20 @@ function WorldPanel({ route, index, current }: { route: PortalRoute; index: numb
   </motion.article>;
 }
 
+function RenderedWorld({ route, active }: { route: PortalRoute; active: boolean }) {
+  const visual = renderedWorlds[route.id];
+  return <motion.div
+    animate={{ opacity: active ? 1 : 0, scale: active ? 1.04 : 1.16, rotate: active ? 0 : 2, filter: active ? "blur(0px)" : "blur(16px)" }}
+    transition={{ duration: .85, ease: [.22, 1, .36, 1] }}
+    aria-hidden={!active}
+    className="absolute inset-y-[4%] right-[-4%] w-[74%] max-md:inset-x-[-18%] max-md:top-[4%] max-md:h-[58%] max-md:w-auto"
+  >
+    <motion.div animate={active ? { y: [0, -10, 0], rotate: [0, .7, 0] } : undefined} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="relative h-full w-full">
+      <Image src={visual.src} alt={active ? visual.alt : ""} fill priority={route.id === "health"} sizes="(min-width: 768px) 74vw, 136vw" className="object-contain" />
+    </motion.div>
+  </motion.div>;
+}
+
 export default function PortalHub() {
   const journey = useRef<HTMLElement>(null), reduceMotion = useReducedMotion();
   const [current, setCurrent] = useState(0);
@@ -81,7 +103,10 @@ export default function PortalHub() {
     <div className="noise"/><SiteHeader links={portalNavLinks} cta={{ href: "/health", label: "Orientación en salud" }}/>
     <section ref={journey} className="relative h-[500vh] text-white">
       <div className="sticky top-0 h-screen overflow-hidden">
-        <motion.div style={reduceMotion ? undefined : { scale: universeScale }} className="absolute inset-0"><CinematicCanvas className="h-full w-full" ariaLabel="Cinco mundos tridimensionales de protección, educación y carrera" progressRoot={journey} render={render}/></motion.div>
+        <motion.div style={reduceMotion ? undefined : { scale: universeScale }} className="absolute inset-0">
+          {portalRoutes.map((route, index) => <RenderedWorld key={route.id} route={route} active={index === current}/>) }
+          <div className="absolute inset-0 opacity-35 mix-blend-screen"><CinematicCanvas className="h-full w-full" ariaLabel="Partículas que orbitan los mundos tridimensionales de Alleanza" progressRoot={journey} render={render}/></div>
+        </motion.div>
         <div className="pointer-events-none absolute inset-0 portal-vignette"/><div className="pointer-events-none absolute inset-0 grid-lines opacity-35"/>
         <div className="absolute inset-x-0 top-0 z-20 h-[3px] bg-white/10"><motion.div style={{ width: progressWidth }} className="h-full bg-cyan shadow-[0_0_18px_rgba(4,192,254,.9)]"/></div>
         <div className="relative z-10 mx-auto grid h-full max-w-7xl px-5 pb-12 pt-28 md:grid-cols-[minmax(0,1fr)_minmax(320px,.72fr)] md:items-center md:px-8 md:pt-24">
