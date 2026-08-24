@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Grid2X2 } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 
 type GalleryItem = { label: string; kicker: string; description: string; href: string; src: string; secondarySrc?: string; kind?: "video"; position?: string };
@@ -25,6 +25,8 @@ function GalleryMedia({ item, active }: { item: GalleryItem; active: boolean }) 
 export default function PortalHub() {
   const [turn, setTurn] = useState(0);
   const [dragStart, setDragStart] = useState<number | null>(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [intro, setIntro] = useState(true);
   const lastWheel = useRef(0);
   const reduceMotion = useReducedMotion();
   const active = ((turn % gallery.length) + gallery.length) % gallery.length;
@@ -37,16 +39,20 @@ export default function PortalHub() {
     if (delta < -gallery.length / 2) delta += gallery.length;
     return value + delta;
   }), []);
+  useEffect(() => { const timer = window.setTimeout(() => setIntro(false), 1900); return () => window.clearTimeout(timer); }, []);
 
   const handleWheel = (event: React.WheelEvent) => {
     const now = Date.now();
-    if (now - lastWheel.current < 520 || Math.abs(event.deltaY) < 12) return;
+    const distance = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    if (now - lastWheel.current < 520 || Math.abs(distance) < 12) return;
     lastWheel.current = now;
-    move(event.deltaY > 0 ? 1 : -1);
+    move(distance > 0 ? 1 : -1);
   };
 
   return (
     <main className="gallery-home" onWheel={handleWheel}>
+      <svg className="gallery-filters" aria-hidden="true"><filter id="gallery-wave"><feTurbulence type="fractalNoise" baseFrequency="0.005 0.018" numOctaves="2" seed="7" result="noise"><animate attributeName="baseFrequency" dur="3.4s" values="0.005 0.018;0.009 0.028;0.004 0.014;0.005 0.018" repeatCount="indefinite" /></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="B" /></filter></svg>
+      <AnimatePresence>{intro && <motion.div className="gallery-intro" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.12 }} transition={{ duration: .75, ease: [.76,0,.24,1] }}><motion.div className="gallery-intro-ring" initial={{ rotate: -110, scale: .72 }} animate={{ rotate: 250, scale: 1 }} transition={{ duration: 1.65, ease: [.16,1,.3,1] }}><i/><i/><i/><i/><i/></motion.div><motion.div initial={{ opacity: 0, filter: "blur(8px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ delay: .35 }}><Logo width={190}/><span>PROTECCIÓN EN MOVIMIENTO</span></motion.div></motion.div>}</AnimatePresence>
       <header className="gallery-header">
         <a href="/" aria-label="Alleanza — inicio"><Logo width={160} /></a>
         <h1><a href="#galeria">Alleanza</a> protege lo que estás construyendo.</h1>
@@ -55,16 +61,18 @@ export default function PortalHub() {
 
       <section id="galeria" className="gallery-stage" aria-label="Áreas de protección de Alleanza">
         <div className="gallery-display-word" aria-hidden="true">PROTECCIÓN</div>
-        <motion.div className="gallery-orbit" animate={{ rotateY: turn * -72, rotateX: reduceMotion ? 0 : [0, 1.4, -.65, 0], y: reduceMotion ? 0 : [0, -8, 5, 0] }} transition={{ rotateY: { duration: 1.15, ease: [.16, 1, .3, 1] }, rotateX: { duration: 1.05, ease: [.16, 1, .3, 1] }, y: { duration: 1.05, ease: [.16, 1, .3, 1] } }} onPointerDown={(event) => setDragStart(event.clientX)} onPointerUp={(event) => { if (dragStart === null) return; const delta = event.clientX - dragStart; if (Math.abs(delta) > 45) move(delta < 0 ? 1 : -1); setDragStart(null); }} onPointerCancel={() => setDragStart(null)}>
+        <div className="gallery-aura" aria-hidden="true" />
+        <motion.div className="gallery-orbit" animate={{ rotateY: turn * -72 + dragOffset * .18, rotateX: reduceMotion ? 0 : [0, 1.4, -.65, 0], y: reduceMotion ? 0 : [0, -8, 5, 0] }} transition={{ rotateY: dragStart === null ? { duration: 1.15, ease: [.16, 1, .3, 1] } : { duration: 0 }, rotateX: { duration: 1.05, ease: [.16, 1, .3, 1] }, y: { duration: 1.05, ease: [.16, 1, .3, 1] } }} onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); setDragStart(event.clientX); setDragOffset(0); }} onPointerMove={(event) => { if (dragStart !== null) setDragOffset(event.clientX - dragStart); }} onPointerUp={(event) => { if (dragStart === null) return; const delta = event.clientX - dragStart; if (Math.abs(delta) > 45) move(delta < 0 ? 1 : -1); setDragStart(null); setDragOffset(0); }} onPointerCancel={() => { setDragStart(null); setDragOffset(0); }}>
           {gallery.map((item, index) => {
-            return <a key={`${item.label}-${item.src}`} href={item.href} aria-label={`Explorar ${item.label}`} aria-hidden={index !== active} tabIndex={index === active ? 0 : -1} className="gallery-card" style={{ "--panel-angle": `${index * 72}deg` } as React.CSSProperties} onClick={(event) => { if (index !== active) { event.preventDefault(); choose(index); } }}>
+            return <a key={`${item.label}-${item.src}`} href={item.href} aria-label={`Explorar ${item.label}`} aria-hidden={index !== active} aria-current={index === active ? "true" : undefined} data-active={index === active} tabIndex={index === active ? 0 : -1} className="gallery-card" style={{ "--panel-angle": `${index * 72}deg` } as React.CSSProperties} onClick={(event) => { if (index !== active) { event.preventDefault(); choose(index); } }}>
               <GalleryMedia item={item} active={index === active} /><div className={`gallery-deep-light ${index === active ? "is-active" : ""}`} /><div className="gallery-card-shine" />
             </a>;
           })}
         </motion.div>
 
+        <AnimatePresence mode="wait"><motion.div key={`reflejo-${current.label}`} className="gallery-reflection" initial={{ opacity: 0 }} animate={{ opacity: .58 }} exit={{ opacity: 0 }} transition={{ duration: .75 }}><div className="gallery-reflection-media"><GalleryMedia item={current} active /></div><div className="gallery-reflection-ripples" /></motion.div></AnimatePresence>
         <Image src="/cinematic/gallery/glass-plinth.png" alt="Plataforma tridimensional de vidrio creada para Alleanza" width={1800} height={1100} className="gallery-plinth" priority />
-        <AnimatePresence mode="wait"><motion.div key={current.label} className="gallery-card-title" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: .45 }}><span>{current.kicker}</span><strong>{current.label}</strong><p>{current.description}</p></motion.div></AnimatePresence>
+        <AnimatePresence mode="wait"><motion.div key={current.label} className="gallery-card-title" initial={{ opacity: 0, y: 18, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: .55 }}><span>{current.kicker}</span><strong>{current.label}</strong><p>{current.description}</p><a href={current.href}>Ver cobertura</a></motion.div></AnimatePresence>
       </section>
 
       <nav className="gallery-options" aria-label="Seleccionar una categoría">
