@@ -41,4 +41,4 @@ export const phones: Phone[] = [
   { label: "+1 (817) 966 4347", href: "+18179664347" },
 ];
 
-export const academyUrl = "https://academia.alleanzainsurance.org";
+export const academyUrl = "https://licencia.alleanzainsurance.org";
