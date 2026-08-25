@@ -8,27 +8,27 @@ import { Logo } from "./Logo";
 import { LiquidHeadline } from "./cinematic/LiquidHeadline";
 import { LiquidGallerySurface } from "./cinematic/LiquidGallerySurface";
 
-type GalleryItem = { label: string; kicker: string; description: string; href: string; src: string; secondarySrc?: string; kind?: "video"; position?: string };
+type GalleryItem = { label: string; kicker: string; description: string; cta: string; href: string; src: string; secondarySrc?: string; kind?: "video"; position?: string };
 
 const gallery: GalleryItem[] = [
-  { label: "Salud", kicker: "Cuidado", description: "Seguro ACA, seguros complementarios y seguros privados.", href: "/health", src: "/cinematic/gallery/media/salud.jpg", position: "50% 38%" },
-  { label: "Vida", kicker: "Familia", description: "Seguro de vida temporal, permanente y protección para gastos finales.", href: "/life", src: "/cinematic/gallery/media/vida.jpg", position: "50% 48%" },
-  { label: "Propiedad", kicker: "Patrimonio", description: "Protección para tu hogar, tus autos y otros bienes importantes.", href: "/property-casualty", src: "/cinematic/gallery/media/hogar.jpg", secondarySrc: "/cinematic/gallery/media/auto.jpg" },
-  { label: "Academia", kicker: "Formación", description: "Capacitación, herramientas y acompañamiento para agentes.", href: "/academy", src: "/cinematic/gallery/media/academia.mp4", kind: "video" },
-  { label: "Trabajo", kicker: "Oportunidad", description: "Oportunidades profesionales para crecer con propósito.", href: "/work", src: "/cinematic/gallery/media/trabajo.png" },
+  { label: "Salud", kicker: "Cuidado", description: "Seguro ACA, seguros complementarios y seguros privados.", cta: "Obtener mi cobertura", href: "/health", src: "/cinematic/gallery/media/salud.mp4", kind: "video", position: "50% 38%" },
+  { label: "Vida", kicker: "Familia", description: "Seguro de vida temporal, permanente y protección para gastos finales.", cta: "Dejar un legado para mi familia", href: "/life", src: "/cinematic/gallery/media/vida.mp4", kind: "video", position: "50% 48%" },
+  { label: "Propiedad", kicker: "Patrimonio", description: "Protección para tu hogar, tus autos y otros bienes importantes.", cta: "Ver mi cobertura", href: "/property-casualty", src: "/cinematic/gallery/media/propiedad.mp4", kind: "video" },
+  { label: "Academia", kicker: "Formación", description: "Capacitación, herramientas y acompañamiento para agentes.", cta: "Aprender ahora", href: "/academy", src: "/cinematic/gallery/media/academia.mp4", kind: "video" },
+  { label: "Trabajo", kicker: "Oportunidad", description: "Oportunidades profesionales para crecer con propósito.", cta: "Trabaja con nosotros", href: "/work", src: "/cinematic/gallery/media/oportunidad.mp4", kind: "video" },
 ];
 
 function GalleryMedia({ item, active }: { item: GalleryItem; active: boolean }) {
-  if (item.kind === "video") return <video src={item.src} muted loop autoPlay playsInline preload="metadata" aria-label="Formación en la Academia Alleanza" className="h-full w-full object-cover" />;
+  if (item.kind === "video") return <video src={item.src} muted loop autoPlay playsInline preload="metadata" aria-label={active ? `Video de ${item.label} de Alleanza` : undefined} className="h-full w-full object-cover" style={{ objectPosition: item.position ?? "center" }} />;
   if (item.secondarySrc) return <span className="gallery-property-pair"><span><Image src={item.src} alt={active ? "Casa protegida por Alleanza" : ""} fill sizes="42vw" className="object-cover" /></span><span><Image src={item.secondarySrc} alt={active ? "Automóvil protegido por Alleanza" : ""} fill sizes="24vw" className="object-cover" /></span></span>;
   return <Image src={item.src} alt={active ? `Cobertura de ${item.label} de Alleanza` : ""} fill priority={item.label === "Salud"} sizes="(min-width: 768px) 62vw, 88vw" className="object-cover" style={{ objectPosition: item.position ?? "center" }} />;
 }
 
-function MagneticLink({ href }: { href: string }) {
+function MagneticLink({ href, label }: { href: string; label: string }) {
   const x = useMotionValue(0), y = useMotionValue(0);
   const springX = useSpring(x, { stiffness: 190, damping: 18, mass: .55 });
   const springY = useSpring(y, { stiffness: 190, damping: 18, mass: .55 });
-  return <span className="gallery-magnetic-zone" onPointerMove={(event) => { const box = event.currentTarget.getBoundingClientRect(); x.set(Math.max(-13, Math.min(13, (event.clientX - box.left - box.width / 2) * .22))); y.set(Math.max(-9, Math.min(9, (event.clientY - box.top - box.height / 2) * .22))); }} onPointerLeave={() => { x.set(0); y.set(0); }}><motion.a href={href} style={{ x: springX, y: springY }}>Ver cobertura</motion.a></span>;
+  return <span className="gallery-magnetic-zone" onPointerMove={(event) => { const box = event.currentTarget.getBoundingClientRect(); x.set(Math.max(-13, Math.min(13, (event.clientX - box.left - box.width / 2) * .22))); y.set(Math.max(-9, Math.min(9, (event.clientY - box.top - box.height / 2) * .22))); }} onPointerLeave={() => { x.set(0); y.set(0); }}><motion.a href={href} style={{ x: springX, y: springY }}>{label}</motion.a></span>;
 }
 
 export default function PortalHub() {
@@ -110,7 +110,7 @@ export default function PortalHub() {
 
         <AnimatePresence mode="wait"><motion.div key={`reflejo-${current.label}`} className="gallery-reflection" initial={{ opacity: 0 }} animate={{ opacity: .58 }} exit={{ opacity: 0 }} transition={{ duration: .75 }}><div className="gallery-reflection-media"><GalleryMedia item={current} active /></div><div className="gallery-reflection-ripples" /></motion.div></AnimatePresence>
         <Image src="/cinematic/gallery/glass-plinth.png" alt="Plataforma tridimensional de vidrio creada para Alleanza" width={1800} height={1100} className="gallery-plinth" priority />
-        <AnimatePresence mode="wait"><motion.div key={current.label} className="gallery-card-title" initial={{ opacity: 0, y: 18, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: .55 }}><span>{current.kicker}</span><strong>{current.label}</strong><p>{current.description}</p><MagneticLink href={current.href}/></motion.div></AnimatePresence>
+        <AnimatePresence mode="wait"><motion.div key={current.label} className="gallery-card-title" initial={{ opacity: 0, y: 18, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: .55 }}><span>{current.kicker}</span><strong>{current.label}</strong><p>{current.description}</p><MagneticLink href={current.href} label={current.cta}/></motion.div></AnimatePresence>
       </section>
 
       <nav className="gallery-options" aria-label="Seleccionar una categoría">
