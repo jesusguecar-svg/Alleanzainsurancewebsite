@@ -115,9 +115,9 @@ export default function PortalHub() {
         <section id="formas-de-ayudarte" className="mobile-message-scene" aria-labelledby="mobile-message-title">
           <p className="mobile-scene-index" aria-hidden="true">02 / 03</p>
           <div>
-            <span>Estamos contigo</span>
+            <span>Alleanza Insurance Corp</span>
             <h2 id="mobile-message-title">Tenemos 5 formas de ayudarte.</h2>
-            <p>Dale scroll un momento más.</p>
+            <p>Desliza un momento más.</p>
           </div>
           <a className="mobile-scroll-cue" href="#galeria">
             <span>Conócelas</span>

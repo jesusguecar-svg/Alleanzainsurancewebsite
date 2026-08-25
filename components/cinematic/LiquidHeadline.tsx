@@ -24,11 +24,12 @@ out vec4 outColor;
 void main() {
   vec2 delta = vUv - uMouse;
   float distanceToCursor = length(delta);
-  float falloff = smoothstep(0.44, 0.0, distanceToCursor);
+  float falloff = smoothstep(0.58, 0.0, distanceToCursor);
   vec2 direction = normalize(delta + vec2(0.0001));
-  float ripple = sin(distanceToCursor * 26.0 - uTime * 4.2) * 0.008;
-  vec2 displacement = direction * (falloff * uStrength * 0.08 + ripple * falloff * uStrength);
-  displacement.x += sin((vUv.y + uTime * 0.08) * 19.0) * falloff * uStrength * 0.006;
+  float ripple = sin(distanceToCursor * 24.0 - uTime * 5.2) * 0.011;
+  vec2 displacement = direction * (falloff * uStrength * 0.115 + ripple * falloff * uStrength);
+  displacement.x += sin((vUv.y + uTime * 0.1) * 18.0) * falloff * uStrength * 0.009;
+  displacement.y += cos((vUv.x - uTime * 0.08) * 16.0) * falloff * uStrength * 0.006;
   vec4 glyph = texture(uGlyph, clamp(vUv - displacement, 0.0, 1.0));
   outColor = vec4(vec3(0.015, 0.018, 0.02), glyph.a);
 }`;
@@ -103,31 +104,43 @@ export function LiquidHeadline({ text, className = "" }: { text: string; classNa
       return { texture, aspect: width / 300 };
     });
 
-    const pointer = { targetX: -2, targetY: -2, x: -2, y: -2, targetStrength: 0, strength: 0 };
-    const onMove = (event: PointerEvent) => {
+    const pointer = { targetX: -2, targetY: -2, x: -2, y: -2, targetStrength: 0, strength: 0, targetPress: 0, press: 0 };
+    const updatePoint = (clientX: number, clientY: number, strength = 1) => {
       const box = canvas.getBoundingClientRect();
-      pointer.targetX = (event.clientX - box.left) / box.width;
-      pointer.targetY = (event.clientY - box.top) / box.height;
-      pointer.targetStrength = 1;
+      pointer.targetX = (clientX - box.left) / box.width;
+      pointer.targetY = (clientY - box.top) / box.height;
+      pointer.targetStrength = strength;
+    };
+    const onMove = (event: PointerEvent) => {
+      updatePoint(event.clientX, event.clientY);
     };
     const onTouch = (event: TouchEvent) => {
       const touch = event.touches[0];
       if (!touch) return;
-      const box = canvas.getBoundingClientRect();
-      pointer.targetX = (touch.clientX - box.left) / box.width;
-      pointer.targetY = (touch.clientY - box.top) / box.height;
-      pointer.targetStrength = 1;
+      updatePoint(touch.clientX, touch.clientY);
     };
-    const onLeave = () => { pointer.targetStrength = 0; };
+    const onPointerDown = (event: PointerEvent) => { updatePoint(event.clientX, event.clientY, .28); pointer.targetPress = 1; };
+    const onPointerUp = () => { pointer.targetPress = 0; };
+    const onTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      updatePoint(touch.clientX, touch.clientY, .28);
+      pointer.targetPress = 1;
+    };
+    const onLeave = () => { pointer.targetStrength = 0; pointer.targetPress = 0; };
+    canvas.addEventListener("pointerdown", onPointerDown);
     canvas.addEventListener("pointermove", onMove);
+    canvas.addEventListener("pointerup", onPointerUp);
+    canvas.addEventListener("pointercancel", onLeave);
     canvas.addEventListener("pointerleave", onLeave);
-    canvas.addEventListener("touchstart", onTouch, { passive: true });
+    canvas.addEventListener("touchstart", onTouchStart, { passive: true });
     canvas.addEventListener("touchmove", onTouch, { passive: true });
     canvas.addEventListener("touchend", onLeave, { passive: true });
     canvas.addEventListener("touchcancel", onLeave, { passive: true });
 
     let frame = 0;
     let glyphRects: Array<{ left: number; top: number; width: number; height: number }> = [];
+    const glyphPress = textures.map(() => 0);
     const resize = () => {
       const box = canvas.getBoundingClientRect();
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -155,17 +168,28 @@ export function LiquidHeadline({ text, className = "" }: { text: string; classNa
     const render = (milliseconds: number) => {
       pointer.x += (pointer.targetX - pointer.x) * .13;
       pointer.y += (pointer.targetY - pointer.y) * .13;
-      pointer.strength += ((reduceMotion ? 0 : pointer.targetStrength) - pointer.strength) * .1;
+      pointer.strength += ((reduceMotion ? 0 : pointer.targetStrength) - pointer.strength) * .16;
+      pointer.press += ((reduceMotion ? 0 : pointer.targetPress) - pointer.press) * .18;
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
+      const focusIndex = glyphRects.findIndex((rect) => pointer.targetX >= rect.left && pointer.targetX <= rect.left + rect.width && pointer.targetY >= rect.top && pointer.targetY <= rect.top + rect.height);
       textures.forEach((item, index) => {
         const rect = glyphRects[index];
         if (!rect) return;
+        const pressTarget = index === focusIndex ? pointer.press : 0;
+        glyphPress[index] += (pressTarget - glyphPress[index]) * .2;
+        const scale = 1 + glyphPress[index] * .24;
+        const drawRect = {
+          left: rect.left - rect.width * (scale - 1) / 2,
+          top: rect.top - rect.height * (scale - 1) / 2,
+          width: rect.width * scale,
+          height: rect.height * scale,
+        };
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, item.texture);
-        gl.uniform4f(rectLocation, rect.left * 2 - 1, 1 - (rect.top + rect.height) * 2, rect.width * 2, rect.height * 2);
-        gl.uniform2f(mouseLocation, (pointer.x - rect.left) / rect.width, 1 - (pointer.y - rect.top) / rect.height);
-        gl.uniform1f(strengthLocation, pointer.strength);
+        gl.uniform4f(rectLocation, drawRect.left * 2 - 1, 1 - (drawRect.top + drawRect.height) * 2, drawRect.width * 2, drawRect.height * 2);
+        gl.uniform2f(mouseLocation, (pointer.x - drawRect.left) / drawRect.width, 1 - (pointer.y - drawRect.top) / drawRect.height);
+        gl.uniform1f(strengthLocation, pointer.strength + pointer.press * .2);
         gl.uniform1f(timeLocation, milliseconds / 1000);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
       });
@@ -178,9 +202,12 @@ export function LiquidHeadline({ text, className = "" }: { text: string; classNa
       cancelAnimationFrame(frame);
       canvas.parentElement?.classList.remove("is-webgl-ready");
       observer.disconnect();
+      canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointermove", onMove);
+      canvas.removeEventListener("pointerup", onPointerUp);
+      canvas.removeEventListener("pointercancel", onLeave);
       canvas.removeEventListener("pointerleave", onLeave);
-      canvas.removeEventListener("touchstart", onTouch);
+      canvas.removeEventListener("touchstart", onTouchStart);
       canvas.removeEventListener("touchmove", onTouch);
       canvas.removeEventListener("touchend", onLeave);
       canvas.removeEventListener("touchcancel", onLeave);
