@@ -1,7 +1,7 @@
 "use client";
 
 import { animate as animateMotion, AnimatePresence, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from "framer-motion";
-import { ArrowLeft, ArrowRight, Grid2X2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Grid2X2 } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
@@ -59,7 +59,11 @@ export default function PortalHub() {
     if (delta < -gallery.length / 2) delta += gallery.length;
     settle(Math.round(rotation.get() / 72) * 72 - delta * 72);
   }, [rotation, settle]);
-  useEffect(() => { const timer = window.setTimeout(() => setIntro(false), 1900); return () => window.clearTimeout(timer); }, []);
+  useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 767px)").matches;
+    const timer = window.setTimeout(() => setIntro(false), mobile ? 1100 : 1900);
+    return () => window.clearTimeout(timer);
+  }, []);
   useMotionValueEvent(rotation, "change", (value) => {
     const index = ((Math.round(-value / 72) % gallery.length) + gallery.length) % gallery.length;
     setActive((currentIndex) => currentIndex === index ? currentIndex : index);
@@ -77,6 +81,7 @@ export default function PortalHub() {
   });
 
   const handleWheel = (event: React.WheelEvent) => {
+    if (window.matchMedia("(max-width: 767px)").matches) return;
     const distance = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
     if (Math.abs(distance) < 1) return;
     motionControl.current?.stop();
@@ -87,16 +92,44 @@ export default function PortalHub() {
   };
 
   return (
-    <main className="gallery-home" onWheel={handleWheel}>
-      <AnimatePresence>{intro && <motion.div className="gallery-intro" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.12 }} transition={{ duration: .75, ease: [.76,0,.24,1] }}><motion.div className="gallery-intro-ring" initial={{ rotate: -110, scale: .72 }} animate={{ rotate: 250, scale: 1 }} transition={{ duration: 1.65, ease: [.16,1,.3,1] }}><i/><i/><i/><i/><i/></motion.div><motion.div initial={{ opacity: 0, filter: "blur(8px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ delay: .35 }}><Logo width={190}/><span>PROTECCIÓN EN MOVIMIENTO</span></motion.div></motion.div>}</AnimatePresence>
+    <main className={`gallery-home ${intro ? "is-loading" : ""}`} onWheel={handleWheel}>
+      <AnimatePresence>{intro && <motion.div className="gallery-intro" role="status" aria-label="Cargando sitio de Alleanza" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.12 }} transition={{ duration: .75, ease: [.76,0,.24,1] }}><motion.div className="gallery-intro-ring" initial={{ rotate: -110, scale: .72 }} animate={{ rotate: 250, scale: 1 }} transition={{ duration: 1.65, ease: [.16,1,.3,1] }}><i/><i/><i/><i/><i/></motion.div><motion.div initial={{ opacity: 0, filter: "blur(8px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ delay: .25 }}><Logo width={190}/><span>PROTECCIÓN EN MOVIMIENTO</span></motion.div></motion.div>}</AnimatePresence>
       <header className="gallery-header">
         <a href="/" aria-label="Alleanza — inicio"><Logo width={160} /></a>
         <h1><a href="#galeria">Alleanza</a> protege lo que estás construyendo.</h1>
         <p>{String(active + 1).padStart(2, "0")} / {String(gallery.length).padStart(2, "0")}</p>
       </header>
 
+      <div className="mobile-story">
+        <section className="mobile-protection-scene" aria-labelledby="mobile-protection-title">
+          <h1 id="mobile-protection-title" className="sr-only">Protección Alleanza</h1>
+          <p className="mobile-scene-index" aria-hidden="true">01 / 03</p>
+          <LiquidHeadline text="PROTECCIÓN" className="mobile-protection-liquid" />
+          <p className="mobile-touch-hint">Toca y mueve tus dedos</p>
+          <a className="mobile-scroll-cue" href="#formas-de-ayudarte">
+            <span>Desliza para continuar</span>
+            <ChevronDown size={18} aria-hidden="true" />
+          </a>
+        </section>
+
+        <section id="formas-de-ayudarte" className="mobile-message-scene" aria-labelledby="mobile-message-title">
+          <p className="mobile-scene-index" aria-hidden="true">02 / 03</p>
+          <div>
+            <span>Estamos contigo</span>
+            <h2 id="mobile-message-title">Tenemos 5 formas de ayudarte.</h2>
+            <p>Dale scroll un momento más.</p>
+          </div>
+          <a className="mobile-scroll-cue" href="#galeria">
+            <span>Conócelas</span>
+            <ChevronDown size={18} aria-hidden="true" />
+          </a>
+        </section>
+      </div>
+
       <section id="galeria" className="gallery-stage" aria-label="Áreas de protección de Alleanza">
-        <LiquidHeadline text="PROTECCIÓN" />
+        <LiquidHeadline text="PROTECCIÓN" className="gallery-desktop-headline" />
+        <p className="mobile-scene-index mobile-gallery-index" aria-hidden="true">03 / 03</p>
+        <p className="mobile-gallery-label">Cinco formas de protegerte</p>
         <div className="gallery-aura" aria-hidden="true" />
         <div className="gallery-orbit-tilt">
           <motion.div ref={orbitRef} className="gallery-orbit" style={{ rotateY: rotation }} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { motionControl.current?.stop(); event.currentTarget.setPointerCapture(event.pointerId); const now = performance.now(); drag.current = { startX: event.clientX, startRotation: rotation.get(), lastX: event.clientX, lastTime: now, velocity: 0 }; dragging.current = true; }} onPointerMove={(event) => { if (!dragging.current) return; const now = performance.now(); const elapsed = Math.max(8, now - drag.current.lastTime); drag.current.velocity = (event.clientX - drag.current.lastX) / elapsed; drag.current.lastX = event.clientX; drag.current.lastTime = now; rotation.set(drag.current.startRotation + (event.clientX - drag.current.startX) * .18); }} onPointerUp={() => { if (!dragging.current) return; dragging.current = false; settle(rotation.get() + drag.current.velocity * 90); }} onPointerCancel={() => { dragging.current = false; settle(rotation.get()); }}>
@@ -111,19 +144,19 @@ export default function PortalHub() {
         <AnimatePresence mode="wait"><motion.div key={`reflejo-${current.label}`} className="gallery-reflection" initial={{ opacity: 0 }} animate={{ opacity: .58 }} exit={{ opacity: 0 }} transition={{ duration: .75 }}><div className="gallery-reflection-media"><GalleryMedia item={current} active /></div><div className="gallery-reflection-ripples" /></motion.div></AnimatePresence>
         <Image src="/cinematic/gallery/glass-plinth.png" alt="Plataforma tridimensional de vidrio creada para Alleanza" width={1800} height={1100} className="gallery-plinth" priority />
         <AnimatePresence mode="wait"><motion.div key={current.label} className="gallery-card-title" initial={{ opacity: 0, y: 18, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: .55 }}><span>{current.kicker}</span><strong>{current.label}</strong><p>{current.description}</p><MagneticLink href={current.href} label={current.cta}/></motion.div></AnimatePresence>
+
+        <nav className="gallery-options" aria-label="Seleccionar una categoría">
+          {gallery.map((item, index) => <button key={item.label} type="button" className={index === active ? "is-active" : ""} aria-current={index === active ? "true" : undefined} onClick={() => choose(index)}><span>{String(index + 1).padStart(2, "0")}</span>{item.label}</button>)}
+        </nav>
+
+        <nav className="gallery-float-nav" aria-label="Control de la galería">
+          <button type="button" onClick={() => move(-1)} aria-label="Categoría anterior"><ArrowLeft size={16} /></button>
+          <a href={current.href} className="gallery-current"><span className="gallery-thumb"><GalleryMedia item={current} active /></span><span><small>Categoría</small><strong>{current.label}</strong></span></a>
+          <button type="button" onClick={() => move(1)} aria-label="Categoría siguiente"><ArrowRight size={16} /></button>
+          <a href={current.href} className="gallery-enter" aria-label={`Entrar a ${current.label}`}><Grid2X2 size={18} /></a>
+        </nav>
+        <p className="gallery-hint">Arrastra o desliza para explorar</p>
       </section>
-
-      <nav className="gallery-options" aria-label="Seleccionar una categoría">
-        {gallery.map((item, index) => <button key={item.label} type="button" className={index === active ? "is-active" : ""} aria-current={index === active ? "true" : undefined} onClick={() => choose(index)}><span>{String(index + 1).padStart(2, "0")}</span>{item.label}</button>)}
-      </nav>
-
-      <nav className="gallery-float-nav" aria-label="Control de la galería">
-        <button type="button" onClick={() => move(-1)} aria-label="Categoría anterior"><ArrowLeft size={16} /></button>
-        <a href={current.href} className="gallery-current"><span className="gallery-thumb"><GalleryMedia item={current} active /></span><span><small>Categoría</small><strong>{current.label}</strong></span></a>
-        <button type="button" onClick={() => move(1)} aria-label="Categoría siguiente"><ArrowRight size={16} /></button>
-        <a href={current.href} className="gallery-enter" aria-label={`Entrar a ${current.label}`}><Grid2X2 size={18} /></a>
-      </nav>
-      <p className="gallery-hint">Arrastra o desliza para explorar</p>
     </main>
   );
 }

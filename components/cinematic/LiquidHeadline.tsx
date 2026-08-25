@@ -45,7 +45,7 @@ function shader(gl: WebGL2RenderingContext, type: number, source: string) {
   return compiled;
 }
 
-export function LiquidHeadline({ text }: { text: string }) {
+export function LiquidHeadline({ text, className = "" }: { text: string; className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduceMotion = useReducedMotion();
 
@@ -110,9 +110,21 @@ export function LiquidHeadline({ text }: { text: string }) {
       pointer.targetY = (event.clientY - box.top) / box.height;
       pointer.targetStrength = 1;
     };
+    const onTouch = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      const box = canvas.getBoundingClientRect();
+      pointer.targetX = (touch.clientX - box.left) / box.width;
+      pointer.targetY = (touch.clientY - box.top) / box.height;
+      pointer.targetStrength = 1;
+    };
     const onLeave = () => { pointer.targetStrength = 0; };
     canvas.addEventListener("pointermove", onMove);
     canvas.addEventListener("pointerleave", onLeave);
+    canvas.addEventListener("touchstart", onTouch, { passive: true });
+    canvas.addEventListener("touchmove", onTouch, { passive: true });
+    canvas.addEventListener("touchend", onLeave, { passive: true });
+    canvas.addEventListener("touchcancel", onLeave, { passive: true });
 
     let frame = 0;
     let glyphRects: Array<{ left: number; top: number; width: number; height: number }> = [];
@@ -168,6 +180,10 @@ export function LiquidHeadline({ text }: { text: string }) {
       observer.disconnect();
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerleave", onLeave);
+      canvas.removeEventListener("touchstart", onTouch);
+      canvas.removeEventListener("touchmove", onTouch);
+      canvas.removeEventListener("touchend", onLeave);
+      canvas.removeEventListener("touchcancel", onLeave);
       textures.forEach(({ texture }) => gl.deleteTexture(texture));
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
@@ -176,5 +192,5 @@ export function LiquidHeadline({ text }: { text: string }) {
     };
   }, [reduceMotion, text]);
 
-  return <div className="liquid-headline"><span className="liquid-headline-fallback" aria-hidden="true">{text}</span><canvas ref={canvasRef} aria-hidden="true"/><span className="sr-only">{text}</span></div>;
+  return <div className={`liquid-headline ${className}`}><span className="liquid-headline-fallback" aria-hidden="true">{text}</span><canvas ref={canvasRef} aria-hidden="true"/><span className="sr-only">{text}</span></div>;
 }
