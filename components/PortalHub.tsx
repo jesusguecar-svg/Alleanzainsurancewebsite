@@ -17,7 +17,10 @@ const gallery: GalleryItem[] = [
   { label: "Propiedad", kicker: "Patrimonio", description: "Protección para tu hogar, tus autos y otros bienes importantes.", cta: "Ver mi cobertura", href: "/property-casualty", src: "/cinematic/gallery/media/propiedad.mp4", kind: "video" },
   { label: "Academia", kicker: "Formación", description: "Capacitación, herramientas y acompañamiento para agentes.", cta: "Aprender ahora", href: academyUrl, src: "/cinematic/gallery/media/academia.mp4", kind: "video" },
   { label: "Trabajo", kicker: "Oportunidad", description: "Oportunidades profesionales para crecer con propósito.", cta: "Trabaja con nosotros", href: "/work", src: "/cinematic/gallery/media/oportunidad.mp4", kind: "video" },
+  { label: "Empresas", kicker: "Beneficios", description: "Protección complementaria para ofrecer a tus empleados.", cta: "Beneficios para mi equipo", href: "/employers", src: "/cinematic/gallery/media/trabajo.png", position: "50% 48%" },
 ];
+
+const panelAngle = 360 / gallery.length;
 
 function GalleryMedia({ item, active }: { item: GalleryItem; active: boolean }) {
   if (item.kind === "video") return <video src={item.src} muted loop autoPlay playsInline preload="metadata" aria-label={active ? `Video de ${item.label} de Alleanza` : undefined} className="h-full w-full object-cover" style={{ objectPosition: item.position ?? "center" }} />;
@@ -47,18 +50,18 @@ export default function PortalHub() {
   const reduceMotion = useReducedMotion();
   const current = gallery[active];
   const settle = useCallback((projected: number) => {
-    const target = Math.round(projected / 72) * 72;
+    const target = Math.round(projected / panelAngle) * panelAngle;
     motionControl.current?.stop();
     motionControl.current = animateMotion(rotation, target, reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 72, damping: 16, mass: .9, velocity: wheelVelocity.current });
     wheelVelocity.current = 0;
   }, [reduceMotion, rotation]);
-  const move = useCallback((step: number) => settle(Math.round(rotation.get() / 72) * 72 - step * 72), [rotation, settle]);
+  const move = useCallback((step: number) => settle(Math.round(rotation.get() / panelAngle) * panelAngle - step * panelAngle), [rotation, settle]);
   const choose = useCallback((index: number) => {
-    const selected = ((Math.round(-rotation.get() / 72) % gallery.length) + gallery.length) % gallery.length;
+    const selected = ((Math.round(-rotation.get() / panelAngle) % gallery.length) + gallery.length) % gallery.length;
     let delta = index - selected;
     if (delta > gallery.length / 2) delta -= gallery.length;
     if (delta < -gallery.length / 2) delta += gallery.length;
-    settle(Math.round(rotation.get() / 72) * 72 - delta * 72);
+    settle(Math.round(rotation.get() / panelAngle) * panelAngle - delta * panelAngle);
   }, [rotation, settle]);
   useEffect(() => {
     const mobile = window.matchMedia("(max-width: 767px)").matches;
@@ -66,7 +69,7 @@ export default function PortalHub() {
     return () => window.clearTimeout(timer);
   }, []);
   useMotionValueEvent(rotation, "change", (value) => {
-    const index = ((Math.round(-value / 72) % gallery.length) + gallery.length) % gallery.length;
+    const index = ((Math.round(-value / panelAngle) % gallery.length) + gallery.length) % gallery.length;
     setActive((currentIndex) => currentIndex === index ? currentIndex : index);
     const now = performance.now();
     const elapsed = Math.max(8, now - velocity.current.time);
@@ -117,7 +120,7 @@ export default function PortalHub() {
           <p className="mobile-scene-index" aria-hidden="true">02 / 03</p>
           <div>
             <span>Alleanza Insurance Corp</span>
-            <h2 id="mobile-message-title">Tenemos 5 formas de ayudarte.</h2>
+            <h2 id="mobile-message-title">Tenemos 6 formas de ayudarte.</h2>
             <p>Desliza un momento más.</p>
           </div>
           <a className="mobile-scroll-cue" href="#galeria">
@@ -130,12 +133,12 @@ export default function PortalHub() {
       <section id="galeria" className="gallery-stage" aria-label="Áreas de protección de Alleanza">
         <LiquidHeadline text="PROTECCIÓN" className="gallery-desktop-headline" />
         <p className="mobile-scene-index mobile-gallery-index" aria-hidden="true">03 / 03</p>
-        <p className="mobile-gallery-label">Cinco formas de protegerte</p>
+        <p className="mobile-gallery-label">Seis formas de protegerte</p>
         <div className="gallery-aura" aria-hidden="true" />
         <div className="gallery-orbit-tilt">
           <motion.div ref={orbitRef} className="gallery-orbit" style={{ rotateY: rotation }} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { motionControl.current?.stop(); event.currentTarget.setPointerCapture(event.pointerId); const now = performance.now(); drag.current = { startX: event.clientX, startRotation: rotation.get(), lastX: event.clientX, lastTime: now, velocity: 0 }; dragging.current = true; }} onPointerMove={(event) => { if (!dragging.current) return; const now = performance.now(); const elapsed = Math.max(8, now - drag.current.lastTime); drag.current.velocity = (event.clientX - drag.current.lastX) / elapsed; drag.current.lastX = event.clientX; drag.current.lastTime = now; rotation.set(drag.current.startRotation + (event.clientX - drag.current.startX) * .18); }} onPointerUp={() => { if (!dragging.current) return; dragging.current = false; settle(rotation.get() + drag.current.velocity * 90); }} onPointerCancel={() => { dragging.current = false; settle(rotation.get()); }}>
             {gallery.map((item, index) => {
-              return <a key={`${item.label}-${item.src}`} href={item.href} aria-label={`Explorar ${item.label}`} aria-hidden={index !== active} aria-current={index === active ? "true" : undefined} data-active={index === active} tabIndex={index === active ? 0 : -1} className="gallery-card" style={{ "--panel-angle": `${index * 72}deg` } as React.CSSProperties} onPointerMove={(event) => { if (index !== active) return; const box = event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--spot-x", `${Math.max(0, Math.min(100, (event.clientX - box.left) / box.width * 100))}%`); event.currentTarget.style.setProperty("--spot-y", `${Math.max(0, Math.min(100, (event.clientY - box.top) / box.height * 100))}%`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--spot-x", "52%"); event.currentTarget.style.setProperty("--spot-y", "39%"); }} onClick={(event) => { if (index !== active) { event.preventDefault(); choose(index); } }}>
+              return <a key={`${item.label}-${item.src}`} href={item.href} aria-label={`Explorar ${item.label}`} aria-hidden={index !== active} aria-current={index === active ? "true" : undefined} data-active={index === active} tabIndex={index === active ? 0 : -1} className="gallery-card" style={{ "--panel-angle": `${index * panelAngle}deg` } as React.CSSProperties} onPointerMove={(event) => { if (index !== active) return; const box = event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--spot-x", `${Math.max(0, Math.min(100, (event.clientX - box.left) / box.width * 100))}%`); event.currentTarget.style.setProperty("--spot-y", `${Math.max(0, Math.min(100, (event.clientY - box.top) / box.height * 100))}%`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--spot-x", "52%"); event.currentTarget.style.setProperty("--spot-y", "39%"); }} onClick={(event) => { if (index !== active) { event.preventDefault(); choose(index); } }}>
                 <span className="gallery-card-surface"><GalleryMedia item={item} active={index === active} /><LiquidGallerySurface src={item.src} secondarySrc={item.secondarySrc} kind={item.kind} position={item.position} velocity={liquidVelocity} /><div className={`gallery-deep-light ${index === active ? "is-active" : ""}`} /><div className="gallery-card-shine" /></span>
               </a>;
             })}

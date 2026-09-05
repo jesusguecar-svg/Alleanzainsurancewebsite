@@ -5,7 +5,7 @@ import { academyUrl } from "./contact";
  * on it and a route in the app.
  */
 export type PortalRoute = {
-  id: "health" | "life" | "property-casualty" | "academy" | "work";
+  id: "health" | "life" | "property-casualty" | "academy" | "work" | "employers";
   href: string;
   /** Short label for navigation. */
   label: string;
@@ -58,6 +58,14 @@ export const portalRoutes: PortalRoute[] = [
     label: "Trabajo",
     title: "Trabajo",
     description: "Una carrera con acompañamiento y oportunidad.",
+    complete: true,
+  },
+  {
+    id: "employers",
+    href: "/employers",
+    label: "Empresas",
+    title: "Empresas",
+    description: "Beneficios complementarios para proteger a tu equipo.",
     complete: true,
   },
 ];

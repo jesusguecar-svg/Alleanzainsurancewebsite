@@ -14,9 +14,11 @@ export type NavLink = { href: string; label: string };
 export function SiteHeader({
   links,
   cta,
+  locale = "es",
 }: {
   links: NavLink[];
   cta?: { href: string; label: string };
+  locale?: "es" | "en";
 }) {
   const [open, setOpen] = useState(false);
 
@@ -27,7 +29,7 @@ export function SiteHeader({
           <Logo width={175} />
         </a>
 
-        <nav aria-label="Principal" className="hidden items-center gap-7 text-[13px] font-medium lg:flex">
+        <nav aria-label={locale === "en" ? "Primary" : "Principal"} className="hidden items-center gap-7 text-[13px] font-medium lg:flex">
           {links.map((link) => (
             <a key={link.href} href={link.href} className="transition hover:text-cyan">{link.label}</a>
           ))}
@@ -44,7 +46,7 @@ export function SiteHeader({
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-controls="menu-movil"
-          aria-label="Abrir menú"
+          aria-label={locale === "en" ? "Open menu" : "Abrir menú"}
           className="lg:hidden"
         >
           <Menu aria-hidden="true" />
@@ -52,7 +54,7 @@ export function SiteHeader({
       </div>
 
       {open && (
-        <nav id="menu-movil" aria-label="Principal" className="mx-auto mt-2 flex max-w-7xl flex-col gap-4 rounded-2xl bg-white p-6 shadow-xl lg:hidden">
+        <nav id="menu-movil" aria-label={locale === "en" ? "Primary" : "Principal"} className="mx-auto mt-2 flex max-w-7xl flex-col gap-4 rounded-2xl bg-white p-6 shadow-xl lg:hidden">
           {links.map((link) => (
             <a key={link.href} href={link.href} onClick={() => setOpen(false)}>{link.label}</a>
           ))}
