@@ -7,12 +7,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: siteUrl, lastModified, changeFrequency: "monthly", priority: 1 },
-    ...portalRoutes.map((route) => ({
-      url: `${siteUrl}${route.href}`,
+    ...portalRoutes
+      .filter((route) => !route.external)
+      .map((route) => ({
+        url: `${siteUrl}${route.href}`,
+        lastModified,
+        changeFrequency: "monthly" as const,
+        priority: route.complete ? 0.9 : 0.5,
+      })),
+    ...["/privacidad", "/terminos", "/licencias"].map((path) => ({
+      url: `${siteUrl}${path}`,
       lastModified,
-      changeFrequency: "monthly" as const,
-      // Completed spokes outrank the shells still in preparation.
-      priority: route.complete ? 0.9 : 0.5,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
     })),
   ];
 }

@@ -1,6 +1,6 @@
 import { Logo } from "../Logo";
-import { academyUrl, officeAddressLines, officeHours, phones } from "@/lib/config/contact";
-import { portalRoutes } from "@/lib/config/routes";
+import { officeAddressLines, officeHours, phones } from "@/lib/config/contact";
+import { legalRoutes, portalRoutes } from "@/lib/config/routes";
 
 /** Shared footer for every route. Carries the office details and portal map. */
 export function SiteFooter() {
@@ -51,14 +51,15 @@ export function SiteFooter() {
             <ul className="mt-4 flex flex-col gap-1.5 text-xs text-white/55">
               {portalRoutes.map((route) => (
                 <li key={route.id}>
-                  <a href={route.href} className="transition hover:text-white">{route.label}</a>
+                  <a
+                    href={route.href}
+                    className="transition hover:text-white"
+                    {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  >
+                    {route.label}{route.external ? " ↗" : ""}
+                  </a>
                 </li>
               ))}
-              <li>
-                <a href={academyUrl} target="_blank" rel="noopener noreferrer" className="transition hover:text-white">
-                  Academia Alleanza ↗
-                </a>
-              </li>
             </ul>
           </div>
         </div>
@@ -66,9 +67,11 @@ export function SiteFooter() {
         <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-[11px] text-white/40 md:flex-row md:items-center md:justify-between">
           <p>© {new Date().getFullYear()} Alleanza Insurance</p>
           <div className="flex flex-wrap gap-6">
-            <a href="#">Privacidad</a>
-            <a href="#">Términos</a>
-            <a href="#">Licencias</a>
+            {legalRoutes.map((route) => (
+              <a key={route.href} href={route.href} className="transition hover:text-white">
+                {route.label}
+              </a>
+            ))}
           </div>
         </div>
       </div>

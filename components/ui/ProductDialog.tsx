@@ -4,7 +4,7 @@ import { ArrowRight, X } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Product } from "@/lib/content/products";
-import { policyDisclosure } from "@/lib/content/products";
+import { policyDisclosures } from "@/lib/content/products";
 
 type ProductDialogProps = {
   product: Product | null;
@@ -109,7 +109,7 @@ export function ProductDialog({ product, onClose }: ProductDialogProps) {
 
           <section className="mt-6 rounded-2xl border border-navy/10 p-6" aria-labelledby={`${titleId}-disclosure`}>
             <h3 id={`${titleId}-disclosure`} className="text-sm font-bold">Divulgación de la póliza</h3>
-            <p className="mt-3 text-xs leading-relaxed text-navy/55">{policyDisclosure}</p>
+            <p className="mt-3 text-xs leading-relaxed text-navy/55">{policyDisclosures[product.line]}</p>
           </section>
 
           <div className="mt-8 rounded-2xl bg-navy p-6 text-white md:flex md:items-center md:justify-between md:gap-8">

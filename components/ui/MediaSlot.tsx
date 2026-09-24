@@ -1,5 +1,6 @@
 "use client";
 
+import { useReducedMotion } from "framer-motion";
 import type { ResolvedMedia } from "@/lib/media";
 
 /**
@@ -21,12 +22,25 @@ export function MediaSlot({
   label?: string;
   priority?: boolean;
 }) {
+  const reduceMotion = useReducedMotion();
+
   if (media.video) {
+    if (reduceMotion && media.image) {
+      return (
+        // eslint-disable-next-line @next/next/no-img-element -- local asset, sized by its container
+        <img
+          src={media.image}
+          alt={media.description}
+          loading={priority ? "eager" : "lazy"}
+          className={`h-full w-full object-cover ${className}`}
+        />
+      );
+    }
     return (
       <video
         className={`h-full w-full object-cover ${className}`}
         poster={media.image ?? undefined}
-        autoPlay
+        autoPlay={!reduceMotion}
         muted
         loop
         playsInline

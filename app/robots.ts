@@ -1,17 +1,12 @@
 import type { MetadataRoute } from "next";
-import { siteUrl } from "@/lib/config/site";
+import { isProductionDeploy, siteUrl } from "@/lib/config/site";
 
 /**
- * Preview and development deployments must not be indexed: duplicate copies of
- * the site competing with production is an SEO problem, and preview URLs are not
- * meant to be public entry points.
+ * Preview, development, and local production builds must not be indexed.
+ * HTML also carries noindex unless VERCEL_ENV is production (see app/layout.tsx).
  */
-const isProduction = process.env.VERCEL_ENV
-  ? process.env.VERCEL_ENV === "production"
-  : process.env.NODE_ENV === "production";
-
 export default function robots(): MetadataRoute.Robots {
-  if (!isProduction) {
+  if (!isProductionDeploy) {
     return { rules: [{ userAgent: "*", disallow: "/" }] };
   }
 

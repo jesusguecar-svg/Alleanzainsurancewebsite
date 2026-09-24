@@ -5,7 +5,7 @@ import { useReveal } from "@/lib/motion";
 import { MediaSlot } from "../ui/MediaSlot";
 import type { ResolvedMedia } from "@/lib/media";
 
-const concepts = [
+const healthConcepts = [
   {
     term: "Prima",
     plain: "Lo que pagas cada mes",
@@ -38,21 +38,36 @@ const concepts = [
   },
 ];
 
-export function CoverageConceptsSection({ media }: { media: ResolvedMedia }) {
+export type CoverageConcept = { term: string; plain: string; detail: string };
+
+export function CoverageConceptsSection({
+  media,
+  eyebrow = "Entiende tu plan",
+  heading = "Las palabras del seguro, en español claro.",
+  intro = "Deducible, copago, coaseguro, máximo de bolsillo. Son las palabras que deciden cuánto pagas en realidad, y casi nunca te las explican con calma. Aquí empezamos por ahí.",
+  concepts = healthConcepts,
+  mediaLabel = "Visual de tarjeta de seguro: deducible, copago y máximo de bolsillo.",
+  footnote = "Definiciones generales con fines informativos. Los términos exactos, montos y condiciones los establece cada plan y deben confirmarse con la compañía aseguradora o el Mercado de Salud según corresponda.",
+}: {
+  media: ResolvedMedia;
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  concepts?: CoverageConcept[];
+  mediaLabel?: string;
+  footnote?: string;
+}) {
   const reveal = useReveal({ y: 40 });
 
   return (
     <section id="conceptos" className="bg-white px-5 py-28 md:py-40">
       <div className="mx-auto max-w-7xl">
         <motion.div {...reveal} className="max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">Entiende tu plan</p>
+          <p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">{eyebrow}</p>
           <h2 className="mt-5 font-display text-5xl font-bold tracking-tight md:text-6xl">
-            Las palabras del seguro, en español claro.
+            {heading}
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-navy/60">
-            Deducible, copago, coaseguro, máximo de bolsillo. Son las palabras que deciden cuánto
-            pagas en realidad, y casi nunca te las explican con calma. Aquí empezamos por ahí.
-          </p>
+          <p className="mt-6 text-lg leading-relaxed text-navy/60">{intro}</p>
         </motion.div>
 
         <div className="mt-14 grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-start">
@@ -71,16 +86,12 @@ export function CoverageConceptsSection({ media }: { media: ResolvedMedia }) {
           {/* Media slot: /media/health/coverage-life-health-card.webp */}
           <motion.div {...reveal} className="overflow-hidden rounded-[2rem] border border-navy/10 bg-mist">
             <div className="aspect-[4/5] w-full">
-              <MediaSlot media={media} label="Visual de tarjeta de seguro: deducible, copago y máximo de bolsillo." />
+              <MediaSlot media={media} label={mediaLabel} />
             </div>
           </motion.div>
         </div>
 
-        <p className="mt-10 text-[11px] leading-relaxed text-navy/45">
-          Definiciones generales con fines informativos. Los términos exactos, montos y condiciones
-          los establece cada plan y deben confirmarse con la compañía aseguradora o el Mercado de
-          Salud según corresponda.
-        </p>
+        <p className="mt-10 text-[11px] leading-relaxed text-navy/45">{footnote}</p>
       </div>
     </section>
   );

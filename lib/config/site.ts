@@ -24,3 +24,9 @@ export const siteUrl = resolveSiteUrl();
 
 /** True once a real production domain is configured, rather than the local fallback. */
 export const hasPublicSiteUrl = siteUrl.startsWith("https://");
+
+/**
+ * Only the Vercel production deployment may be indexed. Preview, development,
+ * and a local `next start` copy are noindex even when NODE_ENV is production.
+ */
+export const isProductionDeploy = process.env.VERCEL_ENV === "production";

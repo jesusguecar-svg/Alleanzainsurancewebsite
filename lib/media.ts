@@ -14,7 +14,13 @@ export type MediaSlotId =
   | "health-concepts"
   | "health-coverage-aca"
   | "health-process"
-  | "health-consultation";
+  | "health-consultation"
+  | "life-hero"
+  | "life-concepts"
+  | "life-process"
+  | "property-hero"
+  | "property-concepts"
+  | "property-process";
 
 type MediaDefinition = {
   /** Poster/still image, relative to /public. */
@@ -47,6 +53,32 @@ export const mediaSlots: Record<MediaSlotId, MediaDefinition> = {
   "health-consultation": {
     image: "/media/health/contact-remote-consultation.webp",
     description: "Consulta remota con un agente de seguros con licencia.",
+  },
+  "life-hero": {
+    image: "/media/life/hero-family.webp",
+    video: "/media/life/hero-family.mp4",
+    description: "Orientación de seguro de vida en español, en familia.",
+  },
+  "life-concepts": {
+    image: "/media/life/policy-terms.webp",
+    description: "Póliza de vida con beneficio, beneficiario y prima.",
+  },
+  "life-process": {
+    image: "/media/life/process-clarity.webp",
+    description: "Proceso para comparar modalidades de seguro de vida.",
+  },
+  "property-hero": {
+    image: "/media/property/hero-home-auto.webp",
+    video: "/media/property/hero-home-auto.mp4",
+    description: "Orientación de seguro de hogar y de auto en español.",
+  },
+  "property-concepts": {
+    image: "/media/property/policy-terms.webp",
+    description: "Póliza de propiedad con deducible, límite y exclusiones.",
+  },
+  "property-process": {
+    image: "/media/property/process-clarity.webp",
+    description: "Proceso para revisar una póliza de hogar o de auto.",
   },
 };
 

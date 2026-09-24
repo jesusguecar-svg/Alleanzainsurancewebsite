@@ -1,33 +1,38 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/PlaceholderPage";
+import PropertyLanding from "@/components/PropertyLanding";
+import { resolveMedia } from "@/lib/media";
 
 export const metadata: Metadata = {
-  title: "Seguros de propiedad y riesgos (P&C) | Alleanza Insurance",
+  title: "Seguro de hogar, auto e inquilinos en español | Alleanza Insurance",
   description:
-    "Cobertura para propiedad y riesgos cotidianos, explicada en español. Orientación de un agente de seguros con licencia sobre qué revisar antes de contratar.",
+    "Seguro de propiedad explicado en español: hogar, auto, inquilinos y responsabilidad civil. Qué suele cubrir cada póliza, qué deducible aplica y qué conviene leer antes de contratar.",
+  keywords: [
+    "seguro de hogar",
+    "seguro de auto",
+    "seguro para inquilinos",
+    "responsabilidad civil",
+    "seguro de propiedad en español",
+    "seguro de casa Texas",
+    "seguro de carro en español",
+  ],
   alternates: { canonical: "/property-casualty" },
   openGraph: {
-    type: "website", locale: "es_US", url: "/property-casualty", siteName: "Alleanza Insurance",
-    title: "Propiedad y riesgos | Alleanza Insurance",
-    description: "Cobertura para propiedad y riesgos cotidianos, explicada en español.",
+    type: "website",
+    locale: "es_US",
+    url: "/property-casualty",
+    siteName: "Alleanza Insurance",
+    title: "Tu casa y tu auto merecen claridad. Nosotros te los explicamos.",
+    description:
+      "Hogar, auto, inquilinos y responsabilidad civil, explicados en español por un agente con licencia.",
   },
 };
 
 export default function Page() {
-  return (
-    <PlaceholderPage
-      icon="property-casualty"
-      eyebrow="Propiedad y riesgos cotidianos"
-      title="Cobertura para lo que ya construiste."
-      intro="Estamos preparando esta sección para explicar, con el mismo cuidado que el resto del sitio, las coberturas de propiedad y responsabilidad disponibles y qué conviene revisar antes de contratar."
-      points={[
-        "Qué distingue una cobertura de propiedad de una de responsabilidad.",
-        "Qué suele quedar excluido y por qué conviene leerlo antes de firmar.",
-        "Cómo influyen la ubicación y las características del inmueble.",
-        "Qué documentación pide normalmente la compañía aseguradora.",
-      ]}
-      primaryCta={{ href: "/health#contacto", label: "Hablar con un agente con licencia" }}
-      secondaryCta={{ href: "/", label: "Ver todas las áreas" }}
-    />
-  );
+  const media = {
+    hero: resolveMedia("property-hero"),
+    concepts: resolveMedia("property-concepts"),
+    process: resolveMedia("property-process"),
+  };
+
+  return <PropertyLanding media={media} />;
 }

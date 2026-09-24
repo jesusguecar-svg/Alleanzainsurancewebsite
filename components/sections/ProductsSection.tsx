@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
-import { Activity, ArrowRight, BedDouble, HeartPulse, Landmark, Lock, ShieldAlert, Sparkles, Stethoscope, Users, type LucideIcon } from "lucide-react";
+import { Activity, ArrowRight, BedDouble, Car, HeartHandshake, HeartPulse, Home, Hourglass, KeyRound, Landmark, Lock, Scale, Shield, ShieldAlert, Sparkles, Stethoscope, type LucideIcon } from "lucide-react";
 import { ProtectionWorld, type ProtectionState } from "../cinematic";
 import { additionalHealthProducts, featuredHealthProducts, type Product, type ProductId } from "@/lib/content/products";
 import { ease, useReveal } from "@/lib/motion";
@@ -15,7 +15,13 @@ const icons: Record<ProductId, LucideIcon> = {
   "aca-obamacare": Landmark,
   "seguro-medico": Activity,
   "seguro-privado": Lock,
-  "seguro-vida": Users,
+  "vida-temporal": Hourglass,
+  "vida-permanente": Shield,
+  "gastos-finales": HeartHandshake,
+  hogar: Home,
+  auto: Car,
+  inquilinos: KeyRound,
+  responsabilidad: Scale,
 };
 
 /** Only the featured products have a cinematic sequence behind the card. */
@@ -77,6 +83,9 @@ type ProductsSectionProps = {
   eyebrow?: string;
   heading?: string;
   intro?: string;
+  featuredLabel?: string;
+  additionalHeading?: string;
+  footnote?: string;
 };
 
 export function ProductsSection({
@@ -86,6 +95,9 @@ export function ProductsSection({
   eyebrow = "Nuestras coberturas",
   heading = "Compara tus opciones de salud.",
   intro = "Desde el Mercado de Salud hasta coberturas complementarias que acompañan un diagnóstico. Te explicamos cada opción en español, con sus alcances y sus límites.",
+  featuredLabel = "Protección esencial",
+  additionalHeading = "También te acompañamos con",
+  footnote = "Beneficios sujetos a términos, condiciones, limitaciones y exclusiones de la póliza. La disponibilidad y la elegibilidad varían según el estado y la compañía aseguradora.",
 }: ProductsSectionProps) {
   const reveal = useReveal();
 
@@ -98,7 +110,7 @@ export function ProductsSection({
           <p className="mt-6 text-lg leading-relaxed text-navy/60">{intro}</p>
         </motion.div>
 
-        <h3 className="sr-only">Protección esencial</h3>
+        <h3 className="sr-only">{featuredLabel}</h3>
         <div className="perspective mt-16 grid gap-6 md:grid-cols-3">
           {featured.map((product, i) => (
             <motion.div key={product.id} {...reveal} transition={{ duration: .8, delay: i * .1, ease }}>
@@ -107,18 +119,20 @@ export function ProductsSection({
           ))}
         </div>
 
-        <motion.div {...reveal} className="mt-20">
-          <h3 className="font-display text-3xl tracking-tight md:text-4xl font-semibold">También te acompañamos con</h3>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {additional.map((product, i) => (
-              <motion.div key={product.id} {...reveal} transition={{ duration: .7, delay: Math.min(i, 3) * .08, ease }}>
-                <CompactCard product={product} onSelect={onSelect} />
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        {additional.length > 0 && (
+          <motion.div {...reveal} className="mt-20">
+            <h3 className="font-display text-3xl tracking-tight md:text-4xl font-semibold">{additionalHeading}</h3>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {additional.map((product, i) => (
+                <motion.div key={product.id} {...reveal} transition={{ duration: .7, delay: Math.min(i, 3) * .08, ease }}>
+                  <CompactCard product={product} onSelect={onSelect} />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
-        <p className="mt-10 text-center text-[11px] text-navy/40">Beneficios sujetos a términos, condiciones, limitaciones y exclusiones de la póliza. La disponibilidad y la elegibilidad varían según el estado y la compañía aseguradora.</p>
+        <p className="mt-10 text-center text-[11px] text-navy/40">{footnote}</p>
       </div>
     </section>
   );

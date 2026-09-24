@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, Check, Clock, MapPin, Phone } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { StabilizationSequence } from "../cinematic";
-import { consentText, productOptions, validateContact, type FieldErrors } from "@/lib/content/contact";
+import { consentText, honeypotFieldName, optionsForLines, productOptions, validateContact, type FieldErrors } from "@/lib/content/contact";
+import type { Product } from "@/lib/content/products";
 import { officeAddressLines, officeHours, phones } from "@/lib/config/contact";
 import { useReveal } from "@/lib/motion";
 
@@ -13,7 +14,8 @@ type Status = "idle" | "submitting" | "success" | "error";
 const fieldClass =
   "mt-2 w-full rounded-2xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none transition focus:border-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy";
 
-export function ContactSection() {
+export function ContactSection({ lines }: { lines?: readonly Product["line"][] } = {}) {
+  const options = lines ? optionsForLines(lines) : productOptions;
   const reveal = useReveal({ y: 40 });
   const formId = useId();
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -36,7 +38,7 @@ export function ContactSection() {
       productId: String(data.get("productId") ?? ""),
       message: String(data.get("message") ?? ""),
       consent: data.get("consent") === "on",
-      website: String(data.get("website") ?? ""),
+      [honeypotFieldName]: String(data.get(honeypotFieldName) ?? ""),
     };
 
     const nextErrors = validateContact(payload);
@@ -157,7 +159,7 @@ export function ContactSection() {
                 <div>
                   <label htmlFor={fieldId("productId")} className="text-sm font-bold">¿Qué te interesa?</label>
                   <select id={fieldId("productId")} name="productId" defaultValue="" className={fieldClass}>
-                    {productOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                    {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                   </select>
                 </div>
 
@@ -169,8 +171,8 @@ export function ContactSection() {
 
                 {/* Honeypot: hidden from people, tempting to bots. */}
                 <div aria-hidden="true" className="absolute left-[-9999px] h-px w-px overflow-hidden">
-                  <label htmlFor={fieldId("website")}>No completes este campo</label>
-                  <input id={fieldId("website")} name="website" type="text" tabIndex={-1} autoComplete="off" />
+                  <label htmlFor={fieldId(honeypotFieldName)}>No completes este campo</label>
+                  <input id={fieldId(honeypotFieldName)} name={honeypotFieldName} type="text" tabIndex={-1} autoComplete="nope" />
                 </div>
 
                 <div>

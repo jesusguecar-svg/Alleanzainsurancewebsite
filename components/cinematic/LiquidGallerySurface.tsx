@@ -112,6 +112,7 @@ export function LiquidGallerySurface({ src, secondarySrc, kind, position, veloci
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reduceMotion) return;
     const canvas = canvasRef.current;
     const gl = canvas?.getContext("webgl2", { alpha: true, antialias: true });
     if (!canvas || !gl) return;
@@ -160,7 +161,7 @@ export function LiquidGallerySurface({ src, secondarySrc, kind, position, veloci
     const primaryTexture = createTexture(0);
     const secondaryTexture = createTexture(1);
     let primaryAspect = 1, secondaryAspect = 1, primaryReady = false, secondaryReady = !secondarySrc;
-    let disposed = false, frame = 0, easedVelocity = 0;
+    let disposed = false, frame = 0, easedVelocity = 0, visible = true;
     const media: Array<HTMLImageElement | HTMLVideoElement> = [];
 
     const upload = (element: HTMLImageElement | HTMLVideoElement, texture: WebGLTexture | null, unit: number) => {
@@ -172,7 +173,7 @@ export function LiquidGallerySurface({ src, secondarySrc, kind, position, veloci
       if (mediaKind === "video") {
         const element = document.createElement("video");
         element.src = url; element.muted = true; element.loop = true; element.playsInline = true; element.preload = "auto";
-        element.addEventListener("loadeddata", () => { if (disposed) return; ready(element.videoWidth / element.videoHeight); void element.play(); }, { once: true });
+        element.addEventListener("loadeddata", () => { if (disposed) return; ready(element.videoWidth / element.videoHeight); if (visible) void element.play(); }, { once: true });
         element.load(); media.push(element); return;
       }
       const element = new Image();
@@ -192,9 +193,9 @@ export function LiquidGallerySurface({ src, secondarySrc, kind, position, veloci
     };
     const observer = new ResizeObserver(resize);
     observer.observe(canvas); resize();
-
     const render = () => {
-      easedVelocity += ((reduceMotion ? 0 : velocity.current) - easedVelocity) * 0.105;
+      if (!visible) { frame = 0; return; }
+      easedVelocity += (velocity.current - easedVelocity) * 0.105;
       const primary = media[0];
       if (primaryReady && primary instanceof HTMLVideoElement && primary.readyState >= 2) upload(primary, primaryTexture, 0);
       if (primaryReady && secondaryReady) {
@@ -210,12 +211,23 @@ export function LiquidGallerySurface({ src, secondarySrc, kind, position, veloci
       }
       frame = requestAnimationFrame(render);
     };
+    const visibility = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      media.forEach((element) => {
+        if (!(element instanceof HTMLVideoElement)) return;
+        if (visible) void element.play();
+        else element.pause();
+      });
+      if (visible && !frame) frame = requestAnimationFrame(render);
+    }, { threshold: 0.05 });
+    visibility.observe(canvas);
     frame = requestAnimationFrame(render);
     return () => {
-      disposed = true; cancelAnimationFrame(frame); observer.disconnect();
+      disposed = true; cancelAnimationFrame(frame); observer.disconnect(); visibility.disconnect();
       media.forEach((element) => { if (element instanceof HTMLVideoElement) { element.pause(); element.removeAttribute("src"); element.load(); } });
       gl.deleteTexture(primaryTexture); gl.deleteTexture(secondaryTexture); gl.deleteBuffer(buffer);
       gl.deleteProgram(program); gl.deleteShader(vertex); gl.deleteShader(fragment);
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [kind, position, reduceMotion, secondarySrc, src, velocity]);
 

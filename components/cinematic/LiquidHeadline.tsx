@@ -46,11 +46,12 @@ function shader(gl: WebGL2RenderingContext, type: number, source: string) {
   return compiled;
 }
 
-export function LiquidHeadline({ text, className = "" }: { text: string; className?: string }) {
+export function LiquidHeadline({ text, className = "", enabled = true }: { text: string; className?: string; enabled?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (!enabled || reduceMotion) return;
     const canvas = canvasRef.current;
     const gl = canvas?.getContext("webgl2", { alpha: true, antialias: true, premultipliedAlpha: true });
     if (!canvas || !gl) return;
@@ -139,6 +140,7 @@ export function LiquidHeadline({ text, className = "" }: { text: string; classNa
     canvas.addEventListener("touchcancel", onLeave, { passive: true });
 
     let frame = 0;
+    let visible = true;
     let glyphRects: Array<{ left: number; top: number; width: number; height: number }> = [];
     const glyphPress = textures.map(() => 0);
     const resize = () => {
@@ -164,8 +166,8 @@ export function LiquidHeadline({ text, className = "" }: { text: string; classNa
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
     resize();
-
     const render = (milliseconds: number) => {
+      if (!visible) { frame = 0; return; }
       pointer.x += (pointer.targetX - pointer.x) * .13;
       pointer.y += (pointer.targetY - pointer.y) * .13;
       pointer.strength += ((reduceMotion ? 0 : pointer.targetStrength) - pointer.strength) * .16;
@@ -197,11 +199,17 @@ export function LiquidHeadline({ text, className = "" }: { text: string; classNa
       canvas.parentElement?.classList.add("is-webgl-ready");
       frame = requestAnimationFrame(render);
     };
+    const visibility = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible && !frame) frame = requestAnimationFrame(render);
+    }, { threshold: 0.05 });
+    visibility.observe(canvas);
     frame = requestAnimationFrame(render);
     return () => {
       cancelAnimationFrame(frame);
       canvas.parentElement?.classList.remove("is-webgl-ready");
       observer.disconnect();
+      visibility.disconnect();
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerup", onPointerUp);
@@ -216,8 +224,9 @@ export function LiquidHeadline({ text, className = "" }: { text: string; classNa
       gl.deleteProgram(program);
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
-  }, [reduceMotion, text]);
+  }, [enabled, reduceMotion, text]);
 
   return <div className={`liquid-headline ${className}`}><span className="liquid-headline-fallback" aria-hidden="true">{text}</span><canvas ref={canvasRef} aria-hidden="true"/><span className="sr-only">{text}</span></div>;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, ArrowRight, PhoneCall, ShieldCheck, Video } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { HeroSequence } from "./cinematic";
@@ -47,11 +47,12 @@ export default function HealthLanding({ media }: { media: HealthMedia }) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const closeProduct = useCallback(() => setSelectedProduct(null), []);
 
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end start"] });
-  const copyY = useTransform(scrollYProgress, [0, 1], [0, 180]);
-  const sceneY = useTransform(scrollYProgress, [0, 1], [0, 320]);
-  const sceneScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]);
-  const fade = useTransform(scrollYProgress, [0, .8], [1, 0]);
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : 180]);
+  const sceneY = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : 320]);
+  const sceneScale = useTransform(scrollYProgress, [0, 1], [1, reduceMotion ? 1 : 1.18]);
+  const fade = useTransform(scrollYProgress, [0, .8], [1, reduceMotion ? 1 : 0]);
 
   return (
     <main>
@@ -152,7 +153,7 @@ export default function HealthLanding({ media }: { media: HealthMedia }) {
 
       <FaqSection />
 
-      <ContactSection />
+      <ContactSection lines={["health", "life"]} />
 
       <SiteFooter />
 

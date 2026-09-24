@@ -2,14 +2,17 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, BookOpen, Building2, GraduationCap, LifeBuoy, TrendingUp, Wrench } from "lucide-react";
+import { companyFacts } from "@/lib/config/company";
 import { academyUrl } from "@/lib/config/contact";
 import { ease, useReveal } from "@/lib/motion";
 
 const benefits = [
   {
     icon: Building2,
-    title: "Acceso a varias compañías",
-    copy: "Trabajamos con distintos proveedores, así que puedes ofrecer más de una alternativa y encontrar la que realmente le sirva a cada familia.",
+    title: companyFacts.carrierRelationships.verified ? "Acceso a varias compañías" : "Orientación según cada familia",
+    copy: companyFacts.carrierRelationships.verified
+      ? "Trabajamos con distintos proveedores, así que puedes ofrecer más de una alternativa y encontrar la que realmente le sirva a cada familia."
+      : "Acompañas a cada familia según su situación, con el respaldo de un equipo que te ayuda a explicar productos, límites y el siguiente paso.",
   },
   {
     icon: LifeBuoy,

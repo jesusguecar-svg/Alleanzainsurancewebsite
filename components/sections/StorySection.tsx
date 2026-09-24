@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 import { useReveal } from "@/lib/motion";
 
 /**
@@ -8,7 +9,28 @@ import { useReveal } from "@/lib/motion";
  * brandbook's tone rule: no drama, no fear, no commercial pressure — just the
  * ordinary experience of not being explained anything.
  */
-export function StorySection() {
+const healthParagraphs: [ReactNode, ReactNode] = [
+  <>
+    Muchas familias firmaron lo que les pusieron enfrente, sin saber qué era un deducible ni
+    qué quedaba fuera. Otras dejaron pasar la inscripción porque nadie les explicó las fechas
+    a tiempo, o supusieron que no calificaban para nada.
+  </>,
+  <>
+    No es falta de interés. Es que la información llega en inglés, con prisa y en lenguaje
+    técnico. <strong className="font-semibold text-white">Nosotros empezamos por la conversación</strong>,
+    en tu idioma y a tu ritmo, antes de hablar de ningún plan.
+  </>,
+];
+
+export function StorySection({
+  eyebrow = "Pero esto no fue siempre así",
+  heading = "Durante años, entender un seguro dependía de tener a alguien que te lo tradujera.",
+  paragraphs = healthParagraphs,
+}: {
+  eyebrow?: string;
+  heading?: string;
+  paragraphs?: [ReactNode, ReactNode];
+}) {
   const reveal = useReveal({ y: 40 });
 
   return (
@@ -16,23 +38,15 @@ export function StorySection() {
       <div className="absolute left-[-8%] top-1/3 h-96 w-96 rounded-full bg-cyan/10 blur-[130px]" aria-hidden="true" />
       <div className="relative mx-auto max-w-4xl">
         <motion.div {...reveal}>
-          <p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">Pero esto no fue siempre así</p>
+          <p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">{eyebrow}</p>
           <h2 className="mt-5 font-display text-4xl font-bold leading-tight tracking-tight md:text-6xl">
-            Durante años, entender un seguro dependía de tener a alguien que te lo tradujera.
+            {heading}
           </h2>
         </motion.div>
 
         <motion.div {...reveal} className="mt-10 grid gap-6 text-lg leading-relaxed text-white/65 md:grid-cols-2">
-          <p>
-            Muchas familias firmaron lo que les pusieron enfrente, sin saber qué era un deducible ni
-            qué quedaba fuera. Otras dejaron pasar la inscripción porque nadie les explicó las fechas
-            a tiempo, o supusieron que no calificaban para nada.
-          </p>
-          <p>
-            No es falta de interés. Es que la información llega en inglés, con prisa y en lenguaje
-            técnico. <strong className="font-semibold text-white">Nosotros empezamos por la conversación</strong>,
-            en tu idioma y a tu ritmo, antes de hablar de ningún plan.
-          </p>
+          <p>{paragraphs[0]}</p>
+          <p>{paragraphs[1]}</p>
         </motion.div>
       </div>
     </section>

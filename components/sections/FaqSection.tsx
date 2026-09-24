@@ -2,13 +2,17 @@
 
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
+import { companyFacts } from "@/lib/config/company";
 import { useReveal } from "@/lib/motion";
 
-const faqs = [
+export type FaqItem = { question: string; answer: string };
+
+const healthFaqs: FaqItem[] = [
   {
     question: "¿Por qué elegir Alleanza?",
-    answer:
-      "Porque explicamos las coberturas en español, sin apuro y sin letra pequeña en la conversación. Trabajamos con distintas compañías, así que podemos mostrarte varias opciones y sus diferencias en lugar de un solo camino. La decisión siempre es tuya, y un agente con licencia te acompaña antes, durante y después de solicitar.",
+    answer: companyFacts.carrierRelationships.verified
+      ? "Porque explicamos las coberturas en español, sin apuro y sin letra pequeña en la conversación. Trabajamos con distintas compañías, así que podemos mostrarte varias opciones y sus diferencias en lugar de un solo camino. La decisión siempre es tuya, y un agente con licencia te acompaña antes, durante y después de solicitar."
+      : "Porque explicamos las coberturas en español, sin apuro y sin letra pequeña en la conversación. Un agente con licencia te muestra las opciones disponibles para tu caso y te acompaña antes, durante y después de solicitar. La decisión siempre es tuya.",
   },
   {
     question: "¿Qué limitaciones tienen las pólizas?",
@@ -32,15 +36,23 @@ const faqs = [
   },
 ];
 
-export function FaqSection() {
+export function FaqSection({
+  faqs = healthFaqs,
+  eyebrow = "Preguntas frecuentes",
+  heading = "Lo que suelen preguntarnos.",
+}: {
+  faqs?: FaqItem[];
+  eyebrow?: string;
+  heading?: string;
+} = {}) {
   const reveal = useReveal({ y: 40 });
 
   return (
     <section id="preguntas" className="bg-mist px-5 py-28 md:py-40">
       <div className="mx-auto max-w-4xl">
         <motion.div {...reveal} className="max-w-2xl">
-          <p className="text-xs font-bold uppercase tracking-[.22em] text-cyan">Preguntas frecuentes</p>
-          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-6xl font-bold">Lo que suelen preguntarnos.</h2>
+          <p className="text-xs font-bold uppercase tracking-[.22em] text-cyan">{eyebrow}</p>
+          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-6xl font-bold">{heading}</h2>
         </motion.div>
 
         <motion.div {...reveal} className="mt-12 flex flex-col gap-3">

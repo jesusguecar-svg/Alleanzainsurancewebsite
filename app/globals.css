@@ -89,6 +89,9 @@ body { margin: 0; color: var(--navy); background: #FFFFFF; overflow-x: hidden; f
 .gallery-current strong { font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
 .gallery-thumb { position: relative; display: block; width: 44px; height: 44px; flex: 0 0 auto; overflow: hidden; border-radius: 50%; }
 .gallery-hint { position: absolute; z-index: 50; right: clamp(20px,4vw,64px); bottom: 31px; font-size: 9px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; }
+.gallery-legal { position: absolute; z-index: 50; left: clamp(20px,4vw,64px); bottom: 31px; display: flex; gap: 14px; font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.gallery-legal a { color: inherit; opacity: .48; }
+.gallery-legal a:hover { opacity: 1; }
 .mobile-story, .mobile-scene-index, .mobile-gallery-label { display: none; }
 
 @media (max-width: 767px) {
@@ -149,4 +152,5 @@ body { margin: 0; color: var(--navy); background: #FFFFFF; overflow-x: hidden; f
   .gallery-current { min-width: 156px; height: 54px; padding-right: 10px; border-radius: 16px; }
   .gallery-enter { width: 54px; height: 54px; }
   .gallery-hint { display: block; right: -2px; bottom: 45%; color: rgba(6,20,49,.52); font-size: 7px; letter-spacing: .22em; writing-mode: vertical-rl; }
+  .gallery-legal { left: 12px; bottom: auto; top: 58px; gap: 10px; font-size: 8px; }
 }

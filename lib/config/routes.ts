@@ -34,7 +34,7 @@ export const portalRoutes: PortalRoute[] = [
     label: "Vida",
     title: "Vida",
     description: "Protección financiera para tu familia.",
-    complete: false,
+    complete: true,
   },
   {
     id: "property-casualty",
@@ -42,15 +42,16 @@ export const portalRoutes: PortalRoute[] = [
     label: "Propiedad",
     title: "Propiedad",
     description: "Cobertura para propiedad y riesgos cotidianos.",
-    complete: false,
+    complete: true,
   },
   {
     id: "academy",
-    href: "/academy",
+    href: academyUrl,
     label: "Academia",
     title: "Academia",
     description: "Formación y recursos para crecer.",
-    complete: false,
+    external: true,
+    complete: true,
   },
   {
     id: "work",
@@ -71,6 +72,12 @@ export const portalRoutes: PortalRoute[] = [
 ];
 
 export const academyExternalUrl = academyUrl;
+
+export const legalRoutes = [
+  { href: "/privacidad", label: "Privacidad", labelEn: "Privacy" },
+  { href: "/terminos", label: "Términos", labelEn: "Terms" },
+  { href: "/licencias", label: "Licencias", labelEn: "Licenses" },
+] as const;
 
 /** Navigation shown in the header on every route except the health landing. */
 export const portalNavLinks = portalRoutes.map(({ href, label }) => ({ href, label }));

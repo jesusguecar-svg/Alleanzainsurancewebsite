@@ -20,6 +20,8 @@ import { useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { SiteHeader, type NavLink } from "./layout/SiteHeader";
 import { phones } from "@/lib/config/contact";
+import { legalRoutes } from "@/lib/config/routes";
+import { honeypotFieldName } from "@/lib/content/contact";
 import { ease, useReveal } from "@/lib/motion";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -73,8 +75,8 @@ function EmployerInquiryForm() {
       employees: String(data.get("employees") ?? ""),
       needs: String(data.get("needs") ?? "").trim(),
       consent: data.get("consent") === "on",
-      website: String(data.get("website") ?? ""),
     };
+    const honeypotValue = String(data.get(honeypotFieldName) ?? "");
     const nextErrors: FormErrors = {};
     if (values.name.length < 2) nextErrors.name = "Please enter your name.";
     if (values.company.length < 2) nextErrors.company = "Please enter your organization.";
@@ -115,12 +117,31 @@ function EmployerInquiryForm() {
           productId: "",
           message,
           consent: values.consent,
-          website: values.website,
+          [honeypotFieldName]: honeypotValue,
         }),
       });
-      if (!response.ok) throw new Error("Submission failed");
-      setStatus("success");
-      formRef.current?.reset();
+      if (response.ok) {
+        setStatus("success");
+        formRef.current?.reset();
+        return;
+      }
+      const body = await response.json().catch(() => null);
+      if (response.status === 422 && body?.errors) {
+        const next: FormErrors = {};
+        if (body.errors.name) next.name = body.errors.name;
+        if (body.errors.email) next.email = body.errors.email;
+        if (body.errors.phone) next.phone = body.errors.phone;
+        if (body.errors.consent) next.consent = body.errors.consent;
+        setErrors(next);
+        setStatus("idle");
+        return;
+      }
+      setStatus("error");
+      setFormError(
+        response.status === 503
+          ? "This form is not available yet. Please call us or try again later."
+          : "We couldn't send your request. Please call us or try again in a moment.",
+      );
     } catch {
       setStatus("error");
       setFormError("We couldn't send your request. Please call us or try again in a moment.");
@@ -153,7 +174,7 @@ function EmployerInquiryForm() {
         <label className="text-sm font-semibold">Phone<input className={fieldClass} name="phone" type="tel" autoComplete="tel" aria-invalid={!!errors.phone} required />{errors.phone && <span className="mt-1.5 block text-xs font-medium text-navy/60">{errors.phone}</span>}</label>
         <label className="text-sm font-semibold sm:col-span-2">Approximate workforce size<select className={fieldClass} name="employees" defaultValue="" aria-invalid={!!errors.employees} required><option value="" disabled>Select one</option><option>2–24 employees</option><option>25–49 employees</option><option>50–99 employees</option><option>100–249 employees</option><option>250+ employees</option></select>{errors.employees && <span className="mt-1.5 block text-xs font-medium text-navy/60">{errors.employees}</span>}</label>
         <label className="text-sm font-semibold sm:col-span-2">What would you like to improve? <span className="font-normal text-navy/45">(optional)</span><textarea className={`${fieldClass} resize-y`} name="needs" rows={3} maxLength={1200} placeholder="Retention, employee choice, enrollment support…" /></label>
-        <div className="absolute left-[-9999px]" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
+        <div className="absolute left-[-9999px]" aria-hidden="true"><label>Company fax<input name={honeypotFieldName} tabIndex={-1} autoComplete="nope" /></label></div>
         <label className="flex items-start gap-3 text-xs font-normal leading-relaxed text-navy/55 sm:col-span-2"><input className="mt-0.5 h-5 w-5 shrink-0 accent-navy" name="consent" type="checkbox" aria-invalid={!!errors.consent} required /><span>I authorize a licensed insurance agent to contact me by phone, text, or email about coverage options. I can ask to stop communications at any time.</span></label>
         {errors.consent && <p className="-mt-3 text-xs font-medium text-navy/60 sm:col-span-2">{errors.consent}</p>}
         <button className="group flex items-center justify-center gap-3 rounded-full bg-cyan px-7 py-4 text-sm font-semibold text-navy shadow-[0_14px_35px_rgba(4,192,254,.25)] transition hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60 sm:col-span-2" disabled={status === "submitting"} type="submit">{status === "submitting" ? "Sending…" : <>Request a benefits conversation <ArrowRight size={17} className="transition group-hover:translate-x-1" /></>}</button>
@@ -215,7 +236,7 @@ export default function EmployerLanding() {
 
       <section id="contact" className="relative overflow-hidden bg-mist px-5 py-24 md:py-36"><div className="absolute -left-52 top-10 h-[500px] w-[500px] rounded-full border border-navy/10" aria-hidden="true" /><div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-center"><motion.div {...reveal}><p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">A credible benefit starts with a clear plan</p><h2 className="mt-5 text-balance text-4xl font-bold leading-tight tracking-tight md:text-6xl">Let&apos;s talk about what would work for your team.</h2><p className="mt-6 max-w-lg text-lg leading-relaxed text-navy/60">Share a few details. We&apos;ll help you explore available options and decide whether supplemental benefits make sense for your organization.</p><div className="mt-9 flex items-center gap-4"><span className="grid h-11 w-11 place-items-center rounded-full bg-navy text-cyan"><Phone size={18} /></span><div><p className="text-xs font-medium text-navy/45">Prefer to call?</p><a className="font-semibold underline-offset-4 hover:underline" href={`tel:${phones[0].href}`}>{phones[0].label}</a></div></div></motion.div><motion.div {...reveal} transition={{ delay: .12, duration: .8, ease }} className="rounded-[2rem] bg-white p-7 shadow-[0_35px_80px_-45px_rgba(6,20,49,.45)] md:p-10"><EmployerInquiryForm /></motion.div></div></section>
 
-      <footer className="bg-navy px-5 py-12 text-white"><div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-end md:justify-between"><div><Logo light width={190} /><p className="mt-6 max-w-xl text-xs leading-relaxed text-white/40">Insurance products are subject to eligibility, availability, policy terms, exclusions, and limitations. A licensed insurance agent can explain options available for your organization.</p></div><div className="flex flex-wrap gap-6 text-xs text-white/55"><a className="hover:text-white" href="/">Alleanza home</a><a className="hover:text-white" href={`tel:${phones[0].href}`}>Call us</a><a className="hover:text-white" href="#contact">Contact</a></div></div><div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-[11px] text-white/35">© {new Date().getFullYear()} Alleanza Insurance</div></footer>
+      <footer className="bg-navy px-5 py-12 text-white"><div className="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-end md:justify-between"><div><Logo light width={190} /><p className="mt-6 max-w-xl text-xs leading-relaxed text-white/40">Insurance products are subject to eligibility, availability, policy terms, exclusions, and limitations. A licensed insurance agent can explain options available for your organization.</p></div><div className="flex flex-wrap gap-6 text-xs text-white/55"><a className="hover:text-white" href="/">Alleanza home</a><a className="hover:text-white" href={`tel:${phones[0].href}`}>Call us</a><a className="hover:text-white" href="#contact">Contact</a>{legalRoutes.map((route) => <a key={route.href} className="hover:text-white" href={route.href}>{route.labelEn}</a>)}</div></div><div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-[11px] text-white/35">© {new Date().getFullYear()} Alleanza Insurance</div></footer>
     </main>
   );
 }

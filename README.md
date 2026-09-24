@@ -31,9 +31,9 @@ Copia `.env.example` a `.env.local` y ajusta los valores.
 
 ## Despliegue
 
-El proyecto se despliega en Vercel desde la rama `main`. Los despliegues de
-`preview` se marcan como `noindex` automáticamente para que no compitan con
-producción en los buscadores.
+El proyecto se despliega en Vercel desde la rama `main`. Solo el entorno
+`VERCEL_ENV=production` se indexa: el HTML lleva `noindex` y `robots.txt`
+disallow en preview, desarrollo y un `next start` local.
 
 ## Contenido verificado
 

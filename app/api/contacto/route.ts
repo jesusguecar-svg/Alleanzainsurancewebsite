@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { validateContact, type ContactRequest } from "@/lib/content/contact";
+import { honeypotFieldName, validateContact, type ContactRequest } from "@/lib/content/contact";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,15 +22,17 @@ export async function POST(request: Request) {
     );
   }
 
-  let payload: Partial<ContactRequest> & { website?: string };
+  let payload: Partial<ContactRequest> & Record<string, unknown>;
   try {
     payload = await request.json();
   } catch {
     return NextResponse.json({ error: "Solicitud inválida." }, { status: 400 });
   }
 
-  // Honeypot: a hidden field real people never fill in.
-  if (payload.website) return NextResponse.json({ ok: true });
+  const honeypot = payload[honeypotFieldName];
+  if (typeof honeypot === "string" && honeypot.trim()) {
+    return NextResponse.json({ error: "Solicitud inválida." }, { status: 400 });
+  }
 
   const errors = validateContact(payload);
   if (Object.keys(errors).length > 0) {

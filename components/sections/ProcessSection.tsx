@@ -1,12 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ClipboardList, Headphones, Scale, Wallet } from "lucide-react";
+import { ClipboardList, Headphones, Scale, Wallet, type LucideIcon } from "lucide-react";
 import { ease, useReveal } from "@/lib/motion";
 import { MediaSlot } from "../ui/MediaSlot";
 import type { ResolvedMedia } from "@/lib/media";
 
-const steps = [
+const healthSteps: { icon: LucideIcon; title: string; copy: string }[] = [
   {
     icon: Headphones,
     title: "Escuchamos tu situación",
@@ -29,16 +29,28 @@ const steps = [
   },
 ];
 
-export function ProcessSection({ media }: { media: ResolvedMedia }) {
+export function ProcessSection({
+  media,
+  steps = healthSteps,
+  eyebrow = "Cómo trabajamos",
+  heading = "Cuatro pasos, sin prisa y sin compromiso.",
+  mediaLabel = "Visual del proceso de orientación paso a paso.",
+}: {
+  media: ResolvedMedia;
+  steps?: { icon: LucideIcon; title: string; copy: string }[];
+  eyebrow?: string;
+  heading?: string;
+  mediaLabel?: string;
+}) {
   const reveal = useReveal({ y: 40 });
 
   return (
     <section id="como" className="bg-mist px-5 py-28 md:py-40">
       <div className="mx-auto max-w-7xl">
         <motion.div {...reveal} className="max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">Cómo trabajamos</p>
+          <p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">{eyebrow}</p>
           <h2 className="mt-5 font-display text-5xl font-bold tracking-tight md:text-6xl">
-            Cuatro pasos, sin prisa y sin compromiso.
+            {heading}
           </h2>
         </motion.div>
 
@@ -66,7 +78,7 @@ export function ProcessSection({ media }: { media: ResolvedMedia }) {
           {/* Media slot: /media/health/process-clarity.webm (poster .webp) */}
           <motion.div {...reveal} className="overflow-hidden rounded-[2rem] border border-navy/10 bg-white">
             <div className="aspect-[3/4] w-full">
-              <MediaSlot media={media} label="Visual del proceso de orientación paso a paso." />
+              <MediaSlot media={media} label={mediaLabel} />
             </div>
           </motion.div>
         </div>

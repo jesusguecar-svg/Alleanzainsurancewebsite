@@ -30,9 +30,19 @@ export function SiteHeader({
         </a>
 
         <nav aria-label={locale === "en" ? "Primary" : "Principal"} className="hidden items-center gap-7 text-[13px] font-medium lg:flex">
-          {links.map((link) => (
-            <a key={link.href} href={link.href} className="transition hover:text-cyan">{link.label}</a>
-          ))}
+          {links.map((link) => {
+            const external = link.href.startsWith("http");
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                className="transition hover:text-cyan"
+                {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </nav>
 
         {cta && (
@@ -55,9 +65,19 @@ export function SiteHeader({
 
       {open && (
         <nav id="menu-movil" aria-label={locale === "en" ? "Primary" : "Principal"} className="mx-auto mt-2 flex max-w-7xl flex-col gap-4 rounded-2xl bg-white p-6 shadow-xl lg:hidden">
-          {links.map((link) => (
-            <a key={link.href} href={link.href} onClick={() => setOpen(false)}>{link.label}</a>
-          ))}
+          {links.map((link) => {
+            const external = link.href.startsWith("http");
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                {link.label}
+              </a>
+            );
+          })}
           {cta && <a href={cta.href} onClick={() => setOpen(false)} className="font-semibold text-cyan">{cta.label}</a>}
         </nav>
       )}
