@@ -1,0 +1,10 @@
+export const healthScenes = [
+  { id: "bills", name: "Las facturas", title: "La salud no debería convertirse en una deuda.", text: "Sin cobertura, los gastos médicos pueden recaer directamente en tu familia.", x: 29, y: 76, path: "M0 557 L672 681 Q710 712 669 748 Q494 864 0 941Z" },
+  { id: "loans", name: "Los préstamos", title: "Cuando pedir prestado parece la única salida.", text: "Una emergencia puede comprometer mucho más que tus ahorros.", x: 29, y: 55, path: "M0 380 L796 503 Q807 520 821 605 Q825 650 688 711 L0 556Z" },
+  { id: "help", name: "Pedir ayuda", title: "Cuidar de los tuyos. Y no saber cómo pagarlo.", text: "Depender de una colecta añade incertidumbre en un momento difícil.", x: 28, y: 35, path: "M0 174 L762 320 L799 503 L0 379Z" },
+  { id: "uncertainty", name: "La incertidumbre", title: "El peso de no estar preparado.", text: "Estos son escenarios posibles, no destinos inevitables. Hay otra forma de prepararte.", x: 29, y: 17, path: "M0 0 L692 121 Q715 125 720 150 L763 321 L0 172Z" },
+  { id: "medical", name: "Tu seguro médico", title: "Una tarjeta. Un plan que necesitas entender.", text: "Revisamos tu red médica, medicamentos, deducible y gastos de bolsillo.", x: 76, y: 78, path: "M1009 683 L1671 611 L1671 941 L1360 941 Q1090 850 1000 748 Q983 713 1009 683Z" },
+  { id: "benefits", name: "Un respaldo extra", title: "La vida sigue. Tu respaldo también importa.", text: "Explora beneficios complementarios ante accidentes, cáncer, derrame cerebral y hospitalización.", x: 75, y: 57, path: "M905 510 L1671 412 L1671 610 L1009 682 Q900 655 895 608Z" },
+  { id: "dental", name: "Dental y visión", title: "También se trata de vivir bien cada día.", text: "Comparamos opciones de dental y visión: redes, límites y períodos de espera.", x: 76, y: 36, path: "M975 311 L1671 191 L1671 411 L905 509 L941 343 Q944 323 975 311Z" },
+  { id: "family", name: "Tu familia", title: "Más claridad. Más momentos juntos.", text: "La tranquilidad empieza por saber qué tienes, qué falta y qué tiene sentido para ti.", x: 76, y: 17, path: "M1515 0 L1671 0 L1671 189 L975 310 L1019 141 Q1023 122 1040 116Z" },
+] as const;
