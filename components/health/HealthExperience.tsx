@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
-import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, ChevronDown, Eye, Heart, Menu, MessageCircle, Plus, ShieldCheck, Star, X } from "lucide-react";
+import { useState } from "react";
+import { useReducedMotion } from "framer-motion";
+import { ArrowRight, ArrowUpRight, Check, ChevronDown, Eye, Heart, Menu, MessageCircle, Plus, ShieldCheck, Star, X } from "lucide-react";
 import { Logo } from "../Logo";
 import { SiteFooter } from "../layout/SiteFooter";
 import { CoverageMap } from "./CoverageMap";
+import { CinematicHealthHero } from "./CinematicHealthHero";
 import { HealthContact, healthWhatsapp } from "./HealthContact";
 import { healthServices } from "@/lib/content/health";
 import type { GoogleReviews } from "@/lib/google-reviews";
@@ -22,11 +22,7 @@ export default function HealthExperience({ reviews, reviewsUrl }: { reviews: Goo
   const [service, setService] = useState(0);
   const [formService, setFormService] = useState("guidance");
   const [formState, setFormState] = useState("");
-  const hero = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end start"] });
-  const imageY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 95]);
-  const orbY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : -65]);
   const current = healthServices[service];
   const Icon = icons[current.icon];
   const googleUrl = reviews?.url || reviewsUrl || "https://www.google.com/maps/search/?api=1&query=Alleanza+Insurance+3424+Midcourt+Rd+Carrollton+TX";
@@ -42,17 +38,7 @@ export default function HealthExperience({ reviews, reviewsUrl }: { reviews: Goo
     <header className={s.header}><a href="/" aria-label="Alleanza Insurance — inicio"><Logo width={174} /></a><a className={s.headerCategory} href="/health">Salud <span>por Alleanza</span></a><nav className={s.desktopNav} aria-label="Navegación de salud">{links.map(link => <a key={link.href} href={link.href}>{link.label}</a>)}</nav><a href="#contacto" className={s.headerCta}>Hablemos <ArrowUpRight size={15} /></a><button type="button" className={s.menuButton} aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"} aria-expanded={menuOpen} aria-controls="health-menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button>{menuOpen && <nav id="health-menu" className={s.mobileNav} aria-label="Navegación móvil">{links.map(link => <a href={link.href} key={link.href} onClick={() => setMenuOpen(false)}>{link.label}<ArrowUpRight size={17} /></a>)}</nav>}</header>
 
     <main id="contenido">
-      <section className={s.hero} ref={hero} aria-labelledby="health-title">
-        <div className={s.heroCopy}><span className={s.eyebrow}><i className={s.statusDot} /> SALUD, CON ALGUIEN DE TU LADO</span><h1 id="health-title">La vida se vive<br /><em>mejor</em> con<br />tranquilidad<span className={s.titleDot}>.</span></h1><p>Tu salud merece más que una póliza.<br />Merece una alianza.</p><div className={s.heroActions}><a className={s.primaryButton} href="#contacto">Encuentra tu cobertura <ArrowUpRight size={19} /></a><a href="#coberturas" className={s.heroSecondary}>Conoce tus opciones <ArrowDown size={15} /></a></div><div className={s.heroAssurance}><span><Check size={13} /> En tu idioma</span><span><Check size={13} /> Sin compromiso</span><span><Check size={13} /> A tu lado</span></div></div>
-        <div className={s.heroArt}>
-          <div className={s.heroOrbit} aria-hidden="true" /><div className={s.heroOrbitInner} aria-hidden="true" />
-          <motion.div className={s.heroImage} style={{ y: imageY }}><Image src="/cinematic/people/salud.jpg" alt="Una madre y su hija abrazadas y sonriendo" fill priority sizes="(max-width: 700px) 90vw, 48vw" /><div className={s.imageCaption}><span>LO QUE MÁS IMPORTA</span><strong>Que sigas disfrutando<br />de estar juntos.</strong></div></motion.div>
-          <motion.div className={s.glassOrb} style={{ y: orbY }} aria-hidden="true"><ShieldCheck strokeWidth={.85} /><span className={s.orbGlint} /></motion.div>
-          <motion.div className={s.heroFloating} style={{ y: orbY }}><span className={s.floatingIcon}><Heart size={19} /></span><div><strong>Tu familia. Tu tranquilidad.</strong><span>Nosotros te acompañamos.</span></div><i className={s.statusDot} /></motion.div>
-          <span className={s.artFootnote}>PROTECCIÓN QUE SE SIENTE.</span>
-        </div>
-        <div className={s.heroBottom}><span>UN SEGURO PARA CADA HISTORIA</span><a href="#coberturas">Descubre la tuya <ArrowDown size={15} /></a><span>01 — 05</span></div>
-      </section>
+      <CinematicHealthHero onReview={() => toContact(undefined, "review")} onExplore={() => toContact(undefined, "guidance")} />
 
       <section id="coberturas" className={s.services} aria-labelledby="services-heading"><div className={s.sectionTop}><span className={s.eyebrow}>01 / PROTECCIÓN A TU MEDIDA</span><span className={s.sectionNote}>Hoy. Mañana. Contigo.</span></div><div className={s.servicesIntro}><h2 id="services-heading">No todas las vidas son iguales.<br /><em>Tu cobertura tampoco.</em></h2><p>Escuchamos tu historia. Comparamos tus opciones.<br />Y te ayudamos a decidir con claridad.</p></div>
         <div className={s.serviceTabs} role="tablist" aria-label="Tipos de cobertura">{healthServices.map((item, index) => <button type="button" key={item.id} id={`tab-${item.id}`} role="tab" aria-selected={service === index} aria-controls={`panel-${item.id}`} tabIndex={service === index ? 0 : -1} onClick={() => setService(index)} onKeyDown={event => { let next = index; if (event.key === "ArrowRight") next = (index + 1) % 4; else if (event.key === "ArrowLeft") next = (index + 3) % 4; else if (event.key === "Home") next = 0; else if (event.key === "End") next = 3; else return; event.preventDefault(); setService(next); document.getElementById(`tab-${healthServices[next].id}`)?.focus(); }}><span>0{index + 1}</span>{item.title}</button>)}</div>

@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.HEALTH_CONTACT_FROM;
   if (!key || !from) return NextResponse.json({ error: "El envío directo no está disponible en este momento. Puedes enviarnos tu solicitud por correo o WhatsApp." }, { status: 503 });
-  const service = healthServices.find(s => s.id === lead.service)?.title ?? "Orientación general";
+  const service = lead.service === "review" ? "Revisión de cobertura existente" : healthServices.find(s => s.id === lead.service)?.title ?? "Orientación general";
   try {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST", headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },

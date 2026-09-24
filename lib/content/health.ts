@@ -33,7 +33,7 @@ export function validateHealthLead(value: unknown): { lead?: HealthLead; error?:
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) return { error: "Revisa tu correo electrónico." };
   if (!/^[\d\s()+.-]{7,30}$/.test(lead.phone) || lead.phone.replace(/\D/g, "").length < 7) return { error: "Revisa tu teléfono." };
   if (!/^\d{2}$/.test(lead.state)) return { error: "Selecciona tu estado." };
-  if (lead.service !== "guidance" && !healthServices.some(s => s.id === lead.service)) return { error: "Selecciona una cobertura." };
+  if (!["guidance", "review"].includes(lead.service) && !healthServices.some(s => s.id === lead.service)) return { error: "Selecciona una cobertura." };
   if (!lead.consent) return { error: "Necesitamos tu autorización para contactarte." };
   if (v.company_fax_hp) return { error: "No pudimos procesar esta solicitud." };
   return { lead };
