@@ -3,7 +3,7 @@ import PropertyLanding from "@/components/PropertyLanding";
 import { resolveMedia } from "@/lib/media";
 
 export const metadata: Metadata = {
-  title: "Seguro de hogar, auto e inquilinos en español | Alleanza Insurance",
+  title: "Seguro de hogar, auto e inquilinos en español | Alleanza Insurance Corp.",
   description:
     "Seguro de propiedad explicado en español: hogar, auto, inquilinos y responsabilidad civil. Qué suele cubrir cada póliza, qué deducible aplica y qué conviene leer antes de contratar.",
   keywords: [
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_US",
     url: "/property-casualty",
-    siteName: "Alleanza Insurance",
+    siteName: "Alleanza Insurance Corp.",
     title: "Tu casa y tu auto merecen claridad. Nosotros te los explicamos.",
     description:
       "Hogar, auto, inquilinos y responsabilidad civil, explicados en español por un agente con licencia.",

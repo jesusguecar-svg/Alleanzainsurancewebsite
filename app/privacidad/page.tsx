@@ -3,9 +3,9 @@ import { LegalDocument } from "@/components/LegalDocument";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 
 export const metadata: Metadata = {
-  title: "Política de privacidad | Alleanza Insurance",
+  title: "Política de privacidad | Alleanza Insurance Corp.",
   description:
-    "Cómo Alleanza Insurance recopila, usa y comparte los datos personales que envías por el sitio, incluido el formulario de contacto.",
+    "Cómo Alleanza Insurance Corp. recopila, usa y comparte los datos personales que envías por el sitio, incluido el formulario de contacto.",
   alternates: { canonical: "/privacidad" },
 };
 
@@ -13,14 +13,14 @@ export default function Page() {
   return (
     <LegalDocument title="Política de privacidad" updated="16 de septiembre de 2026">
       <p>
-        Esta política describe cómo Alleanza Insurance (“Alleanza”, “nosotros”) trata la información
+        Esta política describe cómo Alleanza Insurance Corp. (“Alleanza”, “nosotros”) trata la información
         personal que recibimos a través de este sitio. No es un contrato de seguro ni un aviso de
         prácticas de una compañía aseguradora.
       </p>
 
       <h2>Quiénes somos</h2>
       <p>
-        Alleanza Insurance es una agencia de seguros con oficina en {officeAddressLines.join(", ")}.
+        Alleanza Insurance Corp. es una agencia de seguros con oficina en {officeAddressLines.join(", ")}.
         Para ejercer tus derechos o hacer una pregunta sobre tus datos, escríbenos por el{" "}
         <a href="/health#contacto">formulario de contacto</a> o llámanos al{" "}
         <a href={`tel:${phones[0].href}`}>{phones[0].label}</a>.

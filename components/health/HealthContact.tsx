@@ -8,7 +8,7 @@ import { phones } from "@/lib/config/contact";
 import states from "./us-states.json";
 import s from "./health.module.css";
 
-export const healthWhatsapp = `https://wa.me/${phones[0].href.replace(/\D/g, "")}?text=${encodeURIComponent("Hola, me gustaría recibir orientación sobre seguros de salud con Alleanza.")}`;
+export const healthWhatsapp = `https://wa.me/${phones[0].href.replace(/\D/g, "")}?text=${encodeURIComponent("Hola, me gustaría recibir orientación sobre seguros de salud con Alleanza Insurance Corp.")}`;
 
 export function HealthContact({ selectedState, onState, selectedService, onService }: { selectedState: string; onState: (value: string) => void; selectedService: string; onService: (value: string) => void }) {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -25,7 +25,7 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
     const lead = result.lead;
     const stateName = states.find(state => state.id === lead.state)?.name;
     const serviceName = lead.service === "review" ? "Revisión de cobertura existente" : healthServices.find(service => service.id === lead.service)?.title ?? "Orientación general";
-    setEmailDraft(`mailto:${healthEmail}?subject=${encodeURIComponent("Solicitud de asesoría de salud — Alleanza")}&body=${encodeURIComponent(`Nombre: ${lead.name}\nCorreo: ${lead.email}\nTeléfono: ${lead.phone}\nEstado: ${stateName}\nInterés: ${serviceName}\n\n${consentText}`)}`);
+    setEmailDraft(`mailto:${healthEmail}?subject=${encodeURIComponent("Solicitud de asesoría de salud — Alleanza Insurance Corp.")}&body=${encodeURIComponent(`Nombre: ${lead.name}\nCorreo: ${lead.email}\nTeléfono: ${lead.phone}\nEstado: ${stateName}\nInterés: ${serviceName}\n\n${consentText}`)}`);
     setStatus("sending"); setError("");
     try {
       const response = await fetch("/api/health/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(value), signal: AbortSignal.timeout(15000) });
@@ -36,7 +36,7 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
   }
 
   return <section id="contacto" className={s.contact} aria-labelledby="contact-heading">
-    <div className={s.contactCopy}><span className={s.eyebrow}>05 / HABLEMOS DE TI</span><h2 id="contact-heading">El primer paso<br />es una <em>conversación.</em></h2><p>Cuéntanos qué necesitas. Un asesor de Alleanza te ayudará a entender tus opciones, en español y sin compromiso.</p><a href={healthWhatsapp} target="_blank" rel="noopener noreferrer" className={s.whatsappLink}><MessageCircle size={21} /> Prefiero hablar por WhatsApp <ArrowUpRight size={17} /></a><div className={s.contactDirect}><a href={`mailto:${healthEmail}`}><Mail size={15} /> {healthEmail}</a><a href={`tel:${phones[0].href}`}><Phone size={15} /> {phones[0].label}</a></div></div>
+    <div className={s.contactCopy}><span className={s.eyebrow}>05 / HABLEMOS DE TI</span><h2 id="contact-heading">El primer paso<br />es una <em>conversación.</em></h2><p>Cuéntanos qué necesitas. Un asesor de Alleanza Insurance Corp. te orientará para comparar opciones de cobertura, en español y sin compromiso.</p><a href={healthWhatsapp} target="_blank" rel="noopener noreferrer" className={s.whatsappLink}><MessageCircle size={21} /> Prefiero hablar por WhatsApp <ArrowUpRight size={17} /></a><div className={s.contactDirect}><a href={`mailto:${healthEmail}`}><Mail size={15} /> {healthEmail}</a><a href={`tel:${phones[0].href}`}><Phone size={15} /> {phones[0].label}</a></div></div>
     <div className={s.formCard}>
       {status === "success" ? <div className={s.formSuccess} role="status"><span><Check size={34} /></span><h3>Tu tranquilidad<br />ya tiene un comienzo.</h3><p>Recibimos tu solicitud. Un asesor se pondrá en contacto contigo para orientarte.</p><button type="button" className={s.textLink} onClick={() => setStatus("idle")}>Enviar otra consulta <ArrowUpRight size={16} /></button></div> : <form onSubmit={submit}>
         <div className={s.formTitle}><h3>{selectedService === "review" ? "Revisemos tu cobertura." : "Encuentra tu cobertura."}</h3><span>ASESORÍA GRATUITA</span></div>

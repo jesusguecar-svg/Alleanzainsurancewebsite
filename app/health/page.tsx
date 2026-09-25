@@ -5,9 +5,9 @@ import { getGoogleReviews } from "@/lib/google-reviews";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Seguro médico y Obamacare (ACA) en español | Alleanza Insurance",
+  title: "Seguro médico y Obamacare (ACA) en español | Alleanza Insurance Corp.",
   description:
-    "Asesoría de salud en español en los 50 estados. Compara ACA / Obamacare, seguro privado, dental y visión y protección complementaria con Alleanza Insurance.",
+    "Asesoría de salud en español en los 50 estados. Compara ACA / Obamacare, seguro privado, dental y visión y protección complementaria con Alleanza Insurance Corp.",
   keywords: [
     "seguro médico",
     "Obamacare",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_US",
     url: "/health",
-    siteName: "Alleanza Insurance",
+    siteName: "Alleanza Insurance Corp.",
     title: "La vida se vive mejor con tranquilidad. | Alleanza Salud",
     description:
       "Compara ACA, seguro privado y coberturas complementarias en español, con costos y límites claros.",

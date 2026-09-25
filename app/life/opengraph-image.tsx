@@ -1,6 +1,6 @@
 import { ogContentType, ogSize, renderOgCard } from "@/lib/og";
 
-export const alt = "Alleanza Insurance — El seguro de vida no debería ser un misterio.";
+export const alt = "Alleanza Insurance Corp. — El seguro de vida no debería ser un misterio.";
 export const size = ogSize;
 export const contentType = ogContentType;
 

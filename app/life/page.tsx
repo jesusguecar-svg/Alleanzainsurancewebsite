@@ -3,7 +3,7 @@ import LifeLanding from "@/components/LifeLanding";
 import { resolveMedia } from "@/lib/media";
 
 export const metadata: Metadata = {
-  title: "Seguro de vida en español | Alleanza Insurance",
+  title: "Seguro de vida en español | Alleanza Insurance Corp.",
   description:
     "Seguro de vida explicado en español: temporal, permanente y gastos finales. Qué puede dejar cada modalidad, a quién designas como beneficiario y qué conviene confirmar con la compañía antes de solicitar.",
   keywords: [
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_US",
     url: "/life",
-    siteName: "Alleanza Insurance",
+    siteName: "Alleanza Insurance Corp.",
     title: "El seguro de vida no debería ser un misterio. Nosotros te lo explicamos.",
     description:
       "Temporal, permanente y gastos finales, explicados en español, con un agente de seguros con licencia.",

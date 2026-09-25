@@ -7,14 +7,14 @@ const careerDescription = companyFacts.carrierRelationships.verified
   : "Construye una carrera como agente de seguros acompañando a familias hispanas. Respaldo del equipo, herramientas de venta y formación continua con Alleanza Academy.";
 
 export const metadata: Metadata = {
-  title: "Trabaja con nosotros | Carrera como agente de seguros | Alleanza Insurance",
+  title: "Trabaja con nosotros | Carrera como agente de seguros | Alleanza Insurance Corp.",
   description: careerDescription,
   alternates: { canonical: "/work" },
   openGraph: {
     type: "website",
     locale: "es_US",
     url: "/work",
-    siteName: "Alleanza Insurance",
+    siteName: "Alleanza Insurance Corp.",
     title: "Construye una carrera ayudando a familias",
     description:
       "Una carrera en seguros con acompañamiento, formación y oportunidad de crecimiento.",

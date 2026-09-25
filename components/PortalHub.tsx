@@ -1,7 +1,7 @@
 "use client";
 
 import { animate as animateMotion, AnimatePresence, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from "framer-motion";
-import { ArrowLeft, ArrowRight, ChevronDown, Grid2X2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
@@ -13,12 +13,12 @@ import { legalRoutes } from "@/lib/config/routes";
 type GalleryItem = { label: string; kicker: string; description: string; cta: string; href: string; src: string; secondarySrc?: string; kind?: "video"; position?: string; external?: boolean };
 
 const gallery: GalleryItem[] = [
-  { label: "Salud", kicker: "Cuidado", description: "Seguro ACA, seguros complementarios y seguros privados.", cta: "Obtener mi cobertura", href: "/health", src: "/cinematic/gallery/media/salud.mp4", kind: "video", position: "50% 38%" },
-  { label: "Vida", kicker: "Familia", description: "Seguro de vida temporal, permanente y protección para gastos finales.", cta: "Dejar un legado para mi familia", href: "/life", src: "/cinematic/gallery/media/vida.mp4", kind: "video", position: "50% 48%" },
-  { label: "Propiedad", kicker: "Patrimonio", description: "Protección para tu hogar, tus autos y otros bienes importantes.", cta: "Ver mi cobertura", href: "/property-casualty", src: "/cinematic/gallery/media/propiedad.mp4", kind: "video" },
+  { label: "Salud", kicker: "Decide con claridad", description: "Compara opciones ACA, privadas y complementarias con orientación en español.", cta: "Explorar mis opciones", href: "/health", src: "/cinematic/gallery/media/salud.mp4", kind: "video", position: "50% 38%" },
+  { label: "Vida", kicker: "Familia", description: "Conoce opciones de seguro de vida temporal, permanente y gastos finales.", cta: "Conocer opciones de vida", href: "/life", src: "/cinematic/gallery/media/vida.mp4", kind: "video", position: "50% 48%" },
+  { label: "Propiedad", kicker: "Patrimonio", description: "Compara alternativas de cobertura para tu hogar, tus autos y tus bienes.", cta: "Explorar opciones", href: "/property-casualty", src: "/cinematic/gallery/media/propiedad.mp4", kind: "video" },
   { label: "Academia", kicker: "Formación", description: "Capacitación, herramientas y acompañamiento para agentes.", cta: "Aprender ahora", href: academyUrl, src: "/cinematic/gallery/media/academia.mp4", kind: "video", external: true },
   { label: "Trabajo", kicker: "Oportunidad", description: "Oportunidades profesionales para crecer con propósito.", cta: "Trabaja con nosotros", href: "/work", src: "/cinematic/gallery/media/oportunidad.mp4", kind: "video" },
-  { label: "Empresas", kicker: "Beneficios", description: "Protección complementaria para ofrecer a tus empleados.", cta: "Beneficios para mi equipo", href: "/employers", src: "/cinematic/gallery/media/trabajo.png", position: "50% 48%" },
+  { label: "Empresas", kicker: "Beneficios", description: "Explora alternativas de beneficios complementarios para tu equipo.", cta: "Explorar beneficios", href: "/employers", src: "/cinematic/gallery/media/trabajo.png", position: "50% 48%" },
 ];
 
 const panelAngle = 360 / gallery.length;
@@ -44,14 +44,14 @@ function GalleryMedia({ item, active, play = true }: { item: GalleryItem; active
         loop
         playsInline
         preload={shouldPlay ? "auto" : "metadata"}
-        aria-label={active ? `Video de ${item.label} de Alleanza` : undefined}
+        aria-label={active ? `Opciones de ${item.label} presentadas por Alleanza Insurance Corp.` : undefined}
         className="h-full w-full object-cover"
         style={{ objectPosition: item.position ?? "center" }}
       />
     );
   }
-  if (item.secondarySrc) return <span className="gallery-property-pair"><span><Image src={item.src} alt={active ? "Casa protegida por Alleanza" : ""} fill sizes="42vw" className="object-cover" /></span><span><Image src={item.secondarySrc} alt={active ? "Automóvil protegido por Alleanza" : ""} fill sizes="24vw" className="object-cover" /></span></span>;
-  return <Image src={item.src} alt={active ? `Cobertura de ${item.label} de Alleanza` : ""} fill priority={item.label === "Salud"} sizes="(min-width: 768px) 62vw, 88vw" className="object-cover" style={{ objectPosition: item.position ?? "center" }} />;
+  if (item.secondarySrc) return <span className="gallery-property-pair"><span><Image src={item.src} alt={active ? "Opciones de cobertura para el hogar" : ""} fill sizes="42vw" className="object-cover" /></span><span><Image src={item.secondarySrc} alt={active ? "Opciones de cobertura para el automóvil" : ""} fill sizes="24vw" className="object-cover" /></span></span>;
+  return <Image src={item.src} alt={active ? `Escena de opciones de ${item.label}, orientadas por Alleanza Insurance Corp.` : ""} fill priority={item.label === "Salud"} sizes="(min-width: 768px) 62vw, 88vw" className="object-cover" style={{ objectPosition: item.position ?? "center" }} />;
 }
 
 function MagneticLink({ href, label, external }: { href: string; label: string; external?: boolean }) {
@@ -79,7 +79,7 @@ export default function PortalHub() {
   const settle = useCallback((projected: number) => {
     const target = Math.round(projected / panelAngle) * panelAngle;
     motionControl.current?.stop();
-    motionControl.current = animateMotion(rotation, target, reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 72, damping: 16, mass: .9, velocity: wheelVelocity.current });
+    motionControl.current = animateMotion(rotation, target, reduceMotion ? { duration: 0 } : { duration: .76, ease: [.22, 1, .36, 1], velocity: wheelVelocity.current });
     wheelVelocity.current = 0;
   }, [reduceMotion, rotation]);
   const move = useCallback((step: number) => settle(Math.round(rotation.get() / panelAngle) * panelAngle - step * panelAngle), [rotation, settle]);
@@ -133,7 +133,7 @@ export default function PortalHub() {
       <AnimatePresence>{intro && <motion.div className="gallery-intro" role="status" aria-label="Cargando sitio de Alleanza" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.12 }} transition={{ duration: .75, ease: [.76,0,.24,1] }}><motion.div className="gallery-intro-ring" initial={{ rotate: -110, scale: .72 }} animate={{ rotate: 250, scale: 1 }} transition={{ duration: 1.65, ease: [.16,1,.3,1] }}><i/><i/><i/><i/><i/></motion.div><motion.div initial={{ opacity: 0, filter: "blur(8px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ delay: .25 }}><Logo width={190}/><span>PROTECCIÓN EN MOVIMIENTO</span></motion.div></motion.div>}</AnimatePresence>
       <header className="gallery-header">
         <a href="/" aria-label="Alleanza — inicio"><Logo width={160} /></a>
-        <h1><a href="#galeria">Alleanza</a> protege lo que estás construyendo.</h1>
+        <h1><a href="#galeria">Alleanza Insurance Corp.</a> te ayuda a proteger lo que estás construyendo.</h1>
         <p>{String(active + 1).padStart(2, "0")} / {String(gallery.length).padStart(2, "0")}</p>
       </header>
 
@@ -152,9 +152,9 @@ export default function PortalHub() {
         <section id="formas-de-ayudarte" className="mobile-message-scene" aria-labelledby="mobile-message-title">
           <p className="mobile-scene-index" aria-hidden="true">02 / 03</p>
           <div>
-            <span>Alleanza Insurance Corp</span>
-            <h2 id="mobile-message-title">Tenemos 6 formas de ayudarte.</h2>
-            <p>Desliza un momento más.</p>
+            <span>ALLEANZA INSURANCE CORP. · AGENCIA INDEPENDIENTE</span>
+            <h2 id="mobile-message-title">Conoce tus opciones. Decide con claridad.</h2>
+            <p>Te orientamos para comparar alternativas de cobertura.</p>
           </div>
           <a className="mobile-scroll-cue" href="#galeria">
             <span>Conócelas</span>
@@ -163,35 +163,29 @@ export default function PortalHub() {
         </section>
       </div>
 
-      <section id="galeria" className="gallery-stage" aria-label="Áreas de protección de Alleanza">
+      <section id="galeria" className="gallery-stage" aria-label="Explora tus opciones con Alleanza Insurance Corp.">
         <LiquidHeadline text="PROTECCIÓN" className="gallery-desktop-headline" enabled={compact === false} />
         <p className="mobile-scene-index mobile-gallery-index" aria-hidden="true">03 / 03</p>
-        <p className="mobile-gallery-label">Seis formas de protegerte</p>
+        <p className="mobile-gallery-label">Seis formas de orientarte</p>
         <div className="gallery-aura" aria-hidden="true" />
         <div className="gallery-orbit-tilt">
           <motion.div ref={orbitRef} className="gallery-orbit" style={{ rotateY: rotation }} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { motionControl.current?.stop(); event.currentTarget.setPointerCapture(event.pointerId); const now = performance.now(); drag.current = { startX: event.clientX, startRotation: rotation.get(), lastX: event.clientX, lastTime: now, velocity: 0 }; dragging.current = true; }} onPointerMove={(event) => { if (!dragging.current) return; const now = performance.now(); const elapsed = Math.max(8, now - drag.current.lastTime); drag.current.velocity = (event.clientX - drag.current.lastX) / elapsed; drag.current.lastX = event.clientX; drag.current.lastTime = now; rotation.set(drag.current.startRotation + (event.clientX - drag.current.startX) * .18); }} onPointerUp={() => { if (!dragging.current) return; dragging.current = false; settle(rotation.get() + drag.current.velocity * 90); }} onPointerCancel={() => { dragging.current = false; settle(rotation.get()); }}>
             {gallery.map((item, index) => {
-              return <a key={`${item.label}-${item.src}`} href={item.href} aria-label={`Explorar ${item.label}`} aria-hidden={index !== active} aria-current={index === active ? "true" : undefined} data-active={index === active} tabIndex={index === active ? 0 : -1} className="gallery-card" style={{ "--panel-angle": `${index * panelAngle}deg` } as React.CSSProperties} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} onPointerMove={(event) => { if (index !== active) return; const box = event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--spot-x", `${Math.max(0, Math.min(100, (event.clientX - box.left) / box.width * 100))}%`); event.currentTarget.style.setProperty("--spot-y", `${Math.max(0, Math.min(100, (event.clientY - box.top) / box.height * 100))}%`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--spot-x", "52%"); event.currentTarget.style.setProperty("--spot-y", "39%"); }} onClick={(event) => { if (index !== active) { event.preventDefault(); choose(index); } }}>
+              const relative = ((index - active + gallery.length / 2) % gallery.length + gallery.length) % gallery.length - gallery.length / 2;
+              const depth = Math.abs(relative);
+              return <a key={`${item.label}-${item.src}`} href={item.href} aria-label={`Explorar ${item.label}`} aria-hidden={index !== active} aria-current={index === active ? "true" : undefined} data-active={index === active} data-depth={depth} data-relative={relative} tabIndex={index === active ? 0 : -1} className="gallery-card" style={{ "--panel-angle": `${index * panelAngle}deg` } as React.CSSProperties} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} onPointerMove={(event) => { if (index !== active) return; const box = event.currentTarget.getBoundingClientRect(); event.currentTarget.style.setProperty("--spot-x", `${Math.max(0, Math.min(100, (event.clientX - box.left) / box.width * 100))}%`); event.currentTarget.style.setProperty("--spot-y", `${Math.max(0, Math.min(100, (event.clientY - box.top) / box.height * 100))}%`); }} onPointerLeave={(event) => { event.currentTarget.style.setProperty("--spot-x", "52%"); event.currentTarget.style.setProperty("--spot-y", "39%"); }} onClick={(event) => { if (index !== active) { event.preventDefault(); choose(index); } }}>
                 <span className="gallery-card-surface"><GalleryMedia item={item} active={index === active} />{index === active && !reduceMotion ? <LiquidGallerySurface src={item.src} secondarySrc={item.secondarySrc} kind={item.kind} position={item.position} velocity={liquidVelocity} /> : null}<div className={`gallery-deep-light ${index === active ? "is-active" : ""}`} /><div className="gallery-card-shine" /></span>
               </a>;
             })}
           </motion.div>
         </div>
 
-        <AnimatePresence mode="wait"><motion.div key={`reflejo-${current.label}`} className="gallery-reflection" initial={{ opacity: 0 }} animate={{ opacity: .58 }} exit={{ opacity: 0 }} transition={{ duration: .75 }}><div className="gallery-reflection-media"><GalleryMedia item={current} active play={false} /></div><div className="gallery-reflection-ripples" /></motion.div></AnimatePresence>
-        <Image src="/cinematic/gallery/glass-plinth.png" alt="Plataforma tridimensional de vidrio creada para Alleanza" width={1800} height={1100} className="gallery-plinth" priority />
+        <nav className="gallery-edge-nav" aria-label="Cambiar de categoría"><button type="button" onClick={() => move(-1)} aria-label="Categoría anterior"><ArrowLeft size={17} /></button><button type="button" onClick={() => move(1)} aria-label="Categoría siguiente"><ArrowRight size={17} /></button></nav>
+        <AnimatePresence mode="wait"><motion.div key={`reflejo-${current.label}`} className="gallery-reflection" initial={{ opacity: 0 }} animate={{ opacity: .58 }} exit={{ opacity: 0 }} transition={{ duration: .5, ease: [.22,1,.36,1] }}><div className="gallery-reflection-media"><GalleryMedia item={current} active play={false} /></div><div className="gallery-reflection-ripples" /></motion.div></AnimatePresence>
+        <Image src="/cinematic/gallery/glass-plinth.png" alt="" aria-hidden="true" width={1800} height={1100} className="gallery-plinth" priority />
         <AnimatePresence mode="wait"><motion.div key={current.label} className="gallery-card-title" initial={{ opacity: 0, y: 18, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: .55 }}><span>{current.kicker}</span><strong>{current.label}</strong><p>{current.description}</p><MagneticLink href={current.href} label={current.cta} external={current.external}/></motion.div></AnimatePresence>
 
-        <nav className="gallery-options" aria-label="Seleccionar una categoría">
-          {gallery.map((item, index) => <button key={item.label} type="button" className={index === active ? "is-active" : ""} aria-current={index === active ? "true" : undefined} onClick={() => choose(index)}><span>{String(index + 1).padStart(2, "0")}</span>{item.label}</button>)}
-        </nav>
-
-        <nav className="gallery-float-nav" aria-label="Control de la galería">
-          <button type="button" onClick={() => move(-1)} aria-label="Categoría anterior"><ArrowLeft size={16} /></button>
-          <a href={current.href} className="gallery-current" {...(current.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}><span className="gallery-thumb"><GalleryMedia item={current} active play={false} /></span><span><small>Categoría</small><strong>{current.label}</strong></span></a>
-          <button type="button" onClick={() => move(1)} aria-label="Categoría siguiente"><ArrowRight size={16} /></button>
-          <a href={current.href} className="gallery-enter" aria-label={`Entrar a ${current.label}`} {...(current.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}><Grid2X2 size={18} /></a>
-        </nav>
+        <nav className="gallery-options" aria-label="Elegir categoría">{gallery.map((item, index) => <button key={item.label} type="button" aria-label={`Mostrar ${item.label}`} aria-current={index === active ? "true" : undefined} className={index === active ? "is-active" : ""} onClick={() => choose(index)} />)}</nav>
         <p className="gallery-hint">Arrastra o desliza para explorar</p>
         <nav className="gallery-legal" aria-label="Información legal">
           {legalRoutes.map((route) => (
