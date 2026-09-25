@@ -5,7 +5,7 @@ import { legalRoutes, portalRoutes } from "@/lib/config/routes";
 
 /** Shared footer for every route. Carries the office details and portal map. */
 export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
-  if (editorial) return <footer className={f.footer}><div className={f.inner}><div className={f.brand}><Logo light width={180} /><p>Protección para lo que estás construyendo.</p><span>Una alianza contigo.</span></div><div className={f.columns}><div><h2>Oficina</h2><address>{officeAddressLines.map(line => <span key={line}>{line}</span>)}</address><h2>Horario</h2><dl>{officeHours.map(entry => <div key={entry.days}><dt>{entry.days}</dt><dd>{entry.hours}</dd></div>)}</dl></div><div><h2>Hablemos</h2>{phones.map(phone => <a key={phone.href} href={`tel:${phone.href}`}>{phone.label}</a>)}</div><nav aria-label="Explora Alleanza"><h2>Explora</h2>{portalRoutes.map(route => <a key={route.id} href={route.href} {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{route.label}{route.external ? " ↗" : ""}</a>)}</nav></div><div className={f.legal}><p>© {new Date().getFullYear()} Alleanza Insurance</p><nav aria-label="Información legal">{legalRoutes.map(route => <a key={route.href} href={route.href}>{route.label}</a>)}</nav></div><p className={f.note}>Agencia de seguros independiente. La disponibilidad de productos varía según el estado y la compañía aseguradora.</p></div></footer>;
+  if (editorial) return <footer className={f.footer}><div className={f.inner}><div className={f.brand}><Logo light width={180} /><p>Te ayudamos a entender tus opciones de cobertura y comparar alternativas según tus necesidades.</p><span>Una alianza contigo.</span></div><div className={f.columns}><div><h2>Oficina</h2><address>{officeAddressLines.map(line => <span key={line}>{line}</span>)}</address><h2>Horario</h2><dl>{officeHours.map(entry => <div key={entry.days}><dt>{entry.days}</dt><dd>{entry.hours}</dd></div>)}</dl></div><div><h2>Hablemos</h2>{phones.map(phone => <a key={phone.href} href={`tel:${phone.href}`}>{phone.label}</a>)}</div><nav aria-label="Explora Alleanza"><h2>Explora</h2>{portalRoutes.map(route => <a key={route.id} href={route.href} {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{route.label}{route.external ? " ↗" : ""}</a>)}</nav></div><div className={f.legal}><p>© {new Date().getFullYear()} Alleanza Insurance Corp.</p><nav aria-label="Información legal">{legalRoutes.map(route => <a key={route.href} href={route.href}>{route.label}</a>)}</nav></div><p className={f.note}>Alleanza Insurance Corp. es una agencia independiente. Las pólizas y coberturas las emiten las compañías aseguradoras correspondientes; están sujetas a disponibilidad, elegibilidad, términos y condiciones.</p></div></footer>;
   return (
     <footer className="bg-navy px-5 pb-10 pt-16 text-white">
       <div className="mx-auto max-w-7xl">
@@ -13,9 +13,9 @@ export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
           <div>
             <Logo light width={200} />
             <p className="mt-6 max-w-sm text-xs leading-relaxed text-white/40">
-              Alleanza Insurance acompaña a familias con opciones de seguro de salud, de vida y de
-              protección complementaria. La disponibilidad de productos puede variar según el estado
-              y la compañía aseguradora.
+              Alleanza Insurance Corp. orienta a familias para entender, comparar y acceder a opciones de
+              seguro de salud, vida y protección complementaria. Las pólizas las emiten las compañías
+              aseguradoras correspondientes; su disponibilidad varía según el estado y la compañía.
             </p>
           </div>
 
@@ -67,7 +67,7 @@ export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
         </div>
 
         <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-[11px] text-white/40 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Alleanza Insurance</p>
+          <p>© {new Date().getFullYear()} Alleanza Insurance Corp.</p>
           <div className="flex flex-wrap gap-6">
             {legalRoutes.map((route) => (
               <a key={route.href} href={route.href} className="transition hover:text-white">

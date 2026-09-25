@@ -3,9 +3,9 @@ import { LegalDocument } from "@/components/LegalDocument";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 
 export const metadata: Metadata = {
-  title: "Términos de uso | Alleanza Insurance",
+  title: "Términos de uso | Alleanza Insurance Corp.",
   description:
-    "Condiciones de uso del sitio de Alleanza Insurance. La información es general y no constituye una cotización, una póliza ni un consejo personalizado.",
+    "Condiciones de uso del sitio de Alleanza Insurance Corp. La información es general y no constituye una cotización, una póliza ni un consejo personalizado.",
   alternates: { canonical: "/terminos" },
 };
 
@@ -20,7 +20,7 @@ export default function Page() {
 
       <h2>Quién opera el sitio</h2>
       <p>
-        El sitio lo opera Alleanza Insurance, con oficina en {officeAddressLines.join(", ")}. Teléfono:{" "}
+        El sitio lo opera Alleanza Insurance Corp., con oficina en {officeAddressLines.join(", ")}. Teléfono:{" "}
         <a href={`tel:${phones[0].href}`}>{phones[0].label}</a>.
       </p>
 
@@ -34,7 +34,7 @@ export default function Page() {
 
       <h2>Licencias y territorio</h2>
       <p>
-        Los productos se ofrecen solo donde Alleanza y el agente que te atiende tienen licencia, y
+        Alleanza Insurance Corp. te orienta y facilita el acceso a productos emitidos por compañías aseguradoras. Los productos se ofrecen solo donde la agencia y el agente que te atiende tienen licencia, y
         solo cuando el producto está disponible. Consulta la página de{" "}
         <a href="/licencias">licencias</a> y confirma con un agente antes de tomar una decisión.
       </p>
@@ -54,7 +54,7 @@ export default function Page() {
 
       <h2>Limitación</h2>
       <p>
-        El sitio se ofrece “tal cual”. En la medida que permita la ley de Texas, Alleanza no responde
+        El sitio se ofrece “tal cual”. En la medida que permita la ley de Texas, Alleanza Insurance Corp. no responde
         por daños indirectos, pérdida de datos o interrupciones derivadas del uso del sitio. Esta
         limitación no afecta derechos que no se pueden renunciar, ni reclamaciones relacionadas con
         una póliza emitida.

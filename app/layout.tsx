@@ -16,7 +16,7 @@ const inter = localFont({
   display: "swap",
 });
 
-const title = "Alleanza Insurance | Tu familia, protegida";
+const title = "Alleanza Insurance Corp. | Orientación para elegir con claridad";
 const description =
   "Seguros para familias hispanas en Texas: seguro médico, Obamacare (ACA), seguro de vida y coberturas complementarias como accidentes, hospitalización, cáncer y eventos cardíacos. Te lo explicamos en español, con agentes de seguros con licencia.";
 
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_US",
     url: "/",
-    siteName: "Alleanza Insurance",
+    siteName: "Alleanza Insurance Corp.",
     title,
     description,
   },

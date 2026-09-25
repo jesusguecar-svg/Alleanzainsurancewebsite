@@ -4,9 +4,9 @@ import { companyFacts } from "@/lib/config/company";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 
 export const metadata: Metadata = {
-  title: "Licencias | Alleanza Insurance",
+  title: "Licencias | Alleanza Insurance Corp.",
   description:
-    "Información sobre licencias de Alleanza Insurance. Los productos se ofrecen solo donde hay licencia y disponibilidad.",
+    "Información sobre licencias de Alleanza Insurance Corp. Los productos se ofrecen solo donde hay licencia y disponibilidad.",
   alternates: { canonical: "/licencias" },
 };
 
@@ -16,7 +16,7 @@ export default function Page() {
   return (
     <LegalDocument title="Licencias" updated="16 de septiembre de 2026">
       <p>
-        Alleanza Insurance opera como agencia de seguros. Los productos que se presentan en este sitio
+        Alleanza Insurance Corp. opera como agencia de seguros independiente. Los productos que se presentan en este sitio
         los explica y, cuando corresponde, los ofrece un agente de seguros con licencia. La
         disponibilidad varía según el estado, el producto y la compañía aseguradora.
       </p>
@@ -27,7 +27,7 @@ export default function Page() {
       <h2>Estados</h2>
       {states.verified ? (
         <p>
-          Alleanza tiene licencia para operar, a través de agentes autorizados, en:{" "}
+          Alleanza Insurance Corp. tiene licencia para operar, a través de agentes autorizados, en:{" "}
           {states.value.join(", ")}.
         </p>
       ) : (

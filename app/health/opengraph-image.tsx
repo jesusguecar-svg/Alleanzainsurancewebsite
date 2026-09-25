@@ -1,6 +1,6 @@
 import { ogContentType, ogSize, renderOgCard } from "@/lib/og";
 
-export const alt = "Alleanza Insurance — El seguro médico es confuso. Nosotros te lo explicamos.";
+export const alt = "Alleanza Insurance Corp. — El seguro médico es confuso. Te ayudamos a entenderlo.";
 export const size = ogSize;
 export const contentType = ogContentType;
 

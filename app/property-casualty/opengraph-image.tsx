@@ -1,6 +1,6 @@
 import { ogContentType, ogSize, renderOgCard } from "@/lib/og";
 
-export const alt = "Alleanza Insurance — Tu casa y tu auto, explicados con calma.";
+export const alt = "Alleanza Insurance Corp. — Tu casa y tu auto, explicados con calma.";
 export const size = ogSize;
 export const contentType = ogContentType;
 
