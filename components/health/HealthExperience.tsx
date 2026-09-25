@@ -65,7 +65,7 @@ export default function HealthExperience({ reviews, reviewsUrl }: { reviews: Goo
       <HealthContact selectedState={formState} onState={setFormState} selectedService={formService} onService={setFormService} />
       <div className={s.closing}><span>ALLEANZA INSURANCE</span><p>La tranquilidad de <em>tenernos.</em></p><a href="/">Explora el universo Alleanza <ArrowRight size={16} /></a></div>
     </main>
-    <SiteFooter />
+    <SiteFooter editorial />
     <a className={s.floatingWhatsapp} href={healthWhatsapp} target="_blank" rel="noopener noreferrer" aria-label="Habla con Alleanza por WhatsApp"><MessageCircle size={23} /><span>¿Hablamos?</span></a>
   </div>;
 }
