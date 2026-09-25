@@ -154,3 +154,15 @@ body { margin: 0; color: var(--navy); background: #FFFFFF; overflow-x: hidden; f
   .gallery-hint { display: block; right: -2px; bottom: 45%; color: rgba(6,20,49,.52); font-size: 7px; letter-spacing: .22em; writing-mode: vertical-rl; }
   .gallery-legal { left: 12px; bottom: auto; top: 58px; gap: 10px; font-size: 8px; }
 }
+
+/* Master-brand tokens shared by the editorial Health chapter and route bridge. */
+:root{--alleanza-navy:#061633;--alleanza-navy-deep:#041126;--alleanza-blue:#10b9f4;--alleanza-blue-soft:#8ed6e8;--alleanza-ice:#dceef2;--alleanza-white:#f7f8f6;--alleanza-cream:#eed69d;--alleanza-ease:cubic-bezier(.22,1,.36,1);--alleanza-serif:Georgia,'Times New Roman',serif}
+.health-route-bridge{position:fixed;inset:0;z-index:9999;pointer-events:all;overflow:hidden;animation:health-atmosphere 800ms var(--alleanza-ease) forwards}
+.health-route-photo{position:absolute;inset:0;transform-origin:top left;overflow:hidden;background:var(--alleanza-navy)}
+.health-route-photo>img,.health-route-photo>video{width:100%;height:100%;object-fit:cover}
+.health-route-photo:after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#06163355,#041126ed);animation:health-wash 800ms var(--alleanza-ease) both}
+.health-route-label{position:absolute;z-index:1;left:8%;bottom:18%;font:clamp(64px,10vw,150px)/1 var(--alleanza-serif);letter-spacing:-.055em;color:var(--alleanza-white)}
+.entering-health .gallery-card:not([data-active=true]){opacity:0;transition:opacity 250ms}
+@keyframes health-atmosphere{from{background:transparent}to{background:var(--alleanza-navy)}}
+@keyframes health-wash{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.health-route-bridge{display:none}}

@@ -1,9 +1,11 @@
+import f from "./site-footer.module.css";
 import { Logo } from "../Logo";
 import { officeAddressLines, officeHours, phones } from "@/lib/config/contact";
 import { legalRoutes, portalRoutes } from "@/lib/config/routes";
 
 /** Shared footer for every route. Carries the office details and portal map. */
-export function SiteFooter() {
+export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
+  if (editorial) return <footer className={f.footer}><div className={f.inner}><div className={f.brand}><Logo light width={180} /><p>Protección para lo que estás construyendo.</p><span>Una alianza contigo.</span></div><div className={f.columns}><div><h2>Oficina</h2><address>{officeAddressLines.map(line => <span key={line}>{line}</span>)}</address><h2>Horario</h2><dl>{officeHours.map(entry => <div key={entry.days}><dt>{entry.days}</dt><dd>{entry.hours}</dd></div>)}</dl></div><div><h2>Hablemos</h2>{phones.map(phone => <a key={phone.href} href={`tel:${phone.href}`}>{phone.label}</a>)}</div><nav aria-label="Explora Alleanza"><h2>Explora</h2>{portalRoutes.map(route => <a key={route.id} href={route.href} {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{route.label}{route.external ? " ↗" : ""}</a>)}</nav></div><div className={f.legal}><p>© {new Date().getFullYear()} Alleanza Insurance</p><nav aria-label="Información legal">{legalRoutes.map(route => <a key={route.href} href={route.href}>{route.label}</a>)}</nav></div><p className={f.note}>Agencia de seguros independiente. La disponibilidad de productos varía según el estado y la compañía aseguradora.</p></div></footer>;
   return (
     <footer className="bg-navy px-5 pb-10 pt-16 text-white">
       <div className="mx-auto max-w-7xl">

@@ -9,16 +9,17 @@ const files = ["clean", "props", "giver", "receiver", "cash", "toast"] as const;
 const texture = (name: string) => `/cinematic/people/decision-${name}-v1.webp`;
 
 /** Keep the original image until every transparent composition layer is decoded. */
-export function useSceneAssets() {
+export function useSceneAssets(enabled = true) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
+    if (!enabled) return;
     let cancelled = false;
     Promise.all(files.map(name => {
       const image = new window.Image(); image.src = texture(name);
       return image.decode();
     })).then(() => { if (!cancelled) setReady(true); }).catch(() => { /* Original artwork remains available. */ });
     return () => { cancelled = true; };
-  }, []);
+  }, [enabled]);
   return ready;
 }
 

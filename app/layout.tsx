@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { AnalyticsConsent } from "@/components/AnalyticsConsent";
 import { isProductionDeploy, siteUrl } from "@/lib/config/site";
 import "./globals.css";
+import { HealthTransition } from "@/components/transitions/HealthTransition";
 
 /**
  * Inter is the brand's only typeface (brandbook pp. 21-22). Self-hosted from the
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="es" className={`${inter.variable} scroll-smooth`}>
       <body>
         {children}
+        <HealthTransition />
         <AnalyticsConsent />
       </body>
     </html>
