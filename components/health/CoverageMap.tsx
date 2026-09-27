@@ -18,7 +18,13 @@ function project(coordinates: readonly number[]) {
   return [487.5 + 1300 * (point[0] - center[0]), 305 - 1300 * (point[1] - center[1])];
 }
 
-const offices = healthOffices.map(o => ({ ...o, point: project(o.coordinates) }));
+const offices = healthOffices.map(o => ({
+  ...o,
+  point: project(o.coordinates),
+  addressLine: "addressLine" in o ? o.addressLine : undefined,
+  localityLine: "localityLine" in o ? o.localityLine : undefined,
+  mapUrl: "mapUrl" in o ? o.mapUrl : undefined,
+}));
 const officeStates = new Set<string>(offices.map(o => o.stateId));
 
 export function CoverageMap({ onChoose, locale = "es" }: { onChoose: (state: string) => void; locale?: "es" | "en" }) {
@@ -27,10 +33,13 @@ export function CoverageMap({ onChoose, locale = "es" }: { onChoose: (state: str
   const [selected, setSelected] = useState("48");
   const [hovered, setHovered] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const active = hovered || selected;
+  // Choosing a city locks its office details in place until the visitor picks
+  // another state or city; incidental map hover should not hide the address.
+  const active = selectedCity ? selected : hovered || selected;
   const activeState = states.find(state => state.id === active)!;
   const activeStateName = locale === "en" ? stateNamesEn[activeState.id] : activeState.name;
   const activeOffices = offices.filter(office => office.stateId === active);
+  const selectedOffice = selectedCity ? offices.find(office => office.stateId === selected && office.city === selectedCity) : undefined;
   const x = useMotionValue(0), y = useMotionValue(0);
   const rotateY = useSpring(x, { stiffness: 65, damping: 22 });
   const pointerTilt = useSpring(y, { stiffness: 65, damping: 22 });
@@ -84,12 +93,13 @@ export function CoverageMap({ onChoose, locale = "es" }: { onChoose: (state: str
           <div className={s.detailTop}><span className={s.eyebrow}>{locale === "en" ? "YOUR LOCAL ALLIANCE" : "TU ALIANZA LOCAL"}</span><MapPin size={18} /></div>
           <div aria-live="polite" aria-atomic="true"><span className={s.stateNumber}>{activeState.id}</span><h3>{activeStateName}</h3><p>{activeOffices.length ? (locale === "en" ? "Real people. Close to you." : "Personas reales. Cerca de ti.") : (locale === "en" ? "Distance does not separate us." : "La distancia no nos separa.")}</p>
           <div className={s.officeList}>{activeOffices.length ? activeOffices.map(office => <button key={office.city} type="button" data-selected={selectedCity === office.city && active === selected} onClick={() => choose(office.stateId, office.city)}><span><i />{office.city}</span><ArrowUpRight size={15} /></button>) : <div className={s.remoteOffice}><span className={s.statusDot} /> {locale === "en" ? "Guidance by phone or video call" : "Asesoría por teléfono o videollamada"}</div>}</div></div>
-          {selectedCity && active === selected ? <AgentSearch city={selectedCity} locale={locale} /> : <p className={s.officeNote}>{active === "49" ? (locale === "en" ? "Service in Utah. Ask our team for location details." : "Presencia en Utah. Consulta la ubicación con nuestro equipo.") : activeOffices.length ? (locale === "en" ? "Choose a city to meet its agents." : "Elige una ciudad para conocer a sus agentes.") : (locale === "en" ? "We can guide you in English or Spanish, wherever you are." : "Te orientamos en español, estés donde estés.")}</p>}
+          {selectedCity && active === selected ? <AgentSearch city={selectedCity} locale={locale} addressLine={selectedOffice?.addressLine} localityLine={selectedOffice?.localityLine} mapUrl={selectedOffice?.mapUrl} /> : <p className={s.officeNote}>{active === "49" ? (locale === "en" ? "Service in Utah. Ask our team for location details." : "Presencia en Utah. Consulta la ubicación con nuestro equipo.") : activeOffices.length ? (locale === "en" ? "Choose a city to meet its agents." : "Elige una ciudad para conocer a sus agentes.") : (locale === "en" ? "We can guide you in English or Spanish, wherever you are." : "Te orientamos en español, estés donde estés.")}</p>}
           <button type="button" className={s.mapCta} onClick={() => onChoose(active)}>{locale === "en" ? "Talk to an agent" : "Hablar con un asesor"} <ArrowUpRight size={17} /></button>
         </aside>
       </div>
       <div className={s.mapBottom}><div className={s.legend}><span><i /> {locale === "en" ? "Service in all 50 states" : "Atención en 50 estados"}</span><span><i /> {locale === "en" ? "States with offices" : "Estados con oficinas"}</span></div><label className={s.stateSelect}>{locale === "en" ? "Go to a state" : "Ir a un estado"} <select value={selected} onChange={event => choose(event.target.value)}>{states.map(state => <option key={state.id} value={state.id}>{locale === "en" ? stateNamesEn[state.id] : state.name}</option>)}</select></label></div>
       <div className={s.officeRail}>{offices.map(office => <button key={office.city} type="button" aria-pressed={selected === office.stateId && selectedCity === office.city} onClick={() => choose(office.stateId, office.city)}>{office.city}<span>{office.state === office.city ? (locale === "en" ? "USA" : "EE. UU.") : office.state}</span></button>)}</div>
+      {selectedOffice?.addressLine && selectedOffice.localityLine && selectedOffice.mapUrl && <a className={s.railOfficeAddress} href={selectedOffice.mapUrl} target="_blank" rel="noopener noreferrer"><span className={s.railAddressIcon}><MapPin size={18} /></span><span><small>{locale === "en" ? `${selectedOffice.city.toUpperCase()} OFFICE` : `OFICINA DE ${selectedOffice.city.toUpperCase()}`}</small><strong>{selectedOffice.addressLine}</strong><em>{selectedOffice.localityLine}</em></span><span className={s.railAddressAction}>{locale === "en" ? "Open in Google Maps" : "Abrir en Google Maps"} <ArrowUpRight size={15} /></span></a>}
       <p className={s.mapDisclaimer}>{locale === "en" ? "Plan, benefit, and licensed-agent availability varies by state. Alaska and Hawaii are shown in insets at different scales." : "La disponibilidad de planes, beneficios y agentes autorizados varía según el estado. Alaska y Hawái se muestran en recuadros a distinta escala."}</p>
     </section>
   );

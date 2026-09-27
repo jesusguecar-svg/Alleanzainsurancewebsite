@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, Search, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, MapPin, Search, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import { agents } from "@/lib/content/agents";
 import s from "./health.module.css";
 
-export function AgentSearch({ city, locale = "es" }: { city?: string | null; locale?: "es" | "en" }) {
+export function AgentSearch({ city, locale = "es", addressLine, localityLine, mapUrl }: { city?: string | null; locale?: "es" | "en"; addressLine?: string; localityLine?: string; mapUrl?: string }) {
   const [query, setQuery] = useState("");
   const normalized = query.trim().toLocaleLowerCase("es");
   const matches = useMemo(() => {
@@ -18,6 +18,7 @@ export function AgentSearch({ city, locale = "es" }: { city?: string | null; loc
   }, [city, locale, normalized]);
 
   return <div className={s.agentFinder}>
+    {addressLine && localityLine && mapUrl && <a className={s.officeAddressCard} href={mapUrl} target="_blank" rel="noopener noreferrer"><MapPin size={15} /><span><small>{locale === "en" ? `${city} office` : `Oficina de ${city}`}</small><strong>{addressLine}</strong><em>{localityLine}</em></span><ArrowUpRight size={14} /></a>}
     <label className={s.agentSearch}>
       <Search size={14} aria-hidden="true" />
       <span className="sr-only">{locale === "en" ? "Search for an agent by name, city, or state" : "Buscar un agente por nombre, ciudad o estado"}</span>
