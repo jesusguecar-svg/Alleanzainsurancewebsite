@@ -15,3 +15,7 @@
 .profilePhoto:after{inset:auto;width:91%;border-color:#8ed6e814;box-shadow:none;transform:rotate(18deg) scale(1,.72)}
 .profilePhoto img{position:relative;z-index:1;width:min(72%,422px);height:auto;object-fit:contain;border-radius:30px;box-shadow:0 35px 85px #0007}
 @media(max-width:600px){.headerCta{display:none}.profilePhoto{min-height:430px}.profilePhoto img{width:min(82%,360px)}.profilePhoto>span{right:16px;bottom:16px}.profileIntro h1{font-size:56px;line-height:.88}}
+
+.languageSwitch{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid #06163320;border-radius:999px;color:#718087;font-size:8px;font-weight:750;letter-spacing:.12em}
+.languageSwitch a{padding:3px;color:inherit}.languageSwitch a[aria-current=page]{color:var(--alleanza-navy)}
+@media(max-width:600px){.languageSwitch{gap:4px;padding:6px 8px}.header nav>a:not(.headerCta){display:none}}

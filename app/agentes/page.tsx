@@ -4,13 +4,14 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Languages, MapPin, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { agents } from "@/lib/content/agents";
 import a from "./agents.module.css";
 
 export const metadata: Metadata = {
   title: "Directorio de agentes de seguros | Alleanza Insurance Corp.",
   description: "Conoce a los agentes de seguros de Alleanza, sus oficinas, idiomas, NPN y estados donde cuentan con licencia.",
-  alternates: { canonical: "/agentes" },
+  alternates: { canonical: "/agentes", languages: { "es-US": "/agentes", "en-US": "/en/agents", "x-default": "/agentes" } },
   openGraph: {
     title: "Conoce a tu agente | Alleanza Insurance Corp.",
     description: "Perfiles profesionales, información de contacto y credenciales de los agentes de Alleanza.",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function AgentsPage() {
   return <div className={a.page}>
-    <header className={a.header}><Link href="/"><Logo width={174} /></Link><Link href="/health#presencia" className={a.back}><ArrowLeft size={15} /> Volver al mapa</Link></header>
+    <header className={a.header}><Link href="/"><Logo width={174} /></Link><nav><LanguageSwitch locale="es" spanishHref="/agentes" englishHref="/en/agents" className={a.languageSwitch} /><Link href="/health#presencia" className={a.back}><ArrowLeft size={15} /> Volver al mapa</Link></nav></header>
     <main>
       <section className={a.directoryHero}>
         <span className={a.eyebrow}>DIRECTORIO DE AGENTES</span>

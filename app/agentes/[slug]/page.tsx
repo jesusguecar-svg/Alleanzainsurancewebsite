@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, BadgeCheck, Building2, Check, Languages, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { agents, getAgent } from "@/lib/content/agents";
 import { healthEmail } from "@/lib/content/health";
 import { siteUrl } from "@/lib/config/site";
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: { canonical: `/agentes/${agent.slug}` },
+    alternates: { canonical: `/agentes/${agent.slug}`, languages: { "es-US": `/agentes/${agent.slug}`, "en-US": `/en/agents/${agent.slug}`, "x-default": `/agentes/${agent.slug}` } },
     openGraph: { type: "profile", title, description, url: `/agentes/${agent.slug}`, images: [{ url: agent.image, alt: `Retrato profesional de ${agent.fullName}` }] },
     twitter: { card: "summary", title, description, images: [agent.image] },
   };
@@ -75,7 +76,7 @@ export default async function AgentProfilePage({ params }: Props) {
   return <div className={a.page}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema).replace(/</g, "\\u003c") }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
-    <header className={a.header}><Link href="/"><Logo width={174} /></Link><nav><Link href="/agentes"><ArrowLeft size={15} /> Todos los agentes</Link><Link href="/health#contacto" className={a.headerCta}>Solicitar orientación <ArrowUpRight size={15} /></Link></nav></header>
+    <header className={a.header}><Link href="/"><Logo width={174} /></Link><nav><LanguageSwitch locale="es" spanishHref={`/agentes/${agent.slug}`} englishHref={`/en/agents/${agent.slug}`} className={a.languageSwitch} /><Link href="/agentes"><ArrowLeft size={15} /> Todos los agentes</Link><Link href="/health#contacto" className={a.headerCta}>Solicitar orientación <ArrowUpRight size={15} /></Link></nav></header>
     <main>
       <section className={a.profileHero}>
         <div className={a.profilePhoto}>
