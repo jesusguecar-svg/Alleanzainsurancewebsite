@@ -50,6 +50,7 @@
 .mapLayout{grid-template-columns:minmax(0,1fr) 340px;align-items:start}
 .mapDetail{min-height:510px}
 .agentFinder{display:grid;gap:10px;margin:18px 0}
+.officeAddressCard{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px;border:1px solid #8ed6e84a;border-radius:6px;background:#8ed6e80d;color:#f1f8fa;transition:background .2s,border-color .2s}.officeAddressCard:hover{background:#8ed6e819;border-color:#8ed6e88a}.officeAddressCard>svg{color:#8ed6e8}.officeAddressCard>span{display:grid;gap:2px;min-width:0}.officeAddressCard small{color:#8ed6e8;font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.officeAddressCard strong{font-size:9px;line-height:1.45}.officeAddressCard em{color:#a4bbc4;font-size:8px;font-style:normal;line-height:1.4}
 .agentSearch{display:flex;align-items:center;gap:9px;min-height:42px;padding:0 12px;border:1px solid #7ca3b347;border-radius:5px;background:#dceef208;color:#9ac5d2}
 .agentSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#effbff;font:inherit;font-size:10px}
 .agentSearch input::placeholder{color:#92aeb8}
@@ -60,8 +61,10 @@
 .agentPreview>span{display:grid;gap:3px;min-width:0}.agentPreview strong{overflow:hidden;color:#f1f8fa;font-size:10px;text-overflow:ellipsis;white-space:nowrap}.agentPreview small{color:#a4bbc4;font-size:7px}.agentPreview em{display:flex;align-items:center;gap:4px;color:#86dcef;font-size:7px;font-style:normal}.agentPreview>svg{color:#8ed6e8}
 .agentEmpty{padding:12px 2px;color:#9eb5be;font-size:8px;line-height:1.7}
 .agentDirectoryLink{display:flex;align-items:center;justify-content:space-between;min-height:35px;color:#add9e3;font-size:8px;font-weight:650}
+.railOfficeAddress{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;margin-top:18px;padding:16px 18px;border:1px solid #8ed6e842;border-radius:6px;background:linear-gradient(100deg,#8ed6e812,#8ed6e805);color:#eefbff;transition:background .2s,border-color .2s,transform .2s}.railOfficeAddress:hover{transform:translateY(-2px);background:#8ed6e817;border-color:#8ed6e87a}.railAddressIcon{display:grid;place-items:center;width:38px;height:38px;border:1px solid #8ed6e85c;border-radius:50%;color:#8ed6e8}.railOfficeAddress>span:nth-child(2){display:grid;gap:2px}.railOfficeAddress small{color:#8ed6e8;font-size:7px;font-weight:700;letter-spacing:.16em}.railOfficeAddress strong{font-size:12px}.railOfficeAddress em{color:#9eb8c2;font-size:9px;font-style:normal}.railAddressAction{display:flex;align-items:center;gap:12px;color:#c5e9f0;font-size:9px;font-weight:650}
 @media(max-width:1100px) and (min-width:801px){.mapLayout{grid-template-columns:minmax(0,1fr) 290px}.mapDetail{min-height:500px}}
 @media(max-width:800px){.mapLayout{grid-template-columns:1fr}.mapDetail{min-height:0}.agentFinder{grid-column:2;margin-top:0}.mapCta{grid-column:2}.officeNote{grid-column:2}}
 @media(max-width:560px){.agentFinder,.mapCta,.officeNote{grid-column:1}.agentFinder{margin-top:17px}.agentPreview{grid-template-columns:52px minmax(0,1fr) auto}.agentPreview>img{width:52px;height:52px}}
+@media(max-width:560px){.railOfficeAddress{grid-template-columns:auto minmax(0,1fr);padding:14px}.railAddressAction{grid-column:2;justify-content:flex-start;margin-top:4px}}
 @media(max-width:800px){.healthLanguage{margin-left:auto}.headerCta{margin-left:0}}
 @media(max-width:560px){.headerCategory,.headerCta{display:none}.healthLanguage{margin-left:auto}}

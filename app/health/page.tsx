@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const reviews = await getGoogleReviews();
+  const reviews = await getGoogleReviews("es");
   const structuredData = {
     "@context": "https://schema.org", "@type": "InsuranceAgency", name: "Alleanza Insurance Corp.",
     url: `${siteUrl}/health`, areaServed: "US", availableLanguage: ["Spanish", "English"],
