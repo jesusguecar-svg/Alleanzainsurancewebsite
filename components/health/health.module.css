@@ -44,3 +44,21 @@
 .floatingWhatsapp{width:50px;height:50px;justify-content:center;padding:0;background:var(--alleanza-navy);border-color:#dceef259;bottom:max(18px,env(safe-area-inset-bottom));box-shadow:0 5px 22px #04112622}.floatingWhatsapp span{display:none}
 @media(max-width:767px){.header{position:absolute;top:0;left:0;width:100%;height:calc(72px + env(safe-area-inset-top));gap:10px;padding-inline:16px}.header>a:first-child img{width:120px!important}.headerCategory{font-size:18px;padding-left:10px}.headerCta{padding:10px;font-size:10px;gap:6px}.coverage{padding:60px 24px 40px}.page .eyebrow{font-size:9px}.serviceTabs button{font-size:11px}.smallPrint{font-size:10px}.floatingWhatsapp{right:15px}.closing{padding:30px 24px 45px}}
 @media(max-width:359px){.header{gap:7px;padding-inline:10px}.header>a:first-child img{width:103px!important}.headerCategory{padding-left:7px;font-size:17px}.headerCta svg{display:none}}
+
+/* Agent discovery turns the office map into a trust and credential directory. */
+.mapLayout{grid-template-columns:minmax(0,1fr) 340px;align-items:start}
+.mapDetail{min-height:510px}
+.agentFinder{display:grid;gap:10px;margin:18px 0}
+.agentSearch{display:flex;align-items:center;gap:9px;min-height:42px;padding:0 12px;border:1px solid #7ca3b347;border-radius:5px;background:#dceef208;color:#9ac5d2}
+.agentSearch input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#effbff;font:inherit;font-size:10px}
+.agentSearch input::placeholder{color:#92aeb8}
+.agentResults{display:grid;gap:7px}
+.agentPreview{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:10px;padding:8px;border:1px solid #8fb2bf30;border-radius:6px;background:#c8ecf207;transition:background .2s,border-color .2s,transform .2s}
+.agentPreview:hover{transform:translateY(-2px);border-color:#8ed6e875;background:#8ed6e817}
+.agentPreview>img{width:48px;height:48px;object-fit:cover;border-radius:5px;background:#edf1ef}
+.agentPreview>span{display:grid;gap:3px;min-width:0}.agentPreview strong{overflow:hidden;color:#f1f8fa;font-size:10px;text-overflow:ellipsis;white-space:nowrap}.agentPreview small{color:#a4bbc4;font-size:7px}.agentPreview em{display:flex;align-items:center;gap:4px;color:#86dcef;font-size:7px;font-style:normal}.agentPreview>svg{color:#8ed6e8}
+.agentEmpty{padding:12px 2px;color:#9eb5be;font-size:8px;line-height:1.7}
+.agentDirectoryLink{display:flex;align-items:center;justify-content:space-between;min-height:35px;color:#add9e3;font-size:8px;font-weight:650}
+@media(max-width:1100px) and (min-width:801px){.mapLayout{grid-template-columns:minmax(0,1fr) 290px}.mapDetail{min-height:500px}}
+@media(max-width:800px){.mapLayout{grid-template-columns:1fr}.mapDetail{min-height:0}.agentFinder{grid-column:2;margin-top:0}.mapCta{grid-column:2}.officeNote{grid-column:2}}
+@media(max-width:560px){.agentFinder,.mapCta,.officeNote{grid-column:1}.agentFinder{margin-top:17px}.agentPreview{grid-template-columns:52px minmax(0,1fr) auto}.agentPreview>img{width:52px;height:52px}}
