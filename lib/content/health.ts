@@ -19,22 +19,31 @@ export const healthServices = [
   { id: "supplemental", title: "Protección complementaria", short: "Un respaldo extra para ti.", description: "Un accidente o una enfermedad pueden cambiar tus planes. Conoce las coberturas que pueden brindarte beneficios económicos ante un evento cubierto.", details: ["Accidentes y cáncer", "Derrame cerebral (stroke)", "Indemnización hospitalaria"], icon: "plus" },
 ] as const;
 
+export const healthServicesEn = [
+  { id: "aca", title: "ACA / Obamacare", short: "Your health, with a plan.", description: "We help you compare Health Insurance Marketplace plans and determine whether you may qualify for financial help with the cost of coverage.", details: ["Review of doctors and prescriptions", "Deductibles and costs explained", "Enrollment guidance"], icon: "heart" },
+  { id: "private", title: "Private health insurance", short: "More options. Your decision.", description: "We explore alternatives outside the Marketplace based on your needs, budget, and the plans available in your state.", details: ["Comparison of networks and benefits", "Clear limits and exclusions", "Guidance to choose with confidence"], icon: "shield" },
+  { id: "dental", title: "Dental and vision", short: "Smile. Look ahead.", description: "Take care of the details that make every day better. We help you find options for dental health and vision care.", details: ["Preventive care options", "Dental and vision plans", "Network and waiting-period review"], icon: "eye" },
+  { id: "supplemental", title: "Supplemental protection", short: "Extra support for you.", description: "An accident or illness can change your plans. Explore coverage that may provide financial benefits after a covered event.", details: ["Accidents and cancer", "Stroke", "Hospital indemnity"], icon: "plus" },
+] as const;
+
 export type HealthServiceId = typeof healthServices[number]["id"];
-export type HealthLead = { name: string; email: string; phone: string; state: string; service: string; consent: boolean; company_fax_hp?: string };
+export type HealthLead = { name: string; email: string; phone: string; state: string; service: string; consent: boolean; locale: "es" | "en"; company_fax_hp?: string };
 
 export function validateHealthLead(value: unknown): { lead?: HealthLead; error?: string } {
   if (!value || typeof value !== "object" || Array.isArray(value)) return { error: "Revisa los datos de tu solicitud." };
   const v = value as Record<string, unknown>;
+  const locale: "es" | "en" = v.locale === "en" ? "en" : "es";
+  const message = (es: string, en: string) => locale === "en" ? en : es;
   for (const key of ["name", "email", "phone", "state", "service"]) {
-    if (typeof v[key] !== "string" || (v[key] as string).length > 180) return { error: "Revisa los datos de tu solicitud." };
+    if (typeof v[key] !== "string" || (v[key] as string).length > 180) return { error: message("Revisa los datos de tu solicitud.", "Please review your request details.") };
   }
-  const lead = { name: (v.name as string).trim(), email: (v.email as string).trim(), phone: (v.phone as string).trim(), state: v.state as string, service: v.service as string, consent: v.consent === true };
-  if (lead.name.length < 2) return { error: "Escribe tu nombre completo." };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) return { error: "Revisa tu correo electrónico." };
-  if (!/^[\d\s()+.-]{7,30}$/.test(lead.phone) || lead.phone.replace(/\D/g, "").length < 7) return { error: "Revisa tu teléfono." };
-  if (!/^\d{2}$/.test(lead.state)) return { error: "Selecciona tu estado." };
-  if (!["guidance", "review"].includes(lead.service) && !healthServices.some(s => s.id === lead.service)) return { error: "Selecciona una cobertura." };
-  if (!lead.consent) return { error: "Necesitamos tu autorización para contactarte." };
-  if (v.company_fax_hp) return { error: "No pudimos procesar esta solicitud." };
+  const lead = { name: (v.name as string).trim(), email: (v.email as string).trim(), phone: (v.phone as string).trim(), state: v.state as string, service: v.service as string, consent: v.consent === true, locale };
+  if (lead.name.length < 2) return { error: message("Escribe tu nombre completo.", "Enter your full name.") };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) return { error: message("Revisa tu correo electrónico.", "Check your email address.") };
+  if (!/^[\d\s()+.-]{7,30}$/.test(lead.phone) || lead.phone.replace(/\D/g, "").length < 7) return { error: message("Revisa tu teléfono.", "Check your phone number.") };
+  if (!/^\d{2}$/.test(lead.state)) return { error: message("Selecciona tu estado.", "Select your state.") };
+  if (!["guidance", "review"].includes(lead.service) && !healthServices.some(s => s.id === lead.service)) return { error: message("Selecciona una cobertura.", "Select a coverage option.") };
+  if (!lead.consent) return { error: message("Necesitamos tu autorización para contactarte.", "We need your permission to contact you.") };
+  if (v.company_fax_hp) return { error: message("No pudimos procesar esta solicitud.", "We could not process this request.") };
   return { lead };
 }

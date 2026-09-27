@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Languages, MapPin, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
-import { EnglishAgentFooter } from "@/components/agents/EnglishAgentFooter";
+import { EnglishSiteFooter } from "@/components/layout/EnglishSiteFooter";
 import { agents } from "@/lib/content/agents";
 import a from "../../agentes/agents.module.css";
 
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function EnglishAgentsPage() {
   return <div className={a.page} lang="en">
-    <header className={a.header}><Link href="/"><Logo width={174} /></Link><nav><LanguageSwitch locale="en" spanishHref="/agentes" englishHref="/en/agents" className={a.languageSwitch} /><Link href="/health#presencia" className={a.back}><ArrowLeft size={15} /> Back to map</Link></nav></header>
+    <header className={a.header}><Link href="/"><Logo width={174} /></Link><nav><LanguageSwitch locale="en" spanishHref="/agentes" englishHref="/en/agents" className={a.languageSwitch} /><Link href="/en/health#presencia" className={a.back}><ArrowLeft size={15} /> Back to map</Link></nav></header>
     <main>
       <section className={a.directoryHero}>
         <span className={a.eyebrow}>AGENT DIRECTORY</span>
@@ -36,6 +36,6 @@ export default function EnglishAgentsPage() {
         </article>)}
       </section>
     </main>
-    <EnglishAgentFooter />
+      <EnglishSiteFooter />
   </div>;
 }

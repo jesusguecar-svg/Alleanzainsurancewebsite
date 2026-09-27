@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, BadgeCheck, Building2, Check, Languages, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
-import { EnglishAgentFooter } from "@/components/agents/EnglishAgentFooter";
+import { EnglishSiteFooter } from "@/components/layout/EnglishSiteFooter";
 import { agents, getAgent } from "@/lib/content/agents";
 import { healthEmail } from "@/lib/content/health";
 import { siteUrl } from "@/lib/config/site";
@@ -108,6 +108,6 @@ export default async function EnglishAgentProfilePage({ params }: Props) {
         <details><summary>Can I meet in person?</summary><p>Call to schedule a visit at the Carrollton office or request guidance by phone or video call.</p></details>
       </div></section>
     </main>
-    <EnglishAgentFooter />
+      <EnglishSiteFooter />
   </div>;
 }

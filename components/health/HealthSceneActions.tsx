@@ -32,7 +32,7 @@ function Props({ id }: { id: SceneId }) {
 
 /** Native CSS timelines move separate photographic objects, not the flat scene.
  * Unmounting cancels every timeline, so re-entry always starts at the first beat. */
-export function HealthSceneActions({ id }: { id: SceneId }) {
+export function HealthSceneActions({ id, locale = "es" }: { id: SceneId; locale?: "es" | "en" }) {
   const scene = healthScenes.find(item => item.id === id)!;
   return <g className={a.action} data-scene-action={id}>
     <defs><clipPath id={`prop-source-${id}`}><path d={scene.path} /></clipPath></defs>
@@ -49,7 +49,7 @@ export function HealthSceneActions({ id }: { id: SceneId }) {
     </g>}
     {id === "bills" && <g data-action="unpaid-bills">
       <g className={a.invoice} data-piece="invoice"><Props id={id} /></g>
-      <g className={a.stamp}><g transform="rotate(-12 390 731)"><rect x="250" y="695" width="285" height="62" rx="3" fill="#f7efe5" fillOpacity=".94" stroke="#be2927" strokeWidth="3" /><text x="392" y="734" textAnchor="middle" fill="#ad2023" fontSize="24" fontFamily="Arial" fontWeight="700">PAGO PENDIENTE</text></g></g>
+      <g className={a.stamp}><g transform="rotate(-12 390 731)"><rect x="250" y="695" width="285" height="62" rx="3" fill="#f7efe5" fillOpacity=".94" stroke="#be2927" strokeWidth="3" /><text x="392" y="734" textAnchor="middle" fill="#ad2023" fontSize="24" fontFamily="Arial" fontWeight="700">{locale === "en" ? "PAYMENT DUE" : "PAGO PENDIENTE"}</text></g></g>
     </g>}
     {id === "uncertainty" && <g data-action="financial-pressure">
       <g className={a.newspaper} data-piece="newspaper"><Props id={id} /></g>

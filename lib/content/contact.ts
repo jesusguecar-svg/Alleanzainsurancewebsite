@@ -25,6 +25,9 @@ export const productOptions = optionsForLines(["health", "life", "property"]);
 export const consentText =
   "Autorizo que un agente de seguros con licencia me contacte por teléfono, mensaje de texto o correo electrónico sobre estas coberturas. Puedo pedir que dejen de contactarme en cualquier momento.";
 
+export const consentTextEn =
+  "I authorize a licensed insurance agent to contact me by phone, text message, or email about these coverage options. I may ask to stop being contacted at any time.";
+
 /**
  * Hidden bot field. Do not name this `website`, `url`, or `email` — browsers
  * autofill those and would drop a real lead when the server treats a filled
