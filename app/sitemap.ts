@@ -23,8 +23,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     })),
     { url: `${siteUrl}/agentes`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${siteUrl}/en/agents`, lastModified, changeFrequency: "monthly", priority: 0.8 },
     ...agents.map((agent) => ({
       url: `${siteUrl}/agentes/${agent.slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    })),
+    ...agents.map((agent) => ({
+      url: `${siteUrl}/en/agents/${agent.slug}`,
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.85,

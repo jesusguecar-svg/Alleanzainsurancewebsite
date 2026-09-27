@@ -29,7 +29,7 @@ function loadWhopPixel() {
 
 export function AnalyticsConsent() {
   const pathname = usePathname();
-  const english = pathname.startsWith("/employers");
+  const english = pathname.startsWith("/employers") || pathname.startsWith("/en/");
   const [consent, setConsent] = useState<Consent | null>(null);
   const [ready, setReady] = useState(false);
 
