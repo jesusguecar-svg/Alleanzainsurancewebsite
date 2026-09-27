@@ -36,6 +36,7 @@
 .reviews,.alliances,.faq{background:var(--alleanza-navy);color:var(--alleanza-white);border-top:1px solid #dceef21a}
 .page :is(.reviews,.alliances,.faq) h2 em{color:var(--alleanza-blue-soft)}
 .reviews .reviewIntro>p,.allianceIntro>p,.partner>p,.faqList details>p{color:#dceef2bd}
+.bbbProfile{display:grid;grid-template-columns:58px minmax(0,1fr) auto auto;align-items:center;gap:17px;max-width:720px;margin-top:28px;padding:18px 20px;border:1px solid #dceef226;border-radius:5px;background:#dceef205;color:var(--alleanza-white);transition:background .2s,border-color .2s,transform .2s}.bbbProfile:hover{transform:translateY(-2px);background:#dceef20a;border-color:#dceef255}.bbbWordmark{display:grid;place-items:center;width:54px;height:44px;border:1px solid #91b4c27a;border-radius:3px;color:#eaf6fb;font-size:20px;font-weight:800;letter-spacing:-.08em}.bbbDetails{display:grid;gap:4px}.bbbDetails small,.bbbScore small{color:#97b7c6;font-size:7px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}.bbbDetails strong{font-size:12px;font-weight:600}.bbbDetails em{color:#dceef2bd;font-size:9px;font-style:normal}.bbbScore{display:grid;gap:1px;text-align:center;padding:0 16px;border-left:1px solid #dceef225;border-right:1px solid #dceef225}.bbbScore strong{font-family:Georgia,serif;font-size:28px;font-weight:400;color:var(--alleanza-blue-soft);line-height:1}.bbbAction{display:flex;align-items:center;gap:9px;color:var(--alleanza-ice);font-size:9px;font-weight:600;white-space:nowrap}
 .reviews .eyebrow,.alliances .eyebrow,.faq .eyebrow{color:var(--alleanza-blue-soft)}
 .reviewInvitation,.reviewCard{background:#dceef205;border:1px solid #dceef220;border-radius:5px}.reviewInvitation p,.reviewer small,.rating a{color:#dceef2bd}.reviewer>span:first-child{background:#dceef21a}.quoteMark{color:var(--alleanza-blue-soft)}
 .partner,.faqList,.faqList details{border-color:#dceef226}.partnerBrand>svg{color:var(--alleanza-blue-soft)}.partner>a{border-color:#dceef25c;min-height:44px;align-items:center}
@@ -65,6 +66,7 @@
 @media(max-width:1100px) and (min-width:801px){.mapLayout{grid-template-columns:minmax(0,1fr) 290px}.mapDetail{min-height:500px}}
 @media(max-width:800px){.mapLayout{grid-template-columns:1fr}.mapDetail{min-height:0}.agentFinder{grid-column:2;margin-top:0}.mapCta{grid-column:2}.officeNote{grid-column:2}}
 @media(max-width:560px){.agentFinder,.mapCta,.officeNote{grid-column:1}.agentFinder{margin-top:17px}.agentPreview{grid-template-columns:52px minmax(0,1fr) auto}.agentPreview>img{width:52px;height:52px}}
+@media(max-width:700px){.bbbProfile{grid-template-columns:48px minmax(0,1fr) auto;gap:12px;padding:15px}.bbbWordmark{width:46px;height:40px;font-size:18px}.bbbScore{padding:0 11px}.bbbAction{grid-column:2 / -1;justify-content:space-between;padding-top:5px}}
 @media(max-width:560px){.railOfficeAddress{grid-template-columns:auto minmax(0,1fr);padding:14px}.railAddressAction{grid-column:2;justify-content:flex-start;margin-top:4px}}
 @media(max-width:800px){.healthLanguage{margin-left:auto}.headerCta{margin-left:0}}
 @media(max-width:560px){.headerCategory,.headerCta{display:none}.healthLanguage{margin-left:auto}}
