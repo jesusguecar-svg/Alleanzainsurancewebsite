@@ -5,6 +5,7 @@ import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTran
 import { ArrowUpRight, MapPin, MousePointer2 } from "lucide-react";
 import states from "./us-states.json";
 import { healthOffices } from "@/lib/content/health";
+import { AgentSearch } from "./AgentSearch";
 import s from "./health.module.css";
 
 // Same Albers projection as us-atlas: scale 1300, translate [487.5, 305].
@@ -81,7 +82,7 @@ export function CoverageMap({ onChoose }: { onChoose: (state: string) => void })
           <div className={s.detailTop}><span className={s.eyebrow}>TU ALIANZA LOCAL</span><MapPin size={18} /></div>
           <div aria-live="polite" aria-atomic="true"><span className={s.stateNumber}>{activeState.id}</span><h3>{activeState.name}</h3><p>{activeOffices.length ? "Personas reales. Cerca de ti." : "La distancia no nos separa."}</p>
           <div className={s.officeList}>{activeOffices.length ? activeOffices.map(office => <button key={office.city} type="button" data-selected={selectedCity === office.city && active === selected} onClick={() => choose(office.stateId, office.city)}><span><i />{office.city}</span><ArrowUpRight size={15} /></button>) : <div className={s.remoteOffice}><span className={s.statusDot} /> Asesoría por teléfono o videollamada</div>}</div></div>
-          <p className={s.officeNote}>{active === "49" ? "Presencia en Utah. Consulta la ubicación con nuestro equipo." : activeOffices.length ? "Coordina tu visita con un asesor." : "Te orientamos en español, estés donde estés."}</p>
+          {selectedCity && active === selected ? <AgentSearch city={selectedCity} /> : <p className={s.officeNote}>{active === "49" ? "Presencia en Utah. Consulta la ubicación con nuestro equipo." : activeOffices.length ? "Elige una ciudad para conocer a sus agentes." : "Te orientamos en español, estés donde estés."}</p>}
           <button type="button" className={s.mapCta} onClick={() => onChoose(active)}>Hablar con un asesor <ArrowUpRight size={17} /></button>
         </aside>
       </div>
