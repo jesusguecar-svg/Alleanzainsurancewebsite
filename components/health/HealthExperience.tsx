@@ -45,6 +45,11 @@ const copy = {
     stars: "de 5 estrellas",
     reviewsOnGoogle: "reseñas en Google",
     reviewsRelevance: "Reseñas mostradas por relevancia según Google.",
+    bbbEyebrow: "PERFIL DE NEGOCIO",
+    bbbName: "Better Business Bureau",
+    bbbRating: "Calificación BBB",
+    bbbStatus: "No acreditada por BBB",
+    bbbLink: "Ver perfil en BBB",
     invitationTitle: <>Tu experiencia es parte<br />de nuestra historia.</>,
     invitationText: "Conoce las opiniones de nuestra comunidad en Google o comparte cómo te acompañamos.",
     visitGoogle: "Visítanos en Google",
@@ -100,6 +105,11 @@ const copy = {
     stars: "out of 5 stars",
     reviewsOnGoogle: "Google reviews",
     reviewsRelevance: "Reviews shown by relevance according to Google.",
+    bbbEyebrow: "BUSINESS PROFILE",
+    bbbName: "Better Business Bureau",
+    bbbRating: "BBB rating",
+    bbbStatus: "Not BBB Accredited",
+    bbbLink: "View BBB profile",
     invitationTitle: <>Your experience is part<br />of our story.</>,
     invitationText: "Read what our community says on Google or share how we supported you.",
     visitGoogle: "Visit us on Google",
@@ -189,6 +199,12 @@ export default function HealthExperience({ reviews, reviewsUrl, locale = "es" }:
         <div className={s.reviewIntro}><h2 id="reviews-heading">{t.reviewsHeading}</h2><p>{t.reviewsIntro}</p></div>
         {reviews && reviews.reviews.length > 0 ? <><div className={s.rating}><strong>{reviews.rating.toLocaleString(english ? "en-US" : "es-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</strong><div><span className={s.stars} aria-label={reviews.rating + " " + t.stars}>{Array.from({ length: 5 }, (_, index) => <Star key={index} size={17} fill={index < Math.round(reviews.rating) ? "currentColor" : "none"} />)}</span><a href={reviews.url} target="_blank" rel="noopener noreferrer">{reviews.count.toLocaleString(english ? "en-US" : "es-US")} {t.reviewsOnGoogle}</a></div></div><div className={s.reviewGrid}>{reviews.reviews.slice(0, 3).map((review, index) => <article className={s.reviewCard} key={review.name + "-" + index}><span className={s.stars} aria-label={review.rating + " " + t.stars}>{Array.from({ length: 5 }, (_, i) => <Star key={i} size={13} fill={i < review.rating ? "currentColor" : "none"} />)}</span><p>{review.text}</p><div className={s.reviewer}><span>{review.name.slice(0, 1)}</span><div><a href={review.authorUrl || reviews.url} target="_blank" rel="noopener noreferrer">{review.name}</a><small>{review.date}</small></div><GoogleWord /></div></article>)}</div><p className={s.smallPrint}>{t.reviewsRelevance}</p></> : <div className={s.reviewInvitation}><div className={s.quoteMark} aria-hidden="true">“</div><div><h3>{t.invitationTitle}</h3><p>{t.invitationText}</p></div><a href={googleUrl} target="_blank" rel="noopener noreferrer" className={s.primaryButton}>{t.visitGoogle} <ArrowUpRight size={17} /></a></div>}
         {reviews && <a href={googleUrl} className={s.textLink} target="_blank" rel="noopener noreferrer">{t.allReviews} <ArrowUpRight size={16} /></a>}
+        <a className={s.bbbProfile} href="https://www.bbb.org/us/tx/carrollton/profile/health-insurance/alleanza-insurance-corp-0875-91352784" target="_blank" rel="noopener noreferrer" aria-label={`${t.bbbName}: A+ ${t.bbbRating}. ${t.bbbStatus}`}>
+          <span className={s.bbbWordmark} aria-hidden="true">BBB</span>
+          <span className={s.bbbDetails}><small>{t.bbbEyebrow}</small><strong>{t.bbbName}</strong><em>{t.bbbStatus}</em></span>
+          <span className={s.bbbScore}><small>{t.bbbRating}</small><strong>A+</strong></span>
+          <span className={s.bbbAction}>{t.bbbLink} <ArrowUpRight size={15} /></span>
+        </a>
       </section>
 
       <section id="alianzas" className={s.alliances} aria-labelledby="alliances-heading">
