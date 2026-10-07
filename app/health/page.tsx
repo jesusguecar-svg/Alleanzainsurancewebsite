@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Seguro médico y Obamacare (ACA) en español | Alleanza Insurance Corp.",
   description:
-    "Asesoría de salud en español en los 50 estados. Compara ACA / Obamacare, seguro privado, dental y visión y protección complementaria con Alleanza Insurance Corp.",
+    "Explora ACA / Obamacare, seguro privado, dental, visión y protección complementaria. Alleanza te ayuda a entender tus opciones con orientación de asesores autorizados.",
   keywords: [
     "seguro médico",
     "Obamacare",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     locale: "es_US",
     url: "/health",
     siteName: "Alleanza Insurance Corp.",
-    title: "La vida se vive mejor con tranquilidad. | Alleanza Salud",
+    title: "Compara tus opciones. Entiende las diferencias. | Alleanza Salud",
     description:
       "Compara ACA, seguro privado y coberturas complementarias en español, con costos y límites claros.",
   },
