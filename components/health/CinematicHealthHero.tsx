@@ -11,7 +11,7 @@ const assets = "/cinematic/people/decision-";
 // Individually frame the original subjects for a portrait, two-sided composition.
 const frames = ["20 565 650 350", "40 385 730 310", "30 180 730 310", "0 0 735 285", "1005 680 666 260", "920 475 740 220", "960 305 710 200", "1040 0 630 270"];
 
-export function CinematicHealthHero({ onReview, onExplore, locale = "es" }: { onReview: () => void; onExplore: () => void; locale?: "es" | "en" }) {
+export function CinematicHealthHero({ onReview, onExplore, locale = "es", embedded = false }: { embedded?: boolean; onReview: () => void; onExplore: () => void; locale?: "es" | "en" }) {
   const canvas = useRef<HTMLDivElement>(null);
   const inView = useInView(canvas, { amount: .2 });
   const reduced = useReducedMotion();
@@ -47,15 +47,15 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es" }: { on
   }, [inView]);
   function select(index: number) {
     setActive(index); setInteracted(true); setHint(false);
-    if (index >= 0) moveHandTo(scenes[index].x / 100, scenes[index].y / 100);
+    if (index >= 0) moveHandTo(portrait && embedded ? (index < 4 ? .22 : .78) : scenes[index].x / 100, portrait && embedded ? .415 + (3 - index % 4) * .11 : scenes[index].y / 100);
   }
   function moveHandTo(x: number, y: number) {
     const rect = canvas.current?.getBoundingClientRect();
     if (!rect) return;
-    const width = Math.min(250, Math.max(150, rect.width * .14));
+    const width = portrait && embedded ? 92 : Math.min(250, Math.max(150, rect.width * .14));
     const height = width * 1.375;
     targetX.set(Math.max(0, Math.min(rect.width - width, x * rect.width - width * .5)));
-    targetY.set(Math.max(0, Math.min(rect.height - height, y * rect.height - height * .08)));
+    targetY.set(Math.max(portrait && embedded ? rect.height * .36 : 0, Math.min(rect.height - height, y * rect.height - height * .08)));
   }
   function move(event: PointerEvent<HTMLDivElement>) {
     if ((event.target as Element).closest("button, a")) return;
@@ -71,7 +71,8 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es" }: { on
       moveHandTo(x, y);
       let index = -1;
       if (portrait) {
-        if (y >= .30 && y < .74 && (x < .39 || x > .61)) index = 3 - Math.min(3, Math.floor((y - .30) / .11)) + (x > .61 ? 4 : 0);
+        const top = embedded ? .36 : .30;
+        if (y >= top && y < top + .44 && (x < .39 || x > .61)) index = 3 - Math.min(3, Math.floor((y - top) / .11)) + (x > .61 ? 4 : 0);
       } else {
         const point = new DOMPoint(x * 1671, y * 941);
         index = hitAreas.current.findIndex(path => path?.isPointInFill(point));
@@ -86,12 +87,12 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es" }: { on
       else if (!portrait && pointerType === "mouse") setActive(-1);
     });
   }
-  return <section className={c.hero} aria-labelledby="health-title">
+  return <section className={`${c.hero} ${embedded ? c.embedded : ""}`} aria-labelledby={embedded ? "scenario-title" : "health-title"}>
     <div className={c.stage}>
       <div ref={canvas} className={c.canvas} data-active={current?.id ?? "none"} data-scene-side={sceneSide} data-copy-side={copySide} data-engaged={interacted} data-story-position={storyPosition} onPointerMove={move} onPointerDown={move} onPointerLeave={event => { if (event.pointerType === "mouse" && !(event.currentTarget.contains(document.activeElement))) setActive(-1); }}>
         {/* Background pathway; the subjects below are independently recomposed on mobile. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className={c.background} src={`${assets}world.webp`} alt={locale === "en" ? "An illuminated path between scenes of financial pressure and scenes of protection, care, and family." : "Un camino iluminado entre escenas de presión financiera y escenas de protección, cuidado y familia."} fetchPriority="high" width="1671" height="941" />
+        <img className={c.background} src={`${assets}world.webp`} alt={locale === "en" ? "An illuminated path between scenes of financial pressure and scenes of protection, care, and family." : "Un camino iluminado entre escenas de presión financiera y escenas de protección, cuidado y familia."} fetchPriority={embedded ? "low" : "high"} loading={embedded ? "lazy" : "eager"} width="1671" height="941" />
         <div className={c.desktopComposition} aria-hidden="true">
           {scenes.map((item, i) => {
             const selected = active === i;
@@ -103,13 +104,13 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es" }: { on
           })}
           <svg className={c.hitMap} viewBox="0 0 1671 941">{scenes.map((item, i) => <path key={item.id} ref={element => { if (element) hitAreas.current[i] = element; }} d={item.path} />)}</svg>
         </div>
-        <div className={c.portraitComposition} aria-hidden="true">{scenes.map((item, i) => <svg key={item.id} className={c.portraitLayer} data-selected={active === i} style={{ left: i < 4 ? 0 : "61%", top: `${30 + (3 - i % 4) * 11}%` }} viewBox={frames[i]} preserveAspectRatio="xMidYMid slice"><defs><clipPath id={`portrait-${item.id}`}><path d={item.path} /></clipPath></defs><image href={`${assets}panels.webp`} width="1671" height="941" clipPath={`url(#portrait-${item.id})`} /></svg>)}</div>
+        <div className={c.portraitComposition} aria-hidden="true">{scenes.map((item, i) => <svg key={item.id} className={c.portraitLayer} data-selected={active === i} style={{ left: i < 4 ? 0 : "61%", top: `${(embedded ? 36 : 30) + (3 - i % 4) * 11}%` }} viewBox={frames[i]} preserveAspectRatio="xMidYMid slice"><defs><clipPath id={`portrait-${item.id}`}><path d={item.path} /></clipPath></defs><image href={`${assets}panels.webp`} width="1671" height="941" clipPath={`url(#portrait-${item.id})`} /></svg>)}</div>
         <div className={c.grade} aria-hidden="true" />
         <motion.div className={c.handPosition} style={{ x: reduced ? targetX : springX, y: reduced ? targetY : springY }} aria-hidden="true">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={`${assets}hand.webp`} alt="" width="400" height="550" /></motion.div>
-        <div className={c.intro} data-hidden={active >= 0}><span className={c.eyebrow}>{locale === "en" ? "YOUR HEALTH. YOUR FAMILY. YOUR DECISION." : "TU SALUD. TU FAMILIA. TU DECISIÓN."}</span><h1 id="health-title">{locale === "en" ? "You decide" : "Tú decides"}<span>.</span></h1><p>{locale === "en" ? <>Not everything is in your hands.<br />How you prepare is.</> : <>No todo está en tus manos.<br />Cómo prepararte, sí.</>}</p></div>
+        <div className={c.intro} data-hidden={active >= 0}><span className={c.eyebrow}>{locale === "en" ? "YOUR HEALTH. YOUR FAMILY. YOUR DECISION." : "TU SALUD. TU FAMILIA. TU DECISIÓN."}</span>{embedded ? <h2 id="scenario-title">{locale === "en" ? "You decide" : "Tú decides"}<span>.</span></h2> : <h1 id="health-title">{locale === "en" ? "You decide" : "Tú decides"}<span>.</span></h1>}<p>{locale === "en" ? <>Not everything is in your hands.<br />How you prepare is.</> : <>No todo está en tus manos.<br />Cómo prepararte, sí.</>}</p></div>
         <div className={c.sceneLabels} aria-hidden="true"><span>{locale === "en" ? "Without protection" : "Sin protección"}</span><span>{locale === "en" ? "With support" : "Con respaldo"}</span></div>
         <div className={c.storyShade} aria-hidden="true" />
-        <AnimatePresence mode="wait">{current && <motion.div key={current.id} className={`${c.story} ${copySide === "left" ? c.storyLeft : c.storyRight}`} role="status" aria-live="polite" aria-atomic="true" initial={{ opacity: 0, y: 12, filter: "blur(4px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -8, filter: "blur(3px)" }} transition={{ duration: .45, ease: [.22, 1, .36, 1] }}><span className={c.eyebrow}>{locale === "en" ? (active < 4 ? "WITHOUT PROTECTION" : active < 7 ? "WITH PROTECTION" : "WITH SUPPORT") : (active < 4 ? "SIN PROTECCIÓN" : active < 7 ? "CON PROTECCIÓN" : "CON RESPALDO")} — {locale === "en" ? current.nameEn : current.name}</span><h2>{locale === "en" ? current.titleEn : current.title}</h2><p>{locale === "en" ? current.textEn : current.text}</p><button type="button" className={c.primary} onClick={onReview}>{locale === "en" ? "Review my coverage" : "Revisar mi cobertura"} <ArrowUpRight size={16} /></button></motion.div>}</AnimatePresence>
+        <AnimatePresence mode="wait">{current && <motion.div key={current.id} className={`${c.story} ${copySide === "left" ? c.storyLeft : c.storyRight}`} role="status" aria-live="polite" aria-atomic="true" initial={reduced ? false : { opacity: 0, y: 12, filter: "blur(4px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={reduced ? { opacity: 0 } : { opacity: 0, y: -8, filter: "blur(3px)" }} transition={{ duration: reduced ? 0 : .45, ease: [.22, 1, .36, 1] }}><span className={c.eyebrow}>{locale === "en" ? (active < 4 ? "WITHOUT PROTECTION" : active < 7 ? "WITH PROTECTION" : "WITH SUPPORT") : (active < 4 ? "SIN PROTECCIÓN" : active < 7 ? "CON PROTECCIÓN" : "CON RESPALDO")} — {locale === "en" ? current.nameEn : current.name}</span><h2>{locale === "en" ? current.titleEn : current.title}</h2><p>{locale === "en" ? current.textEn : current.text}</p></motion.div>}</AnimatePresence>
         <div className={c.hint} data-visible={inView && hint && !interacted}><span className={c.desktopHint}>{locale === "en" ? "Move your cursor to explore" : "Mueve tu cursor para explorar"}</span><span className={c.touchHint}>{locale === "en" ? "Tap or swipe to explore" : "Toca o desliza para explorar"}</span></div>
         <nav className={c.sceneNav} aria-label={locale === "en" ? "Explore eight protection scenarios" : "Explorar las ocho escenas de protección"} onKeyDown={event => { if (event.key === "Escape") { setActive(-1); return; } if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return; event.preventDefault(); select((Math.max(0, active) + (event.key === "ArrowRight" ? 1 : 7)) % scenes.length); }}>
           <span className={c.sceneIndex}>{String(active + 1 || 1).padStart(2, "0")} / 08</span>
@@ -117,10 +118,11 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es" }: { on
           <button type="button" aria-label={locale === "en" ? "Next scene" : "Escena siguiente"} onClick={() => select((active + 1) % 8)}><ChevronRight size={17} /></button>
           {active >= 0 && <button type="button" aria-label={locale === "en" ? "Close story" : "Cerrar historia"} onClick={() => setActive(-1)}><X size={16} /></button>}
         </nav>
-        <a className={c.continue} href="#revision-cobertura" aria-label={locale === "en" ? "Continue to the coverage review" : "Continuar a la revisión de cobertura"}><ArrowDown size={17} /></a>
+        <a className={c.continue} href={embedded ? "#como-funciona" : "#revision-cobertura"} aria-label={locale === "en" ? "Continue exploring" : "Continuar explorando"}><ArrowDown size={17} /></a>
+        {!embedded && <a className={c.compareAnchor} href="#compare">{locale === "en" ? "Compare options" : "Comparar opciones"}<ArrowUpRight size={16} aria-hidden="true" /></a>}
       </div>
     </div>
-    <div id="revision-cobertura" className={c.review}><div><span className={c.eyebrow}>{locale === "en" ? "ALREADY INSURED? LET'S START THERE." : "¿YA TIENES SEGURO? EMPECEMOS POR AHÍ."}</span><h2>{locale === "en" ? <>Having coverage is a beginning.<br /><em>Understanding it changes things.</em></> : <>Tener cobertura es un comienzo.<br /><em>Entenderla cambia las cosas.</em></>}</h2><p>{locale === "en" ? "Let’s review what your plan includes, what may be missing, and what you could pay. Health insurance, supplemental protection, dental, and vision each serve a purpose." : "Revisemos qué incluye tu plan, qué falta y cuánto podrías pagar. Seguro médico, protección complementaria, dental y visión: cada pieza tiene una función."}</p></div><div className={c.actions}><button type="button" className={c.primary} onClick={onReview}>{locale === "en" ? "Review my coverage" : "Quiero revisar mi cobertura"} <ArrowUpRight size={18} /></button><button type="button" className={c.secondary} onClick={onExplore}>{locale === "en" ? "I’m uninsured. I want guidance" : "No tengo seguro. Quiero orientación"} <ArrowUpRight size={16} /></button><small>{locale === "en" ? "Guidance in English or Spanish · No cost · No obligation" : "Orientación en español · Sin costo · Sin compromiso"}</small></div></div>
+    {!embedded && <div id="revision-cobertura" className={c.review}><div><span className={c.eyebrow}>{locale === "en" ? "ALREADY INSURED? LET'S START THERE." : "¿YA TIENES SEGURO? EMPECEMOS POR AHÍ."}</span><h2>{locale === "en" ? <>Having coverage is a beginning.<br /><em>Understanding it changes things.</em></> : <>Tener cobertura es un comienzo.<br /><em>Entenderla cambia las cosas.</em></>}</h2><p>{locale === "en" ? "Let’s review what your plan includes, what may be missing, and what you could pay. Health insurance, supplemental protection, dental, and vision each serve a purpose." : "Revisemos qué incluye tu plan, qué falta y cuánto podrías pagar. Seguro médico, protección complementaria, dental y visión: cada pieza tiene una función."}</p></div><div className={c.actions}><button type="button" className={c.primary} onClick={onReview}>{locale === "en" ? "Compare options" : "Comparar opciones"} <ArrowUpRight size={18} /></button><button type="button" className={c.secondary} onClick={onExplore}>{locale === "en" ? "Talk to an advisor" : "Hablar con un asesor"} <ArrowUpRight size={16} /></button><small>{locale === "en" ? "Guidance in English or Spanish · No cost · No obligation" : "Orientación en español · Sin costo · Sin compromiso"}</small></div></div>}
     <p className={c.disclaimer}>{locale === "en" ? "Scenes, card, amounts, and check are illustrative; they do not represent actual clients, payments, or guaranteed benefits. Coverage does not eliminate every expense or guarantee results. Alleanza Insurance Corp. is an independent insurance agency. Policies are issued by the applicable insurance companies. Benefits are subject to eligibility, exclusions, limits, and each policy’s terms. Supplemental insurance does not replace comprehensive health insurance." : "Escenas, tarjeta, cantidades y cheque ilustrativos; no representan clientes, pagos reales ni beneficios garantizados. La cobertura no elimina todos los gastos ni garantiza resultados. Alleanza Insurance Corp. es una agencia independiente. Las pólizas son emitidas por las compañías aseguradoras correspondientes. Beneficios sujetos a elegibilidad, exclusiones, límites y términos de cada póliza. El seguro complementario no sustituye un seguro médico integral."}</p>
   </section>;
 }

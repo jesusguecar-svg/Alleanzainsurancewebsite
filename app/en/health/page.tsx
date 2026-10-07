@@ -7,12 +7,12 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Health Insurance and Obamacare (ACA) Guidance | Alleanza Insurance Corp.",
-  description: "Health insurance guidance in all 50 states, in English and Spanish. Compare ACA / Obamacare, private health, dental, vision, and supplemental coverage.",
+  description: "Explore ACA / Obamacare, private health, dental, vision, and supplemental coverage with Alleanza. Understand your options with licensed, bilingual advisor guidance.",
   keywords: ["health insurance", "Obamacare", "ACA", "bilingual insurance agent", "private health insurance", "supplemental insurance", "Health Insurance Marketplace", "Texas health insurance"],
   alternates: { canonical: "/en/health", languages: { "es-US": "/health", "en-US": "/en/health", "x-default": "/health" } },
   openGraph: {
     type: "website", locale: "en_US", url: "/en/health", siteName: "Alleanza Insurance Corp.",
-    title: "Life feels better with peace of mind. | Alleanza Health",
+    title: "Compare your options. Understand the differences. | Alleanza Health",
     description: "Compare ACA, private health, and supplemental coverage with clear costs, limits, and bilingual guidance.",
   },
 };
