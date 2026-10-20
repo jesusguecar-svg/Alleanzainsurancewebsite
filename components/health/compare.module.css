@@ -42,24 +42,29 @@
 .device:before { content:""; position:absolute; z-index:3; top:12px; left:50%; transform:translateX(-50%); width:82px; height:20px; border-radius:20px; background:#050608; }
 .deviceScreen { position:relative; height:100%; overflow:hidden; padding:29px 10px 11px; border-radius:36px; color:#102b4e; background:linear-gradient(168deg,#fff,#f8fbff 70%,#edf4fa); }
 .deviceStatus { display:flex; align-items:center; justify-content:space-between; margin:0 5px 7px; font-size:8px; font-weight:650; }
-.deviceBrand { display:flex; align-items:center; justify-content:center; gap:7px; margin-bottom:13px; }
-.brandMark { display:grid; place-items:center; width:32px; height:32px; background:linear-gradient(140deg,#61bcff,#0866bb 65%,#084a90); clip-path:polygon(51% 0,100% 100%,0 100%); padding-top:8px; color:#fff; font-size:17px; font-weight:750; }
-.deviceBrand>span:last-child { display:grid; gap:1px; }
-.deviceBrand strong { font-size:12px; letter-spacing:-.04em; }
-.deviceBrand small { color:#546d86; font-size:6px; }
-.deviceHeading { display:grid; gap:4px; margin:0 3px 10px; }
-.deviceHeading strong { font-size:14px; letter-spacing:-.035em; }
-.deviceHeading>span { color:#637b93; font-size:8px; }
-.deviceOptions { display:grid; gap:5px; }
-.deviceOption { display:flex; align-items:center; gap:7px; min-height:39px; padding:3px 6px; border:1px solid #dce5ee; border-radius:10px; background:#fff; box-shadow:0 2px 4px #173a5412; }
-.deviceOption[data-selected=true] { border-color:#429cd7; background:#eaf6ff; box-shadow:0 0 0 1px #429cd7; }
-.deviceIcon { flex-shrink:0; display:grid; place-items:center; width:27px; height:27px; border-radius:8px; background:#eaf3f9; color:#216698; }
-.deviceOptionCopy { display:grid; gap:3px; min-width:0; flex:1; }
-.deviceOptionCopy strong { overflow:hidden; color:#112c4c; font-size:8px; line-height:1.2; text-overflow:ellipsis; white-space:nowrap; }
-.deviceOptionCopy small { overflow:hidden; color:#6a8198; font-size:6px; line-height:1.2; text-overflow:ellipsis; white-space:nowrap; }
-.deviceOption>svg { color:#526b83; flex-shrink:0; }
-.deviceLegal { margin:8px 3px 0; color:#6b7f92; font-size:6px; line-height:1.35; }
-.guide { position:absolute; z-index:4; left:37%; right:-8%; bottom:-13px; padding:20px 22px; color:#0b315c; background:#fffffff5; border:1px solid #fff; border-radius:17px; box-shadow:0 15px 40px #03112632; }
+.deviceBrand { display:flex; align-items:center; justify-content:center; height:27px; margin:3px auto 12px; }
+.deviceBrand img { display:block; width:151px; height:auto; }
+.deviceHeading { display:grid; gap:4px; margin:0 3px 9px; }
+.deviceHeading strong { font-size:13px; letter-spacing:-.035em; }
+.deviceHeading>span:not(.sampleBadge) { color:#637b93; font-size:8px; }
+.sampleBadge { justify-self:start; padding:4px 5px; border-radius:4px; background:#fff2dc; color:#874f16; font-size:5.5px; font-weight:750; letter-spacing:.045em; line-height:1.35; }
+.planOptions { display:grid; gap:5px; }
+.planOption { position:relative; display:grid; grid-template-columns:minmax(0,1fr) auto 13px; grid-template-rows:1fr 1fr; align-items:center; min-width:0; min-height:52px; padding:6px 7px; border:1px solid #e1e7ed; border-radius:10px; background:#fff; box-shadow:0 2px 4px #173a5412; }
+.planWordmark { grid-area:1/1/2/2; min-width:0; overflow:hidden; font-size:12px; line-height:1; font-weight:800; letter-spacing:-.045em; text-overflow:ellipsis; white-space:nowrap; }
+.ambetter { color:#e71978; font-size:16px; font-weight:750; }
+.oscar { color:#1261df; font-size:17px; font-weight:750; letter-spacing:-.075em; }
+.community { color:#16243b; font-size:7px; font-family:Georgia,serif; letter-spacing:-.015em; }
+.communityMark { position:absolute; top:8px; left:6px; color:#f49a19; }
+.planWordmark.community { padding-left:22px; }
+.united { color:#1a407b; font-size:8px; }
+.cigna { color:#0678c4; font-size:15px; }
+.planPrice { grid-area:1/2/2/3; display:flex; align-items:baseline; gap:1px; white-space:nowrap; }
+.planPrice strong { font-size:14px; font-weight:750; letter-spacing:-.045em; }
+.planPrice>span { font-size:6px; font-weight:550; }
+.planOption>svg:not(.communityMark) { grid-area:1/3/3/4; color:#264669; }
+.planOption>small { grid-area:2/1/3/3; align-self:start; color:#70839a; font-size:6px; line-height:1.2; }
+.deviceLegal { margin:8px 3px 0; color:#536880; font-size:6.5px; line-height:1.4; }
+.guide { position:absolute; z-index:4; left:52%; right:-8%; bottom:-13px; padding:20px 22px; color:#0b315c; background:#fffffff5; border:1px solid #fff; border-radius:17px; box-shadow:0 15px 40px #03112632; }
 .guideEyebrow { display:flex; justify-content:space-between; align-items:center; gap:15px; color:#47647a; font-size:8px; letter-spacing:.14em; }
 .guide > strong { display:block; margin:9px 0 12px; font:400 25px/1.15 var(--alleanza-serif); letter-spacing:-.035em; }
 .guide ul { display:grid; gap:7px; padding:0; margin:0; list-style:none; }
@@ -74,8 +79,8 @@
   .option > span { font-size:10px; }
   .visual { height:510px; }
   .device { height:490px; width:min(70%,265px); left:-3%; }
-  .deviceOption { min-height:43px; }
-  .guide { left:39%; right:-4%; padding:18px; }
+  .planOption { min-height:48px; }
+  .guide { left:54%; right:-4%; padding:18px; }
   .guide > strong { font-size:23px; }
 }
 @media(max-width:850px) {
@@ -85,7 +90,7 @@
   .option > span { font-size:12px; }
   .visual { height:500px; max-width:600px; width:100%; margin:0 auto 20px; }
   .device { left:4%; width:280px; height:480px; }
-  .guide { left:42%; right:0; }
+  .guide { left:55%; right:0; }
 }
 @media(max-width:540px) {
   .layout { padding-block:36px; }
@@ -107,19 +112,23 @@
   .visual { height:440px; }
   .device { left:-1%; width:235px; height:415px; padding:6px; }
   .deviceScreen { padding:26px 8px 8px; }
-  .deviceOption { min-height:35px; padding:4px; }
-  .deviceIcon { width:24px; height:24px; }
-  .deviceOptionCopy strong { font-size:7px; }
-  .deviceOptionCopy small { font-size:5px; }
-  .deviceHeading strong { font-size:12px; }
-  .guide { left:34%; right:-2%; bottom:-5px; padding:15px; }
+  .planOption { min-height:43px; padding:5px 5px; }
+  .planWordmark { font-size:10px; }
+  .ambetter,.oscar,.cigna { font-size:13px; }
+  .united { font-size:7px; }
+  .community { font-size:6px; }
+  .planPrice strong { font-size:12px; }
+  .deviceBrand img { width:137px; }
+  .deviceHeading strong { font-size:11px; }
+  .sampleBadge { font-size:5px; }
+  .guide { left:46%; right:-2%; bottom:-5px; padding:15px; }
   .guide > strong { font-size:21px; }
   .guide li { font-size:9px; }
 }
 @media(max-width:359px) {
   .visual { height:405px; }
   .device { width:205px; height:380px; }
-  .guide { left:31%; padding:12px; }
+  .guide { left:48%; padding:12px; }
   .guide > strong { font-size:19px; }
   .guide li { font-size:8px; }
 }
