@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, BookOpen, Check, ChevronDown, CircleDollarSign, Compass, Eye, Heart, MapPin, MessageCircle, Plus, ShieldCheck, SlidersHorizontal, Star, Stethoscope } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BadgePercent, BookOpen, Check, ChevronDown, CircleDollarSign, Compass, Eye, Heart, IdCard, MapPin, MessageCircle, Plus, ShieldCheck, SlidersHorizontal, Star, Stethoscope } from "lucide-react";
 import type { GoogleReviews } from "@/lib/google-reviews";
 import { healthServices, healthServicesEn } from "@/lib/content/health";
 import { AlleanzaComparePlaceholder } from "./AlleanzaComparePlaceholder";
@@ -9,7 +9,7 @@ import p from "./platform.module.css";
 
 type LocaleProps = { locale: "es" | "en" };
 const words = (locale: "es" | "en") => (es: string, en: string) => locale === "en" ? en : es;
-const categoryIcons = [Heart, ShieldCheck, Eye, Plus];
+const categoryIcons = [Heart, ShieldCheck, Eye, Plus, BadgePercent, IdCard];
 
 export function JourneyActions({ locale }: LocaleProps) {
   const t = words(locale);
@@ -39,11 +39,7 @@ export function HealthHero({ locale }: LocaleProps) {
 }
 
 export function CompareSection({ locale }: LocaleProps) {
-  const t = words(locale);
-  return <section id="compare" className={`${p.section} ${p.compareSection}`} aria-labelledby="compare-heading">
-    <div className={p.compareIntro}><span className={p.eyebrow}>ALLEANZA COMPARE</span><h2 id="compare-heading">{t("Encuentra las opciones", "Find the options")}<br /><em>{t("que tienen sentido para ti.", "that make sense for you.")}</em></h2><p>{t("No necesitas saber si buscas ACA, cobertura privada o protección complementaria. Alleanza Compare podrá ayudarte a identificar qué caminos vale la pena explorar según tu situación.", "You don’t need to know whether you want ACA, private coverage, or supplemental insurance. Alleanza Compare will help identify which paths are worth exploring for your situation.")}</p><div className={p.comparePromise}><Compass size={24} strokeWidth={1.3} aria-hidden="true" /><span>{t("Empieza entendiendo tus opciones. A tu ritmo, sin dejar tus datos.", "Start by understanding your options. At your pace, without sharing your contact details.")}</span></div></div>
-    <AlleanzaComparePlaceholder locale={locale} />
-  </section>;
+  return <AlleanzaComparePlaceholder locale={locale} />;
 }
 
 export function CoverageCategories({ locale }: LocaleProps) {
@@ -54,8 +50,10 @@ export function CoverageCategories({ locale }: LocaleProps) {
     t("Explora alternativas fuera del Marketplace cuando puedan tener sentido para tu situación.", "Explore alternatives outside the Marketplace when they may make sense for you."),
     t("Coberturas diseñadas específicamente para servicios dentales y de visión.", "Coverage designed specifically for dental and vision services."),
     t("Beneficios adicionales para situaciones como accidentes, hospitalización o enfermedades graves.", "Additional benefits for situations such as accidents, hospitalization, or serious illness."),
+    services[4].description,
+    services[5].description,
   ];
-  return <section id="coberturas" className={p.section} aria-labelledby="coverage-heading"><div className={p.sectionIntro}><span className={p.eyebrow}>{t("DISTINTAS NECESIDADES. DISTINTOS CAMINOS.", "DIFFERENT NEEDS. DIFFERENT PATHS.")}</span><h2 id="coverage-heading">{t("No todas las necesidades", "Different needs.")}<br /><em>{t("requieren la misma cobertura.", "Different coverage.")}</em></h2></div>
+  return <section id="coberturas" className={p.section} aria-labelledby="coverage-types-heading"><div className={p.sectionIntro}><span className={p.eyebrow}>{t("DISTINTAS NECESIDADES. DISTINTOS CAMINOS.", "DIFFERENT NEEDS. DIFFERENT PATHS.")}</span><h2 id="coverage-types-heading">{t("No todas las necesidades", "Different needs.")}<br /><em>{t("requieren la misma cobertura.", "Different coverage.")}</em></h2></div>
     <div className={p.categoryGrid}>{services.map((service, index) => { const Icon = categoryIcons[index]; return <article id={`coverage-${service.id}`} className={p.category} key={service.id}><span className={p.categoryIcon}><Icon size={27} strokeWidth={1.25} aria-hidden="true" /></span><span className={p.categoryNumber}>0{index + 1}</span><h3>{index === 0 ? t("Seguro médico ACA", "ACA health insurance") : index === 1 ? t("Cobertura médica privada", "Private medical coverage") : service.title}</h3><p>{descriptions[index]}</p><details><summary>{t("Conocer más", "Learn more")}<Plus size={16} aria-hidden="true" /></summary><div><ul>{service.details.map(detail => <li key={detail}>{detail}</li>)}</ul>{index === 1 && <p>{t("Los beneficios y las condiciones pueden ser distintos a los de un plan ACA. Revisa exclusiones y límites antes de elegir.", "Benefits and terms may differ from an ACA plan. Review exclusions and limits before choosing.")}</p>}{index === 3 && <p>{t("La cobertura complementaria no sustituye un seguro médico integral.", "Supplemental coverage does not replace comprehensive health insurance.")}</p>}</div></details></article>; })}</div><p className={p.legal}>{t("La cobertura complementaria no sustituye un seguro médico integral. La disponibilidad y las condiciones dependen del producto y del estado.", "Supplemental coverage does not replace comprehensive health insurance. Availability and terms depend on the product and state.")}</p>
   </section>;
 }
