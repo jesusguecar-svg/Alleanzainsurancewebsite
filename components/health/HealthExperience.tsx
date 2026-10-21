@@ -9,6 +9,7 @@ import { SiteFooter } from "../layout/SiteFooter";
 import { EnglishSiteFooter } from "../layout/EnglishSiteFooter";
 import { CoverageMap } from "./CoverageMap";
 import { CinematicHealthHero } from "./CinematicHealthHero";
+import { HealthCarrierLogos } from "./HealthCarrierLogos";
 import { HealthContact } from "./HealthContact";
 import { CarrierAccess, CompareSection, ComparisonFactors, CoverageCategories, HealthEducation, HealthFAQ, HealthFinalCTA, HealthTrust, HowAlleanzaWorks, ShoppingComparison, ShoppingPathSelector } from "./HealthPlatformSections";
 import type { GoogleReviews } from "@/lib/google-reviews";
@@ -51,6 +52,7 @@ export default function HealthExperience({ reviews, reviewsUrl, locale = "es" }:
     <main id="contenido">
       <CinematicHealthHero locale={locale} onReview={() => document.getElementById("compare")?.scrollIntoView({ behavior: reduced ? "instant" : "smooth" })} onExplore={() => toContact("guidance")} />
       <CompareSection locale={locale} />
+      <HealthCarrierLogos locale={locale} />
       <CoverageCategories locale={locale} />
       <CoverageMap locale={locale} onChoose={state => { setFormState(state); toContact(); }} />
       <ComparisonFactors locale={locale} />
