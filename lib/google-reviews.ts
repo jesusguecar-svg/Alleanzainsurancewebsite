@@ -1,5 +1,14 @@
 export type GoogleReview = { name: string; authorUrl?: string; rating: number; text: string; date: string; url?: string };
-export type GoogleReviews = { rating: number; count: number; url: string; reviews: GoogleReview[] };
+export type GoogleReviews = {
+  rating: number;
+  count: number;
+  url: string;
+  reviews: GoogleReview[];
+  /** True only for the dated public snapshot or a successful Places response. */
+  verified: boolean;
+  /** Set for the stored public snapshot. Live Places results omit it. */
+  checkedOn?: string;
+};
 
 export const googleReviewsProfileUrl = "https://www.google.com/maps/place/Globe+Life+Family+Heritage+Division:+Villard+Agency/@32.9629058,-96.8434504,17z/data=!3m1!4b1!4m6!3m5!1s0x864c27f8e100b355:0x8ff33e26608d6b39!8m2!3d32.9629058!4d-96.8408701!16s%2Fg%2F11xcs5swz_?entry=ttu";
 
@@ -10,6 +19,8 @@ const reviewFallback: Record<"es" | "en", GoogleReviews> = {
     rating: 5,
     count: 8,
     url: googleReviewsProfileUrl,
+    verified: true,
+    checkedOn: "2026-09-26",
     reviews: [
       { name: "Roberto Jimenez", rating: 5, date: "Hace un año", text: "En esta agencia hay un ambiente de familia y solidaridad, con liderazgo y una gran conciencia de apoyo a los demás." },
       { name: "ANA SUESCUN", rating: 5, date: "Hace un año", text: "La mejor oportunidad de Estados Unidos. Amor. Credibilidad." },
@@ -20,6 +31,8 @@ const reviewFallback: Record<"es" | "en", GoogleReviews> = {
     rating: 5,
     count: 8,
     url: googleReviewsProfileUrl,
+    verified: true,
+    checkedOn: "2026-09-26",
     reviews: [
       { name: "Roberto Jimenez", rating: 5, date: "A year ago", text: "This agency has an atmosphere of family and solidarity, with leadership and a strong awareness of supporting others." },
       { name: "ANA SUESCUN", rating: 5, date: "A year ago", text: "America’s best opportunity. Love. Credibility." },
@@ -49,8 +62,22 @@ export async function getGoogleReviews(locale: "es" | "en" = "es"): Promise<Goog
       date: review.relativePublishTimeDescription ?? "",
       url: review.googleMapsUri,
     })).filter((review: GoogleReview) => review.text);
-    return { rating: data.rating, count: data.userRatingCount ?? 0, url: data.googleMapsUri, reviews: reviews.length ? reviews : fallback.reviews };
+    return { rating: data.rating, count: data.userRatingCount ?? 0, url: data.googleMapsUri, reviews: reviews.length ? reviews : fallback.reviews, verified: true };
   } catch {
     return fallback;
   }
+}
+
+/** Aggregate rating for display. Returns null unless the existing source marked it verified. */
+export function verifiedGoogleSummary(reviews: GoogleReviews | null): Pick<GoogleReviews, "rating" | "count" | "url" | "checkedOn"> | null {
+  if (!reviews?.verified) return null;
+  if (!Number.isFinite(reviews.rating) || reviews.rating < 1 || reviews.rating > 5) return null;
+  if (!Number.isInteger(reviews.count) || reviews.count < 1) return null;
+  try {
+    const url = new URL(reviews.url);
+    if (url.protocol !== "https:" || !url.hostname.endsWith("google.com")) return null;
+  } catch {
+    return null;
+  }
+  return { rating: reviews.rating, count: reviews.count, url: reviews.url, checkedOn: reviews.checkedOn };
 }
