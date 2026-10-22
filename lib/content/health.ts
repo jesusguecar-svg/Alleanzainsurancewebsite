@@ -1,4 +1,10 @@
-export const healthEmail = "jesusg@alleanzainsurance.org";
+export const healthEmail = "info@alleanzainsurance.org";
+
+/** Carrollton office line, shown with the WhatsApp number on the Salud contact form. */
+export const healthOfficePhone = {
+  label: "+1 (214) 997-4650",
+  href: "+12149974650",
+} as const;
 // Office locations and nationwide coverage supplied by the business on 2026-09-24.
 export const healthOffices = [
   { city: "Houston", state: "Texas", stateId: "48", coordinates: [-95.3698, 29.7604] },

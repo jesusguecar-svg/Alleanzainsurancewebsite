@@ -1,0 +1,166 @@
+.section {
+  background: #fff;
+  color: #061633;
+  padding: 80px 0 72px;
+}
+
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.78fr) minmax(0, 1.22fr);
+  gap: clamp(36px, 5vw, 88px);
+  align-items: start;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 var(--platform-pad, clamp(22px, 6vw, 100px));
+}
+
+.intro {
+  position: sticky;
+  top: 120px;
+}
+
+.eyebrow {
+  display: block;
+  color: #087fa5;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.section h2#faq-heading {
+  max-width: 8em;
+  margin-top: 12px;
+  font-family: var(--alleanza-serif), Georgia, serif;
+  font-size: clamp(40px, 4.2vw, 60px);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  color: #061633;
+}
+
+.section h2#faq-heading em {
+  color: #5d7590;
+  font-style: italic;
+}
+
+.deck {
+  max-width: 24em;
+  margin-top: 18px;
+  color: #3d4d5c;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  margin-top: 28px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: #087fa5;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.whatsapp:hover {
+  background: #066888;
+}
+
+.aside {
+  margin-top: 12px;
+  color: #6b7c86;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.list details {
+  border-bottom: 1px solid #e6e8e3;
+}
+
+.list details:first-child {
+  border-top: 1px solid #e6e8e3;
+}
+
+.list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 68px;
+  padding: 18px 0;
+  color: #061633;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  list-style: none;
+  cursor: pointer;
+}
+
+.list summary::-webkit-details-marker {
+  display: none;
+}
+
+.plus {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+
+.plus svg {
+  transition: transform 0.25s ease;
+}
+
+.list details[open] .plus svg {
+  transform: rotate(45deg);
+}
+
+.list details > p {
+  max-width: 62em;
+  margin: 0;
+  padding: 0 44px 22px 0;
+  color: #3d4d5c;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@media (max-width: 800px) {
+  .section {
+    padding: 56px 0 48px;
+  }
+
+  .wrap {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .intro {
+    position: static;
+  }
+
+  .section h2#faq-heading {
+    font-size: 36px;
+  }
+
+  .list summary {
+    gap: 16px;
+    min-height: 60px;
+    font-size: 16px;
+  }
+
+  .list details > p {
+    padding-right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plus svg {
+    transition: none;
+  }
+}

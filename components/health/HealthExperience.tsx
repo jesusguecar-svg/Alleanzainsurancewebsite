@@ -12,7 +12,7 @@ import { CinematicHealthHero } from "./CinematicHealthHero";
 import { HealthCarrierLogos } from "./HealthCarrierLogos";
 import { HealthCredibility } from "./HealthCredibility";
 import { HealthContact } from "./HealthContact";
-import { CarrierAccess, CompareSection, ComparisonFactors, CoverageCategories, HealthEducation, HealthFAQ, HealthFinalCTA, HealthTrust, HowAlleanzaWorks, ShoppingComparison, ShoppingPathSelector } from "./HealthPlatformSections";
+import { CompareSection, ComparisonFactors, CoverageCategories, HealthEducation, HealthFAQ, HealthFinalCTA, HealthTrust, HowAlleanzaWorks, ShoppingComparison, ShoppingPathSelector } from "./HealthPlatformSections";
 import type { GoogleReviews } from "@/lib/google-reviews";
 import s from "./health.module.css";
 import p from "./platform.module.css";
@@ -59,7 +59,6 @@ export default function HealthExperience({ reviews, reviewsUrl, locale = "es" }:
       <ComparisonFactors locale={locale} />
       <ShoppingPathSelector locale={locale} />
       <HowAlleanzaWorks locale={locale} />
-      <CarrierAccess locale={locale} />
       <HealthCredibility locale={locale} reviews={reviews} />
       <HealthTrust locale={locale} reviews={reviews} reviewsUrl={reviewsUrl} />
       <ShoppingComparison locale={locale} />

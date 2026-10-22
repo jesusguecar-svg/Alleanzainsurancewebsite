@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowRight, ArrowUpRight, BadgePercent, BookOpen, Check, ChevronDown, CircleDollarSign, Compass, Eye, Heart, IdCard, MapPin, MessageCircle, Plus, ShieldCheck, SlidersHorizontal, Star, Stethoscope } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookOpen, Check, Compass, MapPin, MessageCircle, Plus, SlidersHorizontal } from "lucide-react";
 import type { GoogleReviews } from "@/lib/google-reviews";
-import { healthServices, healthServicesEn } from "@/lib/content/health";
+import { getHealthWhatsapp } from "./HealthContact";
 import { AlleanzaComparePlaceholder } from "./AlleanzaComparePlaceholder";
+import { CoverageStage } from "./CoverageStage";
+import { FactorCarousel } from "./FactorCarousel";
+import { HealthJourneyFilm } from "./HealthJourneyFilm";
+import { ReviewCarousel } from "./ReviewCarousel";
+import f from "./faq.module.css";
 import p from "./platform.module.css";
 
 type LocaleProps = { locale: "es" | "en" };
 const words = (locale: "es" | "en") => (es: string, en: string) => locale === "en" ? en : es;
-const categoryIcons = [Heart, ShieldCheck, Eye, Plus, BadgePercent, IdCard];
-
 export function JourneyActions({ locale }: LocaleProps) {
   const t = words(locale);
   return <div className={p.actions}><a className={p.primary} href="#compare">{t("Comparar opciones", "Compare options")}<ArrowRight size={18} aria-hidden="true" /></a><a className={p.secondary} href="#contacto">{t("Hablar con un asesor", "Talk to an advisor")}<ArrowUpRight size={18} aria-hidden="true" /></a></div>;
@@ -43,47 +45,11 @@ export function CompareSection({ locale }: LocaleProps) {
 }
 
 export function CoverageCategories({ locale }: LocaleProps) {
-  const t = words(locale);
-  const services = locale === "en" ? healthServicesEn : healthServices;
-  const descriptions = [
-    t("Compara opciones disponibles en el Marketplace según tu ubicación y situación.", "Compare Marketplace options based on your location and situation."),
-    t("Explora alternativas fuera del Marketplace cuando puedan tener sentido para tu situación.", "Explore alternatives outside the Marketplace when they may make sense for you."),
-    t("Coberturas diseñadas específicamente para servicios dentales y de visión.", "Coverage designed specifically for dental and vision services."),
-    t("Beneficios adicionales para situaciones como accidentes, hospitalización o enfermedades graves.", "Additional benefits for situations such as accidents, hospitalization, or serious illness."),
-    services[4].description,
-    services[5].description,
-  ];
-  return <section id="coberturas" className={p.section} aria-labelledby="coverage-types-heading"><div className={p.sectionIntro}><span className={p.eyebrow}>{t("DISTINTAS NECESIDADES. DISTINTOS CAMINOS.", "DIFFERENT NEEDS. DIFFERENT PATHS.")}</span><h2 id="coverage-types-heading">{t("No todas las necesidades", "Different needs.")}<br /><em>{t("requieren la misma cobertura.", "Different coverage.")}</em></h2></div>
-    <div className={p.categoryGrid}>{services.map((service, index) => { const Icon = categoryIcons[index]; return <article id={`coverage-${service.id}`} className={p.category} key={service.id}><span className={p.categoryIcon}><Icon size={27} strokeWidth={1.25} aria-hidden="true" /></span><span className={p.categoryNumber}>0{index + 1}</span><h3>{index === 0 ? t("Seguro médico ACA", "ACA health insurance") : index === 1 ? t("Cobertura médica privada", "Private medical coverage") : service.title}</h3><p>{descriptions[index]}</p><details><summary>{t("Conocer más", "Learn more")}<Plus size={16} aria-hidden="true" /></summary><div><ul>{service.details.map(detail => <li key={detail}>{detail}</li>)}</ul>{index === 1 && <p>{t("Los beneficios y las condiciones pueden ser distintos a los de un plan ACA. Revisa exclusiones y límites antes de elegir.", "Benefits and terms may differ from an ACA plan. Review exclusions and limits before choosing.")}</p>}{index === 3 && <p>{t("La cobertura complementaria no sustituye un seguro médico integral.", "Supplemental coverage does not replace comprehensive health insurance.")}</p>}</div></details></article>; })}</div><p className={p.legal}>{t("La cobertura complementaria no sustituye un seguro médico integral. La disponibilidad y las condiciones dependen del producto y del estado.", "Supplemental coverage does not replace comprehensive health insurance. Availability and terms depend on the product and state.")}</p>
-  </section>;
+  return <CoverageStage locale={locale} />;
 }
 
 export function ComparisonFactors({ locale }: LocaleProps) {
-  const t = words(locale);
-  const [active, setActive] = useState(0);
-  const groups = [
-    { title: t("Lo que pagas", "What you pay"), icon: CircleDollarSign, text: t("Mira el costo completo, no solo la mensualidad.", "Look at the full cost, beyond the monthly payment."), items: [
-      [t("Prima mensual", "Monthly premium"), t("Lo que pagas por mantener la cobertura, incluso si no la usas.", "What you pay to keep coverage, even when you don’t use it.")],
-      [t("Deducible", "Deductible"), t("Lo que pagas por ciertos servicios cubiertos antes de que el plan empiece a compartir esos costos.", "What you pay for certain covered services before the plan starts sharing those costs.")],
-      [t("Máximo de bolsillo", "Out-of-pocket maximum"), t("En planes ACA, el límite anual por servicios cubiertos dentro de la red. No incluye primas ni servicios no cubiertos.", "For ACA plans, the annual limit for covered in-network services. Premiums and non-covered services are excluded.")],
-      [t("Copagos", "Copays"), t("Cantidades fijas por determinados servicios. Revisa también el coseguro: el porcentaje que te corresponde pagar.", "Fixed amounts for certain services. Also check coinsurance: the percentage you pay.")],
-    ] },
-    { title: t("Dónde te atiendes", "Where you get care"), icon: Stethoscope, text: t("Tu cobertura también depende de quién te atiende.", "Coverage also depends on who provides your care."), items: [
-      [t("Médicos", "Doctors"), t("Confirma que tus médicos participan en la red del plan específico.", "Confirm your doctors participate in the specific plan’s network.")],
-      [t("Hospitales", "Hospitals"), t("Revisa los centros cercanos y los especialistas que podrías necesitar.", "Check nearby facilities and the specialists you may need.")],
-      [t("Tipo de red", "Network type"), t("HMO, PPO y EPO tienen distintas reglas para especialistas y atención fuera de la red.", "HMO, PPO, and EPO plans have different rules for specialists and out-of-network care.")],
-    ] },
-    { title: t("Qué incluye", "What’s included"), icon: Plus, text: t("Los detalles que importan en tu día a día.", "The details that matter in your daily life."), items: [
-      [t("Medicamentos", "Prescriptions"), t("Consulta la lista de medicamentos, sus costos y las autorizaciones que pueden requerir.", "Review covered drugs, their costs, and any required authorizations.")],
-      [t("Telemedicina", "Telehealth"), t("Comprueba qué consultas virtuales cubre el plan y con qué proveedores.", "Check which virtual visits the plan covers and with which providers.")],
-      [t("Beneficios adicionales", "Additional benefits"), t("Distingue lo incluido de los productos adicionales. Revisa límites, exclusiones y períodos de espera.", "Distinguish included benefits from additional products. Review limits, exclusions, and waiting periods.")],
-    ] },
-  ];
-  return <section id="comparar" className={`${p.section} ${p.factors}`} aria-labelledby="factors-heading"><div className={p.factorsIntro}><span className={p.eyebrow}>{t("COMPARAR CON CRITERIO", "COMPARE WITH PERSPECTIVE")}</span><h2 id="factors-heading">{t("El precio es solo", "Price is only")}<br /><em>{t("una parte de la decisión.", "part of the decision.")}</em></h2><p>{t("Un plan económico no siempre es el plan que más sentido tiene para ti.", "An inexpensive plan isn’t always the plan that makes the most sense for you.")}</p><p>{t("No buscamos simplemente mostrarte el plan más barato. Queremos ayudarte a entender qué estás comprando y qué diferencias pueden afectar tu experiencia.", "Our goal is more than showing the cheapest plan. We help you understand what you’re buying and which differences may affect your experience.")}</p></div>
-    <div className={p.factorExplorer}><div className={p.factorTabs} role="tablist" aria-label={t("Aspectos para comparar", "Comparison factors")}>{groups.map((group, index) => <button id={`factor-tab-${index}`} key={group.title} role="tab" aria-selected={active === index} aria-controls={`factor-panel-${index}`} tabIndex={active === index ? 0 : -1} onClick={() => setActive(index)} onKeyDown={event => { const next = event.key === "ArrowRight" ? (index + 1) % 3 : event.key === "ArrowLeft" ? (index + 2) % 3 : event.key === "Home" ? 0 : event.key === "End" ? 2 : null; if (next !== null) { event.preventDefault(); setActive(next); document.getElementById(`factor-tab-${next}`)?.focus(); } }}><group.icon size={19} strokeWidth={1.5} aria-hidden="true" /><span>{group.title}</span></button>)}</div>
-      <div key={active} className={p.factorPanel} role="tabpanel" id={`factor-panel-${active}`} aria-labelledby={`factor-tab-${active}`} tabIndex={0}><h3>{groups[active].text}</h3><dl>{groups[active].items.map(([title, text], index) => <div key={title}><dt><span>0{index + 1}</span>{title}</dt><dd>{text}</dd></div>)}</dl></div>
-    </div>
-  </section>;
+  return <FactorCarousel locale={locale} />;
 }
 
 export function ShoppingPathSelector({ locale }: LocaleProps) {
@@ -96,30 +62,11 @@ export function ShoppingPathSelector({ locale }: LocaleProps) {
 }
 
 export function HowAlleanzaWorks({ locale }: LocaleProps) {
-  const t = words(locale);
-  const steps = [t("Cuéntanos sobre tu situación", "Tell us about your situation"), t("Identificamos los caminos disponibles", "We identify available paths"), t("Comparamos información relevante", "We compare relevant information"), t("Tú revisas tus opciones", "You review your options"), t("Un asesor puede ayudarte cuando lo necesites", "An advisor can help when you need one")];
-  return <section id="como-funciona" className={p.section} aria-labelledby="process-heading"><div className={p.sectionIntro}><span className={p.eyebrow}>{t("ASÍ TE ACOMPAÑAMOS", "HOW WE HELP")}</span><h2 id="process-heading">{t("Una forma más clara", "A clearer way")}<br /><em>{t("de encontrar cobertura.", "to find coverage.")}</em></h2></div><ol className={p.process}>{steps.map((step, index) => <li key={step}><span>0{index + 1}</span><h3>{step}</h3></li>)}</ol><p className={p.legal}>{t("La comparación puede requerir orientación de un asesor o continuar en la plataforma correspondiente. No todos los productos se cotizan directamente en este sitio.", "Comparison may require advisor guidance or continue on the relevant platform. Not every product is quoted directly on this website.")}</p></section>;
-}
-
-export function CarrierAccess({ locale }: LocaleProps) {
-  const t = words(locale);
-  // Only relationships already represented in this repository are displayed.
-  // Add approved brand assets here after business verification; future routing
-  // providers are not evidence of an existing carrier appointment.
-  return <section id="alianzas" className={`${p.section} ${p.carriers}`} aria-labelledby="carriers-heading"><div><span className={p.eyebrow}>{t("COMPAÑÍAS Y VÍAS DE ACCESO", "COMPANIES & ACCESS PATHS")}</span><h2 id="carriers-heading">{t("Acceso a distintas", "Access to different")}<br /><em>{t("opciones de cobertura.", "coverage options.")}</em></h2></div><div className={p.carrierRow}><a href="https://www.familyheritagegl.com/" target="_blank" rel="noopener noreferrer" className={p.carrierWordmark}><span>Globe Life</span><strong>FAMILY HERITAGE DIVISION</strong><small>{t("Protección complementaria", "Supplemental coverage")}<ArrowUpRight size={14} /></small></a><div className={p.marketplace}><span className={p.eyebrow}>{t("VÍA DE EXPLORACIÓN", "EXPLORATION PATH")}</span><strong>Marketplace / ACA</strong><p>{t("Orientación para explorar el Mercado de Seguros Médicos. Es un mercado, no una aseguradora ni una alianza corporativa.", "Guidance to explore the Health Insurance Marketplace. It is a marketplace, not an insurance company or a corporate partnership.")}</p></div></div><p className={p.legal}>{t("La disponibilidad de compañías, productos y beneficios puede variar según el estado, elegibilidad y características de cada cobertura. Este sitio no pertenece al gobierno federal ni implica su respaldo.", "Company, product, and benefit availability may vary by state, eligibility, and coverage terms. This website is not operated or endorsed by the federal government.")}</p></section>;
+  return <HealthJourneyFilm locale={locale} />;
 }
 
 export function HealthTrust({ locale, reviews, reviewsUrl }: LocaleProps & { reviews: GoogleReviews | null; reviewsUrl?: string }) {
-  const t = words(locale);
-  const profileUrl = reviews?.url || reviewsUrl;
-  return <section id="opiniones" className={`${p.section} ${p.trust} ${p.trustCompact}`} aria-labelledby="trust-heading">
-    <div className={p.trustHeading}>
-      <div><span className={p.eyebrow}>{t("PERFIL PÚBLICO", "PUBLIC PROFILE")}</span><h2 id="trust-heading">{t("Opiniones en Google", "Google reviews")}</h2></div>
-      {profileUrl && <a className={p.textLink} href={profileUrl} target="_blank" rel="noopener noreferrer">{t("Ver en Google", "View on Google")}<ArrowUpRight size={16} aria-hidden="true" /></a>}
-    </div>
-    {reviews?.reviews.length ? <div className={p.reviewGrid}>{reviews.reviews.slice(0, 3).map((review, i) => <figure className={p.reviewCard} key={`${review.name}-${i}`}><span className={p.reviewStars} aria-label={`${review.rating} / 5`}>{Array.from({ length: 5 }, (_, j) => <Star key={j} size={12} fill={j < review.rating ? "currentColor" : "none"} aria-hidden="true" />)}</span><blockquote>{review.text}</blockquote><figcaption><span className={p.avatar}>{review.name.charAt(0)}</span><a href={review.authorUrl || reviews.url} target="_blank" rel="noopener noreferrer">{review.name}<small>{review.date}</small></a></figcaption></figure>)}</div> : <p>{t("Conoce las experiencias compartidas en nuestro perfil público.", "Explore the experiences shared on our public profile.")}</p>}
-    <p className={p.legal}>{t("Opiniones públicas del perfil de Google enlazado. No indican si quien escribe es asegurado o forma parte del equipo, y no garantizan resultados de una póliza.", "Public reviews from the linked Google profile. They do not say whether the writer is a policyholder or part of the team, and they do not guarantee policy results.")}</p>
-  </section>;
+  return <ReviewCarousel locale={locale} reviews={reviews} reviewsUrl={reviewsUrl} />;
 }
 
 export function ShoppingComparison({ locale }: LocaleProps) {
@@ -151,7 +98,30 @@ export function HealthFAQ({ locale }: LocaleProps) {
     [t("¿Puedo recibir ayuda a distancia?", "Can I get help remotely?"), t("Sí. Podemos orientarte por teléfono o de forma remota en los mercados donde nuestros agentes están autorizados y los productos están disponibles.", "Yes. We can provide phone or remote guidance in markets where our agents are licensed and products are available.")],
     [t("¿Las mismas compañías están disponibles en todos los estados?", "Are the same companies available in every state?"), t("No necesariamente. Las compañías, redes, productos y beneficios varían según la ubicación y la elegibilidad. Confirmamos la disponibilidad para tu situación antes de avanzar.", "Not necessarily. Companies, networks, products, and benefits vary by location and eligibility. We confirm availability for your situation before moving forward.")],
   ];
-  return <section id="preguntas" className={`${p.section} ${p.faq}`} aria-labelledby="faq-heading"><div><span className={p.eyebrow}>{t("PREGUNTAS, SIN RODEOS", "STRAIGHTFORWARD ANSWERS")}</span><h2 id="faq-heading">{t("Hablemos ", "Let’s make it ")}<em>{t("claro.", "clear.")}</em></h2></div><div className={p.accordion}>{faqs.map(([question, answer]) => <details key={question}><summary>{question}<ChevronDown size={18} aria-hidden="true" /></summary><p>{answer}</p></details>)}</div></section>;
+  return (
+    <section id="preguntas" className={f.section} aria-labelledby="faq-heading">
+      <div className={f.wrap}>
+        <div className={f.intro}>
+          <span className={f.eyebrow}>{t("PREGUNTAS, SIN RODEOS", "STRAIGHTFORWARD ANSWERS")}</span>
+          <h2 id="faq-heading">{t("Hablemos ", "Let’s make it ")}<em>{t("claro.", "clear.")}</em></h2>
+          <p className={f.deck}>{t("Respuestas directas. Si tu caso es otro, un asesor puede seguir por WhatsApp.", "Direct answers. If your situation is different, an advisor can continue on WhatsApp.")}</p>
+          <a className={f.whatsapp} href={getHealthWhatsapp(locale)} target="_blank" rel="noopener noreferrer">
+            <MessageCircle size={18} aria-hidden="true" />
+            {t("Escribir por WhatsApp", "Message on WhatsApp")}
+          </a>
+          <p className={f.aside}>{t("También por teléfono o Zoom.", "By phone or Zoom as well.")}</p>
+        </div>
+        <div className={f.list}>
+          {faqs.map(([question, answer]) => (
+            <details key={question}>
+              <summary>{question}<span className={f.plus}><Plus size={18} aria-hidden="true" /></span></summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 // These are local education previews, not fabricated blog links. A future
