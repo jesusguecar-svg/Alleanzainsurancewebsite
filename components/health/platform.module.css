@@ -57,6 +57,19 @@
 @media(prefers-reduced-motion:reduce){.platform *,.platform *:before,.platform *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.primary:hover,.secondary:hover{transform:none}}
 .trustCompact{padding-top:36px}
 .pathImage{display:block;width:100%;height:240px;margin-top:26px;border-radius:16px;object-fit:cover;object-position:center 28%}
+
+.advisor{background:#f7f8f6}
+.advisor>section{align-items:center;gap:clamp(40px,6vw,88px);padding-block:96px}
+.advisor>section>div>p{max-width:34em;color:#3d4d5c;font-size:17px;line-height:1.45}
+.advisor form h3{font-family:var(--alleanza-serif),Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-.035em;line-height:1.08}
+.advisor form>div>span{color:#087fa5;font-size:12px;font-weight:600;letter-spacing:.14em}
+.advisor :is(label,p){font-size:15px;line-height:1.45}
+.advisor label input,.advisor label select{min-height:52px;padding:14px 16px;border-radius:14px;font-size:16px}
+.advisor form label:has(input[type=checkbox]){font-size:13px;line-height:1.45;color:#526272}
+.advisor form>p{font-size:12px;line-height:1.5;color:#6b7c86}
+.advisor form button[type=submit]{justify-content:space-between;border-radius:999px;background:#087fa5;color:#fff;font-size:16px;font-weight:600;letter-spacing:-.02em;box-shadow:none}
+.advisor form button[type=submit]:hover{background:#066888;transform:none;box-shadow:none}
+@media(max-width:700px){.advisor>section{align-items:stretch;padding-block:64px}.advisor>section>div>p{font-size:16px}.advisor form h3{font-size:28px}}
 @media(max-width:700px){.pathImage{height:200px;margin-top:18px}}
 .platform .trust.trustCompact h2{font-family:var(--alleanza-serif);font-size:clamp(28px,3vw,40px);font-weight:400;letter-spacing:-.04em}
 .trustCompact .trustHeading{margin-bottom:28px}

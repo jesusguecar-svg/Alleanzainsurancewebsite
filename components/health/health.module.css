@@ -70,3 +70,22 @@
 @media(max-width:560px){.railOfficeAddress{grid-template-columns:auto minmax(0,1fr);padding:14px}.railAddressAction{grid-column:2;justify-content:flex-start;margin-top:4px}}
 @media(max-width:800px){.healthLanguage{margin-left:auto}.headerCta{margin-left:0}}
 @media(max-width:560px){.headerCategory,.headerCta{display:none}.healthLanguage{margin-left:auto}}
+
+/* Salud contact sits on the same quiet paper as the comparison cards. */
+section.contact{background:#f7f8f6;color:#061633;border-top:0}
+.page section.contact h2 em{color:#5d7590}
+section.contact .eyebrow{color:#087fa5;font-size:12px;font-weight:600;letter-spacing:.16em}
+section.contact .whatsappLink{margin-top:28px;padding:0;border:0;color:#087fa5;font-size:17px;font-weight:500;letter-spacing:-.02em}
+section.contact .contactDirect{gap:0;margin-top:28px;border-top:1px solid #e4e7e2}
+section.contact .contactDirect a{min-height:52px;gap:12px;border-bottom:1px solid #e4e7e2;color:#061633;font-size:16px;letter-spacing:-.015em}
+section.contact .contactDirect a:hover{color:#087fa5}
+section.contact .formCard{padding:36px 32px 28px;border:0;border-radius:28px;background:#fff;box-shadow:none;color:#061633}
+section.contact .formTitle{align-items:baseline;margin-bottom:26px}
+section.contact .formTitle h3{color:#061633;letter-spacing:-.035em}
+section.contact .field{margin-bottom:16px;color:#061633;font-size:13px;font-weight:600}
+section.contact .field input,section.contact .field select{border:1px solid #e3e6e1;border-radius:14px;background:#f7f8f6;color:#061633}
+section.contact .field input:focus,section.contact .field select:focus{border-color:#087fa5;background:#fff}
+section.contact .consent{color:#526272;font-size:13px;line-height:1.45}
+section.contact .formFootnote{color:#6b7c86;font-size:12px;line-height:1.5}
+section.contact .formError{border-radius:14px}
+@media(max-width:700px){section.contact .formCard{padding:28px 22px 22px;border-radius:22px}section.contact .contactDirect a{font-size:15px}section.contact .whatsappLink{font-size:16px}}
