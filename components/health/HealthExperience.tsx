@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, Instagram, Menu, X } from "lucide-react";
 import { Logo } from "../Logo";
 import { LanguageSwitch } from "../LanguageSwitch";
 import { SiteFooter } from "../layout/SiteFooter";
@@ -13,6 +13,7 @@ import { HealthCarrierLogos } from "./HealthCarrierLogos";
 import { HealthCredibility } from "./HealthCredibility";
 import { HealthContact } from "./HealthContact";
 import { CompareSection, ComparisonFactors, CoverageCategories, HealthEducation, HealthFAQ, HealthFinalCTA, HealthTrust, HowAlleanzaWorks, ShoppingComparison, ShoppingPathSelector } from "./HealthPlatformSections";
+import { instagramProfileUrl } from "@/lib/config/site";
 import type { GoogleReviews } from "@/lib/google-reviews";
 import s from "./health.module.css";
 import p from "./platform.module.css";
@@ -46,6 +47,7 @@ export default function HealthExperience({ reviews, reviewsUrl, locale = "es" }:
       <a className={s.headerCategory} href={en ? "/en/health" : "/health"}>{en ? "Health" : "Salud"}</a>
       <nav className={s.desktopNav} aria-label={en ? "Health navigation" : "Navegación de salud"}>{links.map(([href, label]) => <a key={href} href={href}>{label}</a>)}</nav>
       <LanguageSwitch locale={locale} spanishHref="/health" englishHref="/en/health" preserveHash className={s.healthLanguage} />
+      <a className={s.headerInstagram} href={instagramProfileUrl} target="_blank" rel="noopener noreferrer" aria-label={en ? "Alleanza on Instagram" : "Alleanza en Instagram"}><Instagram size={18} aria-hidden="true" /></a>
       <a href="#compare" className={s.headerCta}>{en ? "Compare options" : "Comparar opciones"}<ArrowUpRight size={15} aria-hidden="true" /></a>
       <button id="health-menu-toggle" type="button" className={s.menuButton} aria-label={menuOpen ? (en ? "Close menu" : "Cerrar menú") : (en ? "Open menu" : "Abrir menú")} aria-expanded={menuOpen} aria-controls="health-menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button>
       {menuOpen && <nav id="health-menu" className={s.mobileNav} aria-label={en ? "Mobile navigation" : "Navegación móvil"}>{[...links, ["#contacto", en ? "Talk to an advisor" : "Hablar con un asesor"]].map(([href, label]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}<ArrowUpRight size={17} aria-hidden="true" /></a>)}</nav>}

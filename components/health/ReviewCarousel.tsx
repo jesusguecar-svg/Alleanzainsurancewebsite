@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Instagram, Star } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
+import { instagramProfileUrl } from "@/lib/config/site";
 import { verifiedGoogleSummary, type GoogleReviews } from "@/lib/google-reviews";
 import s from "./review-carousel.module.css";
 
@@ -139,6 +140,10 @@ export function ReviewCarousel({ locale, reviews, reviewsUrl }: { locale: Locale
                 {t("Ver en Google", "View on Google")}
               </a>
             ) : null}
+            <a className={s.instagram} href={instagramProfileUrl} target="_blank" rel="noopener noreferrer">
+              <Instagram size={16} aria-hidden="true" />
+              {t("Ver en Instagram", "View on Instagram")}
+            </a>
           </div>
           {items.length ? (
             <div className={s.rail}>

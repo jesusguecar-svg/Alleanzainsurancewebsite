@@ -1,3 +1,5 @@
+import { Instagram } from "lucide-react";
+import { instagramProfileUrl } from "@/lib/config/site";
 import f from "./site-footer.module.css";
 import { Logo } from "../Logo";
 import { officeAddressLines, officeHours, phones } from "@/lib/config/contact";
@@ -5,7 +7,7 @@ import { legalRoutes, portalRoutes } from "@/lib/config/routes";
 
 /** Shared footer for every route. Carries the office details and portal map. */
 export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
-  if (editorial) return <footer className={f.footer}><div className={f.inner}><div className={f.brand}><Logo light width={180} /><p>Te ayudamos a entender tus opciones de cobertura y comparar alternativas según tus necesidades.</p><span>Una alianza contigo.</span></div><div className={f.columns}><div><h2>Oficina</h2><address>{officeAddressLines.map(line => <span key={line}>{line}</span>)}</address><h2>Horario</h2><dl>{officeHours.map(entry => <div key={entry.days}><dt>{entry.days}</dt><dd>{entry.hours}</dd></div>)}</dl></div><div><h2>Hablemos</h2>{phones.map(phone => <a key={phone.href} href={`tel:${phone.href}`}>{phone.label}</a>)}</div><nav aria-label="Explora Alleanza"><h2>Explora</h2>{portalRoutes.map(route => <a key={route.id} href={route.href} {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{route.label}{route.external ? " ↗" : ""}</a>)}</nav></div><div className={f.legal}><p>© {new Date().getFullYear()} Alleanza Insurance Corp.</p><nav aria-label="Información legal">{legalRoutes.map(route => <a key={route.href} href={route.href}>{route.label}</a>)}</nav></div><p className={f.note}>Alleanza Insurance Corp. es una agencia independiente. Las pólizas y coberturas las emiten las compañías aseguradoras correspondientes; están sujetas a disponibilidad, elegibilidad, términos y condiciones.</p></div></footer>;
+  if (editorial) return <footer className={f.footer}><div className={f.inner}><div className={f.brand}><Logo light width={180} /><p>Te ayudamos a entender tus opciones de cobertura y comparar alternativas según tus necesidades.</p><span>Una alianza contigo.</span><a className={f.social} href={instagramProfileUrl} target="_blank" rel="noopener noreferrer" aria-label="Alleanza en Instagram"><Instagram size={18} aria-hidden="true" /></a></div><div className={f.columns}><div><h2>Oficina</h2><address>{officeAddressLines.map(line => <span key={line}>{line}</span>)}</address><h2>Horario</h2><dl>{officeHours.map(entry => <div key={entry.days}><dt>{entry.days}</dt><dd>{entry.hours}</dd></div>)}</dl></div><div><h2>Hablemos</h2>{phones.map(phone => <a key={phone.href} href={`tel:${phone.href}`}>{phone.label}</a>)}</div><nav aria-label="Explora Alleanza"><h2>Explora</h2>{portalRoutes.map(route => <a key={route.id} href={route.href} {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{route.label}{route.external ? " ↗" : ""}</a>)}</nav></div><div className={f.legal}><p>© {new Date().getFullYear()} Alleanza Insurance Corp.</p><nav aria-label="Información legal">{legalRoutes.map(route => <a key={route.href} href={route.href}>{route.label}</a>)}</nav></div><p className={f.note}>Alleanza Insurance Corp. es una agencia independiente. Las pólizas y coberturas las emiten las compañías aseguradoras correspondientes; están sujetas a disponibilidad, elegibilidad, términos y condiciones.</p></div></footer>;
   return (
     <footer className="bg-navy px-5 pb-10 pt-16 text-white">
       <div className="mx-auto max-w-7xl">
@@ -17,6 +19,9 @@ export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
               seguro de salud, vida y protección complementaria. Las pólizas las emiten las compañías
               aseguradoras correspondientes; su disponibilidad varía según el estado y la compañía.
             </p>
+            <a href={instagramProfileUrl} target="_blank" rel="noopener noreferrer" aria-label="Alleanza en Instagram" className="mt-6 grid h-10 w-10 place-items-center rounded-full border border-white/25 text-white transition hover:border-cyan hover:text-cyan">
+              <Instagram size={18} aria-hidden="true" />
+            </a>
           </div>
 
           <div>
