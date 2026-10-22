@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowRight, Menu } from "lucide-react";
+import { ArrowRight, Instagram, Menu } from "lucide-react";
 import { useState } from "react";
+import { instagramProfileUrl } from "@/lib/config/site";
 import { Logo } from "../Logo";
 
 export type NavLink = { href: string; label: string };
@@ -45,11 +46,16 @@ export function SiteHeader({
           })}
         </nav>
 
-        {cta && (
-          <a href={cta.href} className="hidden items-center gap-2 rounded-full bg-cyan px-5 py-3 text-xs font-semibold text-navy shadow-[0_8px_25px_rgba(4,192,254,.35)] transition hover:-translate-y-0.5 md:flex">
-            {cta.label} <ArrowRight aria-hidden="true" size={15} />
+        <div className="flex items-center gap-3">
+          <a href={instagramProfileUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="grid h-10 w-10 place-items-center rounded-full border border-navy/15 text-navy transition hover:border-cyan hover:text-cyan">
+            <Instagram size={18} aria-hidden="true" />
           </a>
-        )}
+          {cta && (
+            <a href={cta.href} className="hidden items-center gap-2 rounded-full bg-cyan px-5 py-3 text-xs font-semibold text-navy shadow-[0_8px_25px_rgba(4,192,254,.35)] transition hover:-translate-y-0.5 md:flex">
+              {cta.label} <ArrowRight aria-hidden="true" size={15} />
+            </a>
+          )}
+        </div>
 
         <button
           type="button"

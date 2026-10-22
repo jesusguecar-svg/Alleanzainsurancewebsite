@@ -98,6 +98,27 @@
   color: #087fa5;
 }
 
+.instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: 1px solid #d9ded8;
+  border-radius: 999px;
+  background: #fff;
+  color: #061633;
+  font-size: 14px;
+  font-weight: 550;
+  letter-spacing: -0.015em;
+}
+
+.instagram:hover {
+  border-color: #087fa5;
+  color: #087fa5;
+}
+
 .rail {
   position: relative;
   min-width: 0;

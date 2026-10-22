@@ -22,6 +22,9 @@ function resolveSiteUrl(): string {
 
 export const siteUrl = resolveSiteUrl();
 
+/** Public Instagram profile for Alleanza Insurance Corp. */
+export const instagramProfileUrl = "https://www.instagram.com/alleanzainsurancecorp/";
+
 /** True once a real production domain is configured, rather than the local fallback. */
 export const hasPublicSiteUrl = siteUrl.startsWith("https://");
 

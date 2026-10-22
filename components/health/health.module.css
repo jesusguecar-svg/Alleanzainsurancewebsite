@@ -23,6 +23,7 @@
 .headerCategory{color:var(--alleanza-navy);border-color:#06163326}.headerCategory:hover{border-color:var(--alleanza-blue)}
 .desktopNav a{position:relative}.desktopNav a:after{content:'';position:absolute;bottom:8px;left:0;right:0;height:1px;background:var(--alleanza-blue);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--alleanza-ease)}.desktopNav a:hover:after,.desktopNav a:focus-visible:after{transform:scaleX(1)}
 .headerCta{border-radius:5px;min-height:44px}.headerCta:hover{background:var(--alleanza-ice)}
+.headerInstagram{display:grid;place-items:center;flex:none;width:40px;height:40px;border:1px solid #acbcbd;border-radius:50%;color:#061633}.headerInstagram:hover{border-color:#087fa5;color:#087fa5}
 .mobileNav{top:100%;border-radius:5px}.menuButton{min-width:44px;min-height:44px}
 .primaryButton,.submit{background:var(--alleanza-cream);color:var(--alleanza-navy);border-radius:5px;min-height:48px}.primaryButton:hover,.submit:hover{background:#f6e5be;transform:translateY(-2px);box-shadow:0 8px 24px #06163312}
 .serviceGlass{animation:none;transform:rotate(-5deg)}
