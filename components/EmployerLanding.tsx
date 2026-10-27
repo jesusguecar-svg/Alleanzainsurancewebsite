@@ -117,6 +117,7 @@ function EmployerInquiryForm() {
           productId: "",
           message,
           consent: values.consent,
+          source: window.location.pathname,
           [honeypotFieldName]: honeypotValue,
         }),
       });

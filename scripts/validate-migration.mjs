@@ -176,15 +176,29 @@ for (const { destination } of legacy.redirects) {
 }
 
 // ---------------------------------------------------------------- forms (rejected before sending)
-const contactEmpty = await get("/api/contacto", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
-check([422, 503].includes(contactEmpty.status), `/api/contacto rejects an empty submission (${contactEmpty.status}${contactEmpty.status === 503 ? ": CONTACT_WEBHOOK_URL not configured" : ""})`);
-if (contactEmpty.status === 503) warnings.push("/api/contacto: CONTACT_WEBHOOK_URL is not configured, so the general contact form cannot deliver leads");
-const healthBad = await get("/api/health/contact", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name: "x", email: "no", phone: "1", state: "48", service: "aca", consent: true }) });
+// Every request below is invalid, so none of them sends an email, even against production.
+const post = (path, body, headers = {}) => get(path, { method: "POST", headers: { "content-type": "application/json", ...headers }, body });
+const contactEmpty = await post("/api/contacto", "{}");
+check([422, 503].includes(contactEmpty.status), `/api/contacto rejects an empty submission (${contactEmpty.status}${contactEmpty.status === 503 ? ": Resend not configured" : ""})`);
+if (contactEmpty.status === 503) warnings.push("/api/contacto: RESEND_API_KEY or RESEND_FROM/CONTACT_FROM (on mail.alleanzainsurance.org) is not configured, so the contact form cannot deliver leads");
+const contactCross = await post("/api/contacto", "{}", { origin: "https://evil.example" });
+check(contactCross.status === 403, `/api/contacto rejects cross-origin requests (${contactCross.status})`);
+if (contactEmpty.status !== 503) {
+  const contactJunk = await post("/api/contacto", "not json");
+  check(contactJunk.status === 400, `/api/contacto rejects malformed JSON (${contactJunk.status})`);
+  const contactHuge = await post("/api/contacto", JSON.stringify({ message: "x".repeat(9000) }));
+  check(contactHuge.status === 413, `/api/contacto rejects an oversized body (${contactHuge.status})`);
+  const contactBot = await post("/api/contacto", JSON.stringify({ name: "Bot", phone: "5550100000", consent: true, company_fax_hp: "x" }));
+  check(contactBot.status === 400, `/api/contacto rejects a filled honeypot (${contactBot.status})`);
+}
+const healthBad = await post("/api/health/contact", JSON.stringify({ name: "x", email: "no", phone: "1", state: "48", service: "aca", consent: true }));
 check(healthBad.status === 422, `/api/health/contact rejects invalid input (${healthBad.status})`);
-const healthCross = await get("/api/health/contact", { method: "POST", headers: { "content-type": "application/json", origin: "https://evil.example" }, body: "{}" });
+const healthCross = await post("/api/health/contact", "{}", { origin: "https://evil.example" });
 check(healthCross.status === 403, `/api/health/contact rejects cross-origin requests (${healthCross.status})`);
-const healthJunk = await get("/api/health/contact", { method: "POST", headers: { "content-type": "application/json" }, body: "not json" });
+const healthJunk = await post("/api/health/contact", "not json");
 check(healthJunk.status === 400, `/api/health/contact rejects malformed JSON (${healthJunk.status})`);
+const healthHuge = await post("/api/health/contact", JSON.stringify({ name: "x".repeat(9000) }));
+check(healthHuge.status === 413, `/api/health/contact rejects an oversized body (${healthHuge.status})`);
 
 console.log(`\n${passes} passed, ${failures} failed, ${warnings.length} warning(s)`);
 for (const w of warnings) console.log(`warn  ${w}`);

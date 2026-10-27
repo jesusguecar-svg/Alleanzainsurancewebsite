@@ -38,6 +38,7 @@ export function ContactSection({ lines }: { lines?: readonly Product["line"][] }
       productId: String(data.get("productId") ?? ""),
       message: String(data.get("message") ?? ""),
       consent: data.get("consent") === "on",
+      source: window.location.pathname,
       [honeypotFieldName]: String(data.get(honeypotFieldName) ?? ""),
     };
 

@@ -7,6 +7,8 @@ export type ContactRequest = {
   productId?: string;
   message?: string;
   consent: boolean;
+  /** Path of the page the form was sent from, included in the lead email. */
+  source?: string;
 };
 
 export type FieldErrors = Partial<Record<keyof ContactRequest, string>>;
@@ -54,7 +56,7 @@ export function validateContact(input: Partial<ContactRequest>): FieldErrors {
   else if (!phonePattern.test(phone)) errors.phone = "Revisa el número de teléfono.";
 
   const email = input.email?.trim() ?? "";
-  if (email && !emailPattern.test(email)) errors.email = "Revisa el correo electrónico.";
+  if (email && (email.length > 254 || !emailPattern.test(email))) errors.email = "Revisa el correo electrónico.";
 
   const message = input.message?.trim() ?? "";
   if (message.length > 2000) errors.message = "El mensaje es demasiado largo.";

@@ -42,3 +42,9 @@ export const phones: Phone[] = [
 ];
 
 export const academyUrl = "https://licencia.alleanzainsurance.org";
+
+/** Inbox that receives every website form submission. */
+export const leadInbox = "info@alleanzainsurance.org";
+
+/** Verified Resend sending domain. Form emails are only sent from addresses on it. */
+export const emailSendingDomain = "mail.alleanzainsurance.org";

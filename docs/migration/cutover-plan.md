@@ -25,12 +25,22 @@ variables are set**.
 
 ## Before the window (no downtime)
 
-1. **Lead delivery (blocker).** Choose the lead destination, then set in Vercel → Project →
-   Settings → Environment Variables (Production): `CONTACT_WEBHOOK_URL` (general form),
-   `RESEND_API_KEY` and `HEALTH_CONTACT_FROM` (Salud form). Verify the sending domain in Resend
-   *without* replacing the existing SPF/DKIM records: add only the records Resend asks for, on a
-   subdomain it provides. Optional: `GOOGLE_PLACES_API_KEY`, `GOOGLE_REVIEWS_PLACE_ID`,
-   `GOOGLE_REVIEWS_URL` (after compliance item 13). Redeploy and submit one test lead per form.
+1. **Lead delivery (blocker).** Both forms send through Resend to `info@alleanzainsurance.org`,
+   from the verified sending domain `mail.alleanzainsurance.org`, with the visitor's address as
+   Reply-To (never as From). Set in Vercel → Project → Settings → Environment Variables
+   (Production): `RESEND_API_KEY` and `RESEND_FROM` (for example
+   `Alleanza Insurance <website@mail.alleanzainsurance.org>`). `CONTACT_FROM` and
+   `HEALTH_CONTACT_FROM` are optional per-form overrides; any sender outside
+   `mail.alleanzainsurance.org` is treated as not configured and the form returns 503. The Resend
+   records live only on the `mail` subdomain; they do not touch the apex SPF/DKIM/DMARC records.
+   Optional: `GOOGLE_PLACES_API_KEY`, `GOOGLE_REVIEWS_PLACE_ID`, `GOOGLE_REVIEWS_URL` (after
+   compliance item 13). Redeploy and submit one test lead per form; confirm each arrives at
+   `info@` and that replying goes to the visitor's address.
+   **Form rate limiting (recommended, separate approval):** the app caps each IP at 5 emails per
+   10 minutes per form, but that count is per server instance. For real enforcement add a Vercel
+   Firewall rate-limit rule (Project → Firewall → Rules): `POST` to `/api/contacto` or
+   `/api/health/contact`, about 10 requests per 10 minutes per IP, action deny (429). This uses
+   Vercel's built-in firewall; no third-party service is needed.
 2. Lower the TTL of the `@` and `www` records at SiteGround to 300 s, at least 24 h before the
    window.
 3. Export the current SiteGround DNS zone (Site Tools → Domain → DNS Zone Editor) and keep the

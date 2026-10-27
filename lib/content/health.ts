@@ -1,4 +1,6 @@
-export const healthEmail = "info@alleanzainsurance.org";
+import { leadInbox } from "@/lib/config/contact";
+
+export const healthEmail = leadInbox;
 
 /** Carrollton office line, shown with the WhatsApp number on the Salud contact form. */
 export const healthOfficePhone = {
