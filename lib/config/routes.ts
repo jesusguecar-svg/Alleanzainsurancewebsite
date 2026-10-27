@@ -73,6 +73,12 @@ export const portalRoutes: PortalRoute[] = [
 
 export const academyExternalUrl = academyUrl;
 
+/** Corporate pages that keep the legacy site's Contacto and Nosotros destinations. */
+export const companyRoutes = [
+  { href: "/nosotros", label: "Nosotros", labelEn: "About us" },
+  { href: "/contacto", label: "Contacto", labelEn: "Contact" },
+] as const;
+
 export const legalRoutes = [
   { href: "/privacidad", label: "Privacidad", labelEn: "Privacy" },
   { href: "/terminos", label: "Términos", labelEn: "Terms" },

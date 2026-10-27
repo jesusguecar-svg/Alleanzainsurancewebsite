@@ -3,11 +3,22 @@ import { LegalDocument } from "@/components/LegalDocument";
 import { companyFacts } from "@/lib/config/company";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 
+const title = "Licencias | Alleanza Insurance Corp.";
+const description =
+  "Información sobre licencias de Alleanza Insurance Corp. Los productos se ofrecen solo donde hay licencia y disponibilidad.";
+
 export const metadata: Metadata = {
-  title: "Licencias | Alleanza Insurance Corp.",
-  description:
-    "Información sobre licencias de Alleanza Insurance Corp. Los productos se ofrecen solo donde hay licencia y disponibilidad.",
+  title,
+  description,
   alternates: { canonical: "/licencias" },
+  openGraph: {
+    type: "website",
+    locale: "es_US",
+    url: "/licencias",
+    siteName: "Alleanza Insurance Corp.",
+    title,
+    description,
+  },
 };
 
 export default function Page() {
@@ -51,7 +62,7 @@ export default function Page() {
       <h2>Contacto</h2>
       <p>
         Para verificar credenciales o reportar un problema:{" "}
-        <a href="/health#contacto">formulario de contacto</a> o{" "}
+        <a href="/contacto">formulario de contacto</a> o{" "}
         <a href={`tel:${phones[0].href}`}>{phones[0].label}</a>.
       </p>
     </LegalDocument>

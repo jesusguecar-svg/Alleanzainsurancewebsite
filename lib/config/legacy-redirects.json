@@ -1,0 +1,27 @@
+{
+  "_comment": "Permanent (308) redirects from the legacy WordPress site (alleanzainsurance.org, Yoast sitemap as of 2026-10-27) to the page on this site with the same intent. /contacto and /nosotros exist as pages, so they need no redirect. /woodmart_slider/corporate-slider was an empty theme archive ('Nothing Found') and intentionally returns 404. Checked by scripts/validate-migration.mjs.",
+  "redirects": [
+    { "source": "/productos", "destination": "/", "reason": "Product catalogue hub -> portal hub listing every product line (Salud, Vida, Propiedad, Empresas)" },
+    { "source": "/productos/obamacare", "destination": "/health#coverage-aca", "reason": "ACA / Obamacare" },
+    { "source": "/productos/seguro-medico", "destination": "/health", "reason": "General health insurance" },
+    { "source": "/productos/seguro-privado", "destination": "/health#coverage-private", "reason": "Private health insurance" },
+    { "source": "/productos/poliza-de-accidentes", "destination": "/health#coverage-supplemental", "reason": "Accident policy (supplemental)" },
+    { "source": "/productos/poliza-de-atencion-cardiaca", "destination": "/health#coverage-supplemental", "reason": "Heart-event policy (supplemental)" },
+    { "source": "/productos/poliza-de-cuidados-intensivos", "destination": "/health#coverage-supplemental", "reason": "Intensive-care policy (supplemental)" },
+    { "source": "/productos/poliza-hospitalaria", "destination": "/health#coverage-supplemental", "reason": "Hospital indemnity policy (supplemental)" },
+    { "source": "/productos/poliza-suplemento-al-cancer", "destination": "/health#coverage-supplemental", "reason": "Cancer policy (supplemental)" },
+    { "source": "/productos/seguro-de-vida", "destination": "/life", "reason": "Life insurance" },
+    { "source": "/trabajo", "destination": "/work", "reason": "Careers / agent recruiting" },
+    { "source": "/sitemap_index.xml", "destination": "/sitemap.xml", "reason": "Yoast sitemap index submitted to search engines" },
+    { "source": "/page-sitemap.xml", "destination": "/sitemap.xml", "reason": "Yoast page sitemap" },
+    { "source": "/woodmart_slider-sitemap.xml", "destination": "/sitemap.xml", "reason": "Yoast theme sitemap" }
+  ],
+  "pages": [
+    { "path": "/", "reason": "Home (unchanged path)" },
+    { "path": "/contacto", "reason": "Contact (new page)" },
+    { "path": "/nosotros", "reason": "About (new page)" }
+  ],
+  "gone": [
+    { "path": "/woodmart_slider/corporate-slider", "reason": "Empty theme archive with no content; 404 on purpose" }
+  ]
+}

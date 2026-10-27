@@ -25,10 +25,10 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/" },
+  // No `url` here: pages without their own openGraph would otherwise announce the homepage.
   openGraph: {
     type: "website",
     locale: "es_US",
-    url: "/",
     siteName: "Alleanza Insurance Corp.",
     title,
     description,
