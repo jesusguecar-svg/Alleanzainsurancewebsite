@@ -25,7 +25,8 @@ Copia `.env.example` a `.env.local` y ajusta los valores.
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | No | Sustituye el dominio canónico. Sin ella, todo build de producción usa `https://alleanzainsurance.org` (`lib/config/site.ts`) para enlaces canónicos, Open Graph, `robots.txt`, `sitemap.xml` y datos estructurados; `next dev` usa `localhost`. |
 | `RESEND_API_KEY` | **Sí, antes de lanzar** | Clave de Resend. Los formularios de contacto (`/api/contacto`) y de Salud (`/api/health/contact`) envían cada solicitud a `info@alleanzainsurance.org` desde el servidor, con el correo del visitante como Reply-To. Sin la clave o sin remitente válido, ambos responden `503` y avisan al visitante en lugar de recoger datos personales sin destino. |
-| `RESEND_FROM` | **Sí, antes de lanzar** | Remitente compartido, por ejemplo `Alleanza Insurance <website@mail.alleanzainsurance.org>`. Debe estar en el dominio verificado `mail.alleanzainsurance.org` (`lib/config/contact.ts`); cualquier otro dominio se rechaza. |
+| `RESEND_FROM` | **Sí, antes de lanzar** | Remitente compartido: `Alleanza Insurance <website@forms.alleanzainsurance.org>`. Debe estar en el dominio de `RESEND_SENDING_DOMAIN`; cualquier otro dominio se rechaza. |
+| `RESEND_SENDING_DOMAIN` | No | Dominio verificado en Resend desde el que se envían los formularios. Por defecto `forms.alleanzainsurance.org` (`lib/config/contact.ts`). |
 | `CONTACT_FROM`, `HEALTH_CONTACT_FROM` | No | Remitente propio para un formulario; sustituye a `RESEND_FROM` solo en ese formulario. Misma regla de dominio. |
 
 > `NEXT_PUBLIC_SITE_URL` se resuelve durante el build, así que debe estar

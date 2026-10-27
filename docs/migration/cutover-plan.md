@@ -26,13 +26,14 @@ variables are set**.
 ## Before the window (no downtime)
 
 1. **Lead delivery (blocker).** Both forms send through Resend to `info@alleanzainsurance.org`,
-   from the verified sending domain `mail.alleanzainsurance.org`, with the visitor's address as
+   from the verified sending domain `forms.alleanzainsurance.org`, with the visitor's address as
    Reply-To (never as From). Set in Vercel → Project → Settings → Environment Variables
    (Production): `RESEND_API_KEY` and `RESEND_FROM` (for example
-   `Alleanza Insurance <website@mail.alleanzainsurance.org>`). `CONTACT_FROM` and
+   `Alleanza Insurance <website@forms.alleanzainsurance.org>`). `RESEND_SENDING_DOMAIN` defaults
+   to `forms.alleanzainsurance.org`; set it only if the verified domain changes. `CONTACT_FROM` and
    `HEALTH_CONTACT_FROM` are optional per-form overrides; any sender outside
-   `mail.alleanzainsurance.org` is treated as not configured and the form returns 503. The Resend
-   records live only on the `mail` subdomain; they do not touch the apex SPF/DKIM/DMARC records.
+   the sending domain is treated as not configured and the form returns 503. The Resend records
+   live only on the `forms` subdomain; they do not touch the apex SPF/DKIM/DMARC records.
    Optional: `GOOGLE_PLACES_API_KEY`, `GOOGLE_REVIEWS_PLACE_ID`, `GOOGLE_REVIEWS_URL` (after
    compliance item 13). Redeploy and submit one test lead per form; confirm each arrives at
    `info@` and that replying goes to the visitor's address.

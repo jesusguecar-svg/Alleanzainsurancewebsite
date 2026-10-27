@@ -1,6 +1,11 @@
-import { emailSendingDomain } from "@/lib/config/contact";
+import { defaultEmailSendingDomain } from "@/lib/config/contact";
 
 export type FormSender = "contact" | "health";
+
+/** The verified Resend domain: `RESEND_SENDING_DOMAIN`, else the default in lib/config/contact.ts. */
+export function sendingDomain() {
+  return (process.env.RESEND_SENDING_DOMAIN?.trim() || defaultEmailSendingDomain).toLowerCase();
+}
 
 /**
  * The From address for a form's notification email. One shared identity
@@ -14,8 +19,9 @@ export function senderFor(form: FormSender): string | undefined {
   const from = (specific || process.env.RESEND_FROM)?.trim();
   if (!from) return undefined;
   const address = from.match(/<([^<>\s]+)>\s*$/)?.[1] ?? from;
-  if (address.split("@")[1]?.toLowerCase() !== emailSendingDomain) {
-    console.error(`Sender for the ${form} form is not on ${emailSendingDomain}; refusing to send.`);
+  const domain = sendingDomain();
+  if (address.split("@")[1]?.toLowerCase() !== domain) {
+    console.error(`Sender for the ${form} form is not on ${domain}; refusing to send.`);
     return undefined;
   }
   return from;

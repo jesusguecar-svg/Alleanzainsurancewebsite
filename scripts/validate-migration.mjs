@@ -180,7 +180,7 @@ for (const { destination } of legacy.redirects) {
 const post = (path, body, headers = {}) => get(path, { method: "POST", headers: { "content-type": "application/json", ...headers }, body });
 const contactEmpty = await post("/api/contacto", "{}");
 check([422, 503].includes(contactEmpty.status), `/api/contacto rejects an empty submission (${contactEmpty.status}${contactEmpty.status === 503 ? ": Resend not configured" : ""})`);
-if (contactEmpty.status === 503) warnings.push("/api/contacto: RESEND_API_KEY or RESEND_FROM/CONTACT_FROM (on mail.alleanzainsurance.org) is not configured, so the contact form cannot deliver leads");
+if (contactEmpty.status === 503) warnings.push("/api/contacto: RESEND_API_KEY or RESEND_FROM/CONTACT_FROM (on the RESEND_SENDING_DOMAIN, forms.alleanzainsurance.org by default) is not configured, so the contact form cannot deliver leads");
 const contactCross = await post("/api/contacto", "{}", { origin: "https://evil.example" });
 check(contactCross.status === 403, `/api/contacto rejects cross-origin requests (${contactCross.status})`);
 if (contactEmpty.status !== 503) {

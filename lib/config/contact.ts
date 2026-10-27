@@ -46,5 +46,8 @@ export const academyUrl = "https://licencia.alleanzainsurance.org";
 /** Inbox that receives every website form submission. */
 export const leadInbox = "info@alleanzainsurance.org";
 
-/** Verified Resend sending domain. Form emails are only sent from addresses on it. */
-export const emailSendingDomain = "mail.alleanzainsurance.org";
+/**
+ * Verified Resend sending domain, used when `RESEND_SENDING_DOMAIN` is not set.
+ * Form emails are only sent from addresses on the configured domain.
+ */
+export const defaultEmailSendingDomain = "forms.alleanzainsurance.org";
