@@ -88,8 +88,9 @@ export function credibilityContent(locale: CredibilityLocale) {
       {
         id: "service",
         value: "24/7",
-        label: en ? "service, 365 days" : "servicio, 365 días",
-        note: en ? "In Spanish and English." : "En español y en inglés.",
+        label: en ? "Contact us 24/7" : "Contáctanos 24/7",
+        // 24/7 means a request can be sent at any time, not live staffing (management decision, 2026-10-28).
+        note: en ? "You can send us your request at any time; our team will respond during business hours." : "Puedes enviarnos tu solicitud en cualquier momento; nuestro equipo responderá dentro del horario de atención.",
       },
     ] satisfies CredibilityFact[],
   };

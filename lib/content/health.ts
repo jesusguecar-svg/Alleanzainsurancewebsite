@@ -35,10 +35,14 @@ export const acaAgentCertification = {
   en: "Agents who handle Marketplace enrollments hold the corresponding registration and certification for the 2027 coverage year.",
 } as const;
 
-/** Licensing statement for consumer-facing copy (management decision, 2026-10-28). */
+/**
+ * Licensing statement for consumer-facing copy (final management decision, 2026-10-28). The site
+ * does not publish individual NPN or state-license details; requests, including ACA enrollments,
+ * are routed operationally to an agent licensed for the consumer's state and product.
+ */
 export const licensingStatement = {
-  es: "Trabajamos con agentes debidamente licenciados según el estado y el producto.",
-  en: "We work with appropriately licensed insurance agents based on the state and product.",
+  es: "Contamos con agentes debidamente licenciados según el estado y el producto. Las solicitudes se asignan de acuerdo con la licencia y disponibilidad aplicables.",
+  en: "We work with appropriately licensed agents based on the state and product. Requests are assigned according to applicable licensing and availability.",
 } as const;
 
 export const healthServices = [

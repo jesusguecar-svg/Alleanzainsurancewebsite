@@ -7,7 +7,7 @@ import { Logo } from "@/components/Logo";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { agents, getAgent } from "@/lib/content/agents";
-import { healthEmail } from "@/lib/content/health";
+import { healthEmail, licensingStatement } from "@/lib/content/health";
 import { siteUrl } from "@/lib/config/site";
 import a from "../agents.module.css";
 
@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const agent = getAgent((await params).slug);
   if (!agent) return {};
   const title = `${agent.fullName} | ${agent.title} en ${agent.city}`;
-  const description = `${agent.fullName}, ${agent.title.toLocaleLowerCase("es")}. NPN ${agent.npn}. Atención en ${agent.languages.join(" y ")} desde ${agent.officeName}.`;
+  const description = `${agent.fullName}, ${agent.title.toLocaleLowerCase("es")}. Atención en ${agent.languages.join(" y ")} desde ${agent.officeName}.`;
   return {
     title,
     description,
@@ -47,8 +47,6 @@ export default async function AgentProfilePage({ params }: Props) {
     description: agent.shortBio,
     knowsLanguage: agent.languages,
     telephone: agent.phone.href,
-    identifier: { "@type": "PropertyValue", name: "National Producer Number (NPN)", value: agent.npn },
-    areaServed: agent.serviceStates.map((name) => ({ "@type": "State", name })),
     worksFor: { "@type": "InsuranceAgency", name: "Alleanza Insurance Corp.", url: siteUrl },
     workLocation: {
       "@type": "Place",
@@ -67,7 +65,7 @@ export default async function AgentProfilePage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
-      { "@type": "Question", name: `¿En qué estados tiene licencia ${agent.fullName}?`, acceptedAnswer: { "@type": "Answer", text: `${agent.fullName} indica que cuenta con licencia residente en ${agent.residentState} y licencias no residentes en ${agent.nonResidentStates.join(", ")}. La vigencia debe confirmarse con el regulador correspondiente.` } },
+      { "@type": "Question", name: "¿Cómo se asigna mi solicitud?", acceptedAnswer: { "@type": "Answer", text: licensingStatement.es } },
       { "@type": "Question", name: `¿En qué idiomas atiende ${agent.fullName}?`, acceptedAnswer: { "@type": "Answer", text: `${agent.fullName} atiende en ${agent.languages.join(" y ")}.` } },
       { "@type": "Question", name: `¿Dónde se encuentra la oficina de ${agent.fullName}?`, acceptedAnswer: { "@type": "Answer", text: `${agent.address.street}, ${agent.address.locality}, ${agent.address.region} ${agent.address.postalCode}.` } },
     ],
@@ -89,7 +87,7 @@ export default async function AgentProfilePage({ params }: Props) {
           <p className={a.profileRole}>{agent.title}<small>{agent.titleEn}</small></p>
           <p className={a.profileLead}>{agent.shortBio}</p>
           <div className={a.profileActions}><a href={`tel:${agent.phone.href}`}><Phone size={17} /> Llamar {agent.phone.label}</a><Link href="/health#contacto">Solicitar orientación <ArrowUpRight size={17} /></Link></div>
-          <div className={a.trustStrip}><span><ShieldCheck size={17} /><strong>NPN {agent.npn}</strong><small>Identificador nacional</small></span><span><Languages size={17} /><strong>Bilingüe</strong><small>Español e inglés</small></span><span><MapPin size={17} /><strong>4 estados</strong><small>Consulta disponibilidad</small></span></div>
+          <div className={a.trustStrip}><span><ShieldCheck size={17} /><strong>Agente licenciado</strong><small>Según estado y producto</small></span><span><Languages size={17} /><strong>Bilingüe</strong><small>Español e inglés</small></span><span><MapPin size={17} /><strong>Carrollton, TX</strong><small>Teléfono o videollamada</small></span></div>
         </div>
       </section>
 
@@ -101,16 +99,14 @@ export default async function AgentProfilePage({ params }: Props) {
           <div className={a.specialties}>{agent.specialties.map((specialty) => <span key={specialty}><Check size={14} /> {specialty}</span>)}</div>
         </div>
         <aside className={a.credentials} aria-labelledby="credentials-title">
-          <div className={a.credentialHeading}><span><ShieldCheck size={18} /></span><div><small>CREDENCIALES</small><h2 id="credentials-title">Información verificable</h2></div></div>
+          <div className={a.credentialHeading}><span><ShieldCheck size={18} /></span><div><small>LICENCIAS</small><h2 id="credentials-title">Cómo trabajamos</h2></div></div>
           <dl>
             <div><dt>Nombre completo</dt><dd>{agent.fullName}</dd></div>
-            <div><dt>NPN</dt><dd>{agent.npn}</dd></div>
-            <div><dt>Licencia residente</dt><dd>{agent.residentState}</dd></div>
-            <div><dt>Licencias no residentes</dt><dd>{agent.nonResidentStates.join(" · ")}</dd></div>
+            <div><dt>Oficina</dt><dd>{agent.officeName}</dd></div>
             <div><dt>Idiomas</dt><dd>{agent.languages.join(" · ")}</dd></div>
           </dl>
-          <a className={a.verifyLink} href="https://nipr.com/licensing-center" target="_blank" rel="noopener noreferrer">Consultar información en NIPR <ArrowUpRight size={15} /></a>
-          <p>El NPN es un identificador nacional. La vigencia, autoridad y disponibilidad de productos deben confirmarse con el departamento de seguros de cada estado.</p>
+          <p>{licensingStatement.es}</p>
+          <a className={a.verifyLink} href="/licencias">Más sobre licencias <ArrowUpRight size={15} /></a>
         </aside>
       </section>
 
@@ -124,7 +120,7 @@ export default async function AgentProfilePage({ params }: Props) {
       </section>
 
       <section className={a.profileFaq} aria-labelledby="profile-faq-title"><div><span className={a.eyebrow}>RESPUESTAS DIRECTAS</span><h2 id="profile-faq-title">Antes de hablar<br />con Jesus.</h2></div><div>
-        <details><summary>¿En qué estados tiene licencia?</summary><p>Licencia residente en {agent.residentState} y licencias no residentes en {agent.nonResidentStates.join(", ")}. La disponibilidad de productos varía según el estado.</p></details>
+        <details><summary>¿Cómo se asigna mi solicitud?</summary><p>{licensingStatement.es}</p></details>
         <details><summary>¿En qué idiomas puede atenderme?</summary><p>Jesus ofrece orientación en español e inglés.</p></details>
         <details><summary>¿Puedo reunirme en persona?</summary><p>Puedes llamar para coordinar una visita en la oficina de Carrollton o solicitar orientación por teléfono o videollamada.</p></details>
       </div></section>

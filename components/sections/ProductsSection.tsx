@@ -102,7 +102,9 @@ export function ProductsSection({
   const reveal = useReveal();
 
   return (
-    <section id="productos" className="px-5 py-32 md:py-44">
+    // overflow-x-clip: the cards' corner glow sits 40px outside each card and widened the page on
+    // phones. Clipping here, not on the card, keeps the card's preserve-3d tilt.
+    <section id="productos" className="overflow-x-clip px-5 py-32 md:py-44">
       <div className="mx-auto max-w-7xl">
         <motion.div {...reveal} className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">{eyebrow}</p>

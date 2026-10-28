@@ -27,7 +27,7 @@ export function AgentSearch({ city, locale = "es", addressLine, localityLine, ma
     {matches.length > 0 ? <div className={s.agentResults} aria-live="polite">
       {matches.map((agent) => <Link href={`${locale === "en" ? "/en/agents" : "/agentes"}/${agent.slug}`} className={s.agentPreview} key={agent.slug}>
         <Image src={agent.image} alt={locale === "en" ? `Professional portrait of ${agent.fullName}` : `Retrato profesional de ${agent.fullName}`} width={56} height={56} />
-        <span><strong>{agent.fullName}</strong><small>{locale === "en" ? agent.titleEn : agent.title}</small><em><ShieldCheck size={11} /> NPN {agent.npn}</em></span>
+        <span><strong>{agent.fullName}</strong><small>{locale === "en" ? agent.titleEn : agent.title}</small><em><ShieldCheck size={11} /> {locale === "en" ? "Licensed agent" : "Agente licenciado"}</em></span>
         <ArrowUpRight size={16} aria-hidden="true" />
       </Link>)}
     </div> : <p className={s.agentEmpty}>{locale === "en" ? "There is no published profile for this city yet. Search by name or choose another service area." : "Aún no hay un perfil publicado para esta ciudad. Busca por nombre o elige otra área de atención."}</p>}

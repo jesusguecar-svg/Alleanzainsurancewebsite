@@ -5,6 +5,7 @@ export type Agent = {
   fullName: string;
   title: string;
   titleEn: string;
+  /** Internal record only; not published (management decision, 2026-10-28). */
   npn: string;
   image: string;
   languages: readonly string[];

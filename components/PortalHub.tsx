@@ -23,9 +23,21 @@ const gallery: GalleryItem[] = [
 
 const panelAngle = 360 / gallery.length;
 
+/**
+ * `useReducedMotion` is null during server rendering and true/false in the browser, so using it
+ * in render output breaks hydration for reduced-motion visitors (React #418). Report "reduce"
+ * only after mount, so the first client render matches the server HTML.
+ */
+function useReducedMotionAfterMount() {
+  const reduce = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted && reduce === true;
+}
+
 function GalleryMedia({ item, active, play = true }: { item: GalleryItem; active: boolean; play?: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionAfterMount();
   const shouldPlay = Boolean(play && active && item.kind === "video" && !reduceMotion);
 
   useEffect(() => {
@@ -73,7 +85,7 @@ export default function PortalHub() {
   const drag = useRef({ startX: 0, startRotation: 0, lastX: 0, lastTime: 0, velocity: 0 });
   const velocity = useRef({ value: 0, time: 0, timer: null as ReturnType<typeof setTimeout> | null });
   const liquidVelocity = useRef(0);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionAfterMount();
   const [compact, setCompact] = useState<boolean | null>(null);
   const current = gallery[active];
   const settle = useCallback((projected: number) => {

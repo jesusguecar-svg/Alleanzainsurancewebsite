@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
-import { acaAgentCertification, healthServices, healthServicesEn } from "@/lib/content/health";
+import { acaAgentCertification, healthServices, healthServicesEn, licensingStatement } from "@/lib/content/health";
 import p from "./platform.module.css";
 import s from "./coverage-stage.module.css";
 
@@ -36,7 +36,7 @@ export function CoverageStage({ locale }: { locale: Locale }) {
     services[4].title,
   ];
   const notes = [
-    t(`El Marketplace es un mercado, no una aseguradora ni una alianza corporativa. ${acaAgentCertification.es}`, `The Marketplace is a marketplace, not an insurance company or a corporate partnership. ${acaAgentCertification.en}`),
+    t(`El Marketplace es un mercado, no una aseguradora ni una alianza corporativa. ${acaAgentCertification.es} ${licensingStatement.es}`, `The Marketplace is a marketplace, not an insurance company or a corporate partnership. ${acaAgentCertification.en} ${licensingStatement.en}`),
     t("Los beneficios y las condiciones pueden ser distintos a los de un plan ACA. Revisa exclusiones y límites antes de elegir.", "Benefits and terms may differ from an ACA plan. Review exclusions and limits before choosing."),
     "",
     t("La cobertura complementaria no sustituye un seguro médico integral.", "Supplemental coverage does not replace comprehensive health insurance."),

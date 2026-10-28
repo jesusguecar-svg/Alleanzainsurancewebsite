@@ -6,7 +6,7 @@ import { acaAgentCertification, licensingStatement } from "@/lib/content/health"
 
 const title = "Licencias | Alleanza Insurance Corp.";
 const description =
-  "Información sobre licencias de Alleanza Insurance Corp. Trabajamos con agentes debidamente licenciados según el estado y el producto; la disponibilidad varía por estado y elegibilidad.";
+  "Información sobre licencias de Alleanza Insurance Corp. Contamos con agentes debidamente licenciados según el estado y el producto. Las solicitudes se asignan de acuerdo con la licencia y disponibilidad aplicables.";
 
 export const metadata: Metadata = {
   title,
@@ -45,17 +45,19 @@ export default function Page() {
         </p>
       ) : (
         <p>
-          Contamos con una red de agentes licenciados con capacidad de atención en los 50 estados. La
-          disponibilidad de productos depende del estado, las licencias aplicables y la elegibilidad. Antes
-          de cualquier solicitud, el agente que te atiende confirma que tiene licencia en tu estado para el
-          producto que necesitas. Si quieres verificar la licencia de un agente, llámanos al{" "}
+          Contamos con una red de agentes licenciados con capacidad de atención en los 50 estados. No todos
+          los agentes tienen licencia en todos los estados: cada solicitud se asigna a un agente con licencia
+          para tu estado y el producto que necesitas, y la disponibilidad de productos depende del estado, las
+          licencias aplicables y la elegibilidad. Si quieres verificar la licencia de un agente, llámanos al{" "}
           <a href={`tel:${phones[0].href}`}>{phones[0].label}</a> o consulta el registro público del
           departamento de seguros de tu estado (en Texas, el Texas Department of Insurance).
         </p>
       )}
 
       <h2>Marketplace (ACA)</h2>
-      <p>{acaAgentCertification.es}</p>
+      <p>
+        {acaAgentCertification.es} {licensingStatement.es}
+      </p>
 
       <h2>Property & Casualty</h2>
       <p>
