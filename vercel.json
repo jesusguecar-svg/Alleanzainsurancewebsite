@@ -1,0 +1,145 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/productos",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/productos/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/productos/obamacare",
+      "destination": "/health#coverage-aca",
+      "permanent": true
+    },
+    {
+      "source": "/productos/obamacare/",
+      "destination": "/health#coverage-aca",
+      "permanent": true
+    },
+    {
+      "source": "/productos/seguro-medico",
+      "destination": "/health",
+      "permanent": true
+    },
+    {
+      "source": "/productos/seguro-medico/",
+      "destination": "/health",
+      "permanent": true
+    },
+    {
+      "source": "/productos/seguro-privado",
+      "destination": "/health#coverage-private",
+      "permanent": true
+    },
+    {
+      "source": "/productos/seguro-privado/",
+      "destination": "/health#coverage-private",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-de-accidentes",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-de-accidentes/",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-de-atencion-cardiaca",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-de-atencion-cardiaca/",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-de-cuidados-intensivos",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-de-cuidados-intensivos/",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-hospitalaria",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-hospitalaria/",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-suplemento-al-cancer",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/poliza-suplemento-al-cancer/",
+      "destination": "/health#coverage-supplemental",
+      "permanent": true
+    },
+    {
+      "source": "/productos/seguro-de-vida",
+      "destination": "/life",
+      "permanent": true
+    },
+    {
+      "source": "/productos/seguro-de-vida/",
+      "destination": "/life",
+      "permanent": true
+    },
+    {
+      "source": "/trabajo",
+      "destination": "/work",
+      "permanent": true
+    },
+    {
+      "source": "/trabajo/",
+      "destination": "/work",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap_index.xml",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap_index.xml/",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/page-sitemap.xml",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/page-sitemap.xml/",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/woodmart_slider-sitemap.xml",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/woodmart_slider-sitemap.xml/",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    }
+  ]
+}

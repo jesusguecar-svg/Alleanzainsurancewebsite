@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
   // then apply the legacy redirect (a second 308), so trailing slashes are handled here instead:
   // each legacy URL reaches its destination in one hop, and every other "/path/" still
   // permanently redirects to "/path", as before.
+  // On Vercel the platform strips the slash before these rules run, so the same legacy map is
+  // also written to vercel.json (scripts/sync-vercel-redirects.mjs), which Vercel applies first.
   skipTrailingSlashRedirect: true,
   async redirects() {
     return [
