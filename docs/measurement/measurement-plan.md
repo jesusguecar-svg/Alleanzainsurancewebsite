@@ -197,7 +197,7 @@ Verified on production with fake data and all Whop requests blocked.
 
 ## 11. Vercel Web Analytics / Speed Insights
 
-Use for traffic sanity checks, Core Web Vitals and runtime performance — not as the business source of truth (no custom events). Both are cookieless; reported URLs keep only `utm_*` parameters. They load on every visit, independent of the consent banner. **Enable both in the Vercel project (Analytics and Speed Insights tabs)**; until then their scripts return 404 and nothing is collected.
+Use for traffic sanity checks, Core Web Vitals and runtime performance — not as the business source of truth (no custom events). Both are cookieless; reported URLs keep only `utm_*` parameters. They load on every visit, independent of the consent banner. Their scripts are already served on Vercel deployments (verified on the PR preview). **Confirm both are enabled in the Vercel project (Analytics and Speed Insights tabs)** so that data is collected and reported. Locally the scripts are not served, which is expected.
 
 ## 12. Search Console ↔ GA4
 
