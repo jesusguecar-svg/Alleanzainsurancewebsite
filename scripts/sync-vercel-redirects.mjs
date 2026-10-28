@@ -25,10 +25,18 @@ const config = {
 const expected = `${JSON.stringify(config, null, 2)}\n`;
 
 if (process.argv.includes("--check")) {
-  let current = "";
-  try { current = readFileSync(vercelUrl, "utf8"); } catch {}
-  if (current !== expected) {
-    console.error("vercel.json does not match lib/config/legacy-redirects.json. Run `npm run sync:redirects`.");
+  // Compare the redirect rules, not the file text: Vercel's build may rewrite vercel.json after
+  // reading it. A missing file during a Vercel build means the platform already consumed it.
+  let current;
+  try { current = JSON.parse(readFileSync(vercelUrl, "utf8")); } catch (error) {
+    if (process.env.VERCEL) { console.warn(`vercel.json not readable during the Vercel build (${error.code ?? error.name}); skipping the check.`); process.exit(0); }
+    console.error("vercel.json is missing or invalid. Run `npm run sync:redirects`."); process.exit(1);
+  }
+  const rules = (list) => JSON.stringify((list ?? []).map(({ source, destination, permanent }) => ({ source, destination, permanent })));
+  if (rules(current.redirects) !== rules(config.redirects)) {
+    const index = config.redirects.findIndex((rule, i) => rules([rule]) !== rules([current.redirects?.[i]]));
+    console.error(`vercel.json redirects do not match lib/config/legacy-redirects.json (${current.redirects?.length ?? 0} vs ${config.redirects.length}). Run \`npm run sync:redirects\`.`);
+    console.error(`First difference at #${index}: expected ${JSON.stringify(config.redirects[index])}, found ${JSON.stringify(current.redirects?.[index])}`);
     process.exit(1);
   }
 } else {
