@@ -6,6 +6,8 @@
  *   BASE_URL=http://localhost:3100 npm run validate:migration
  *
  * After cutover:  BASE_URL=https://alleanzainsurance.org npm run validate:migration
+ * Protected preview: also set VALIDATE_COOKIE (for example, the cookie a Vercel share link sets)
+ * and EXPECT_INDEXABLE=0.
  *
  * Checks legacy redirects (permanent, single hop, no loops, intended destination), canonical
  * and Open Graph URLs, structured data, sitemap, robots.txt, internal links and in-page
@@ -26,8 +28,12 @@ const pass = (msg) => { passes++; if (process.env.VERBOSE) console.log(`ok    ${
 const fail = (msg) => { failures++; console.log(`FAIL  ${msg}`); };
 const check = (cond, msg) => (cond ? pass(msg) : fail(msg));
 
+// Optional Cookie header, e.g. a Vercel share-link cookie to validate a protected preview.
+const COOKIE = process.env.VALIDATE_COOKIE;
+
 async function get(path, init = {}) {
-  return fetch(path.startsWith("http") ? path : BASE + path, { redirect: "manual", ...init });
+  const headers = COOKIE ? { cookie: COOKIE, ...init.headers } : init.headers;
+  return fetch(path.startsWith("http") ? path : BASE + path, { redirect: "manual", ...init, headers });
 }
 
 /** Follow redirects by hand so every hop is visible. */
