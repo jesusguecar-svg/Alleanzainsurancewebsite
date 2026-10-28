@@ -4,13 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "prebuild": "node scripts/sync-vercel-redirects.mjs --check",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "validate:migration": "node scripts/validate-migration.mjs",
-    "sync:redirects": "node scripts/sync-vercel-redirects.mjs"
+    "validate:migration": "node scripts/validate-migration.mjs"
   },
   "dependencies": {
     "@types/node": "^22.10.2",
