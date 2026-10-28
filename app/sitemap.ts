@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/config/site";
-import { portalRoutes } from "@/lib/config/routes";
+import { activePortalRoutes } from "@/lib/config/routes";
 import { agents } from "@/lib/content/agents";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: siteUrl, lastModified, changeFrequency: "monthly", priority: 1 },
-    ...portalRoutes
+    ...activePortalRoutes
       .filter((route) => !route.external)
       .map((route) => ({
         url: `${siteUrl}${route.href}`,
@@ -16,6 +16,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: "monthly" as const,
         priority: route.complete ? 0.9 : 0.5,
       })),
+    ...["/nosotros", "/contacto"].map((path) => ({
+      url: `${siteUrl}${path}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
     ...["/privacidad", "/terminos", "/licencias"].map((path) => ({
       url: `${siteUrl}${path}`,
       lastModified,

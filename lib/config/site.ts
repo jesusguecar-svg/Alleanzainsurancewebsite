@@ -1,21 +1,26 @@
 /**
+ * The official public domain. Canonical links, Open Graph URLs, robots.txt,
+ * sitemap.xml and structured data all point here, including on the vercel.app
+ * production URL and preview deployments, so search engines consolidate every
+ * copy of a page onto the official domain.
+ */
+export const productionSiteUrl = "https://alleanzainsurance.org";
+
+/**
  * Absolute base URL for canonical links, Open Graph tags, robots and sitemap.
  *
  * Resolution order:
- *  1. NEXT_PUBLIC_SITE_URL — set this to the final custom domain once it exists.
- *  2. VERCEL_PROJECT_PRODUCTION_URL — injected by Vercel, the stable production
- *     domain for the project (not the per-deployment preview URL).
- *  3. localhost, for local development.
- *
- * No production domain is hardcoded: an incorrect canonical URL is worse than
- * an absent one, so this must be configured rather than guessed.
+ *  1. NEXT_PUBLIC_SITE_URL — explicit override (no trailing slash), e.g. to
+ *     validate a local build against a different host.
+ *  2. productionSiteUrl — every production build (`next build`), on Vercel or
+ *     locally.
+ *  3. localhost, for `next dev`.
  */
 function resolveSiteUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL;
   if (explicit) return explicit.replace(/\/$/, "");
 
-  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-  if (vercel) return `https://${vercel}`;
+  if (process.env.NODE_ENV === "production") return productionSiteUrl;
 
   return "http://localhost:3000";
 }

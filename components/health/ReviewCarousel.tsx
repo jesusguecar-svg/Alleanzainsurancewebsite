@@ -120,11 +120,11 @@ export function ReviewCarousel({ locale, reviews, reviewsUrl }: { locale: Locale
   return (
     <section id="opiniones" className={s.section} aria-labelledby="trust-heading">
       <div className={s.wrap}>
-        <span className={s.eyebrow}>{t("PERFIL PÚBLICO", "PUBLIC PROFILE")}</span>
-        <h2 id="trust-heading">{t("Opiniones en Google", "Google reviews")}</h2>
+        <span className={s.eyebrow}>{t("EXPERIENCIAS CON NUESTRO EQUIPO", "EXPERIENCES WITH OUR TEAM")}</span>
+        <h2 id="trust-heading">{t("Reseñas de nuestro equipo en Carrollton", "Reviews of our Carrollton team")}</h2>
         <div className={s.stage}>
           <div className={s.summary}>
-            <p className={s.brand}>Alleanza</p>
+            <p className={s.brand}>{t("Equipo de Carrollton", "Carrollton team")}</p>
             {summary ? (
               <>
                 <span className={s.starRow} aria-label={t(`${summary.rating.toFixed(1)} de 5`, `${summary.rating.toFixed(1)} out of 5`)}>
@@ -137,7 +137,7 @@ export function ReviewCarousel({ locale, reviews, reviewsUrl }: { locale: Locale
             ) : null}
             {profileUrl ? (
               <a className={s.profile} href={profileUrl} target="_blank" rel="noopener noreferrer">
-                {t("Ver en Google", "View on Google")}
+                {t("Ver el perfil en Google", "View the Google listing")}
               </a>
             ) : null}
             <a className={s.instagram} href={instagramProfileUrl} target="_blank" rel="noopener noreferrer">
@@ -184,7 +184,7 @@ export function ReviewCarousel({ locale, reviews, reviewsUrl }: { locale: Locale
             <p className={s.empty}>{t("Conoce las experiencias compartidas en nuestro perfil público.", "Explore the experiences shared on our public profile.")}</p>
           )}
         </div>
-        <p className={s.legal}>{t("Opiniones públicas del perfil de Google enlazado. No indican si quien escribe es asegurado o forma parte del equipo, y no garantizan resultados de una póliza.", "Public reviews from the linked Google profile. They do not say whether the writer is a policyholder or part of the team, and they do not guarantee policy results.")}</p>
+        <p className={s.legal}>{t("Opiniones públicas del perfil de Google de nuestro equipo en Carrollton, publicado con el nombre Villard Agency, de la misma propiedad que Alleanza Insurance Corp. No indican si quien escribe es asegurado o forma parte del equipo, y no garantizan resultados de una póliza.", "Public reviews from the Google listing of our Carrollton team, published under the Villard Agency name, which shares ownership with Alleanza Insurance Corp. They do not say whether the writer is a policyholder or part of the team, and they do not guarantee policy results.")}</p>
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import { products, type Product } from "./products";
+import { offeredLines, offeredProducts, type Product } from "./products";
 
 export type ContactRequest = {
   name: string;
@@ -7,6 +7,8 @@ export type ContactRequest = {
   productId?: string;
   message?: string;
   consent: boolean;
+  /** Path of the page the form was sent from, included in the lead email. */
+  source?: string;
 };
 
 export type FieldErrors = Partial<Record<keyof ContactRequest, string>>;
@@ -14,13 +16,13 @@ export type FieldErrors = Partial<Record<keyof ContactRequest, string>>;
 export function optionsForLines(lines: readonly Product["line"][]) {
   return [
     { value: "", label: "Prefiero que me orienten" },
-    ...products
+    ...offeredProducts
       .filter((product) => lines.includes(product.line))
       .map((product) => ({ value: product.id, label: product.name })),
   ];
 }
 
-export const productOptions = optionsForLines(["health", "life", "property"]);
+export const productOptions = optionsForLines(offeredLines);
 
 export const consentText =
   "Autorizo que un agente de seguros con licencia me contacte por teléfono, mensaje de texto o correo electrónico sobre estas coberturas. Puedo pedir que dejen de contactarme en cualquier momento.";
@@ -54,12 +56,12 @@ export function validateContact(input: Partial<ContactRequest>): FieldErrors {
   else if (!phonePattern.test(phone)) errors.phone = "Revisa el número de teléfono.";
 
   const email = input.email?.trim() ?? "";
-  if (email && !emailPattern.test(email)) errors.email = "Revisa el correo electrónico.";
+  if (email && (email.length > 254 || !emailPattern.test(email))) errors.email = "Revisa el correo electrónico.";
 
   const message = input.message?.trim() ?? "";
   if (message.length > 2000) errors.message = "El mensaje es demasiado largo.";
 
-  if (input.productId && !products.some((product) => product.id === input.productId)) {
+  if (input.productId && !offeredProducts.some((product) => product.id === input.productId)) {
     errors.productId = "Selecciona una opción válida.";
   }
 

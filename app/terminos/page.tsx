@@ -2,11 +2,22 @@ import type { Metadata } from "next";
 import { LegalDocument } from "@/components/LegalDocument";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 
+const title = "Términos de uso | Alleanza Insurance Corp.";
+const description =
+  "Condiciones de uso del sitio de Alleanza Insurance Corp. La información es general y no constituye una cotización, una póliza ni un consejo personalizado.";
+
 export const metadata: Metadata = {
-  title: "Términos de uso | Alleanza Insurance Corp.",
-  description:
-    "Condiciones de uso del sitio de Alleanza Insurance Corp. La información es general y no constituye una cotización, una póliza ni un consejo personalizado.",
+  title,
+  description,
   alternates: { canonical: "/terminos" },
+  openGraph: {
+    type: "website",
+    locale: "es_US",
+    url: "/terminos",
+    siteName: "Alleanza Insurance Corp.",
+    title,
+    description,
+  },
 };
 
 export default function Page() {
@@ -68,7 +79,7 @@ export default function Page() {
 
       <h2>Contacto</h2>
       <p>
-        Preguntas sobre estos términos: <a href="/health#contacto">formulario de contacto</a> o{" "}
+        Preguntas sobre estos términos: <a href="/contacto">formulario de contacto</a> o{" "}
         <a href={`tel:${phones[0].href}`}>{phones[0].label}</a>.
       </p>
     </LegalDocument>

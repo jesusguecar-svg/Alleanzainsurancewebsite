@@ -1,11 +1,10 @@
-export const healthEmail = "info@alleanzainsurance.org";
+import { leadInbox } from "@/lib/config/contact";
 
-/** Carrollton office line, shown with the WhatsApp number on the Salud contact form. */
-export const healthOfficePhone = {
-  label: "+1 (214) 997-4650",
-  href: "+12149974650",
-} as const;
-// Office locations and nationwide coverage supplied by the business on 2026-09-24.
+export const healthEmail = leadInbox;
+
+// Office locations supplied by the business on 2026-09-24. Management decision of 2026-10-28:
+// Carrollton is the only confirmed physical office; the other cities are service areas
+// (presence / markets served), not office addresses. Only entries with an address are offices.
 export const healthOffices = [
   { city: "Houston", state: "Texas", stateId: "48", coordinates: [-95.3698, 29.7604] },
   {
@@ -26,13 +25,32 @@ export const healthOffices = [
   { city: "Utah", state: "Utah", stateId: "49", coordinates: [-111.6, 39.3] },
 ] as const;
 
+/**
+ * Marketplace (ACA) agent registration statement. Management confirmed on 2026-10-28 that the
+ * agents assigned to ACA enrollments hold the CMS registration and certification for plan year
+ * 2027. Scoped to those agents on purpose; use this exact text wherever the claim appears.
+ */
+export const acaAgentCertification = {
+  es: "Los agentes que atienden inscripciones del Marketplace cuentan con el registro y certificación correspondientes para el año de cobertura 2027.",
+  en: "Agents who handle Marketplace enrollments hold the corresponding registration and certification for the 2027 coverage year.",
+} as const;
+
+/**
+ * Licensing statement for consumer-facing copy (final management decision, 2026-10-28). The site
+ * does not publish individual NPN or state-license details; requests, including ACA enrollments,
+ * are routed operationally to an agent licensed for the consumer's state and product.
+ */
+export const licensingStatement = {
+  es: "Contamos con agentes debidamente licenciados según el estado y el producto. Las solicitudes se asignan de acuerdo con la licencia y disponibilidad aplicables.",
+  en: "We work with appropriately licensed agents based on the state and product. Requests are assigned according to applicable licensing and availability.",
+} as const;
+
 export const healthServices = [
   { id: "aca", title: "ACA / Obamacare", short: "Tu salud, con un plan.", description: "Te acompañamos a comparar planes del Mercado de Seguros Médicos y revisar si calificas para ayuda con el costo de tu cobertura.", details: ["Revisión de médicos y medicamentos", "Deducibles y costos explicados", "Orientación para tu inscripción"], icon: "heart" },
   { id: "private", title: "Seguro médico privado", short: "Más opciones. Tu decisión.", description: "Exploramos alternativas fuera del Marketplace según lo que necesitas, tu presupuesto y los planes disponibles en tu estado.", details: ["Comparación de redes y beneficios", "Claridad sobre límites y exclusiones", "Asesoría para elegir con confianza"], icon: "shield" },
   { id: "dental", title: "Dental y visión", short: "Sonríe. Mira hacia adelante.", description: "Cuida los detalles que hacen mejor tu día. Te ayudamos a encontrar opciones para tu salud dental y el cuidado de tu vista.", details: ["Opciones de atención preventiva", "Planes dentales y de visión", "Revisión de red y períodos de espera"], icon: "eye" },
   { id: "supplemental", title: "Protección complementaria", short: "Un respaldo extra para ti.", description: "Un accidente o una enfermedad pueden cambiar tus planes. Conoce las coberturas que pueden brindarte beneficios económicos ante un evento cubierto.", details: ["Accidentes y cáncer", "Derrame cerebral (stroke)", "Indemnización hospitalaria"], icon: "plus" },
   { id: "discount", title: "Plan de Descuento", short: "Descuentos para tu cuidado.", description: "Explora descuentos en servicios con proveedores participantes. Un plan de descuento no es un seguro médico ni lo sustituye.", details: ["Proveedores participantes", "Servicios y descuentos incluidos", "Cuotas y condiciones de la membresía"], icon: "badge-percent" },
-  { id: "medicare", title: "Medicare", short: "Entiende tu siguiente paso.", description: "Conoce las opciones de Medicare y qué revisar sobre inscripción, médicos y medicamentos según tu situación.", details: ["Opciones de cobertura de Medicare", "Médicos y medicamentos", "Requisitos y períodos de inscripción"], icon: "id-card" },
 ] as const;
 
 export const healthServicesEn = [
@@ -41,8 +59,17 @@ export const healthServicesEn = [
   { id: "dental", title: "Dental and vision", short: "Smile. Look ahead.", description: "Take care of the details that make every day better. We help you find options for dental health and vision care.", details: ["Preventive care options", "Dental and vision plans", "Network and waiting-period review"], icon: "eye" },
   { id: "supplemental", title: "Supplemental protection", short: "Extra support for you.", description: "An accident or illness can change your plans. Explore coverage that may provide financial benefits after a covered event.", details: ["Accidents and cancer", "Stroke", "Hospital indemnity"], icon: "plus" },
   { id: "discount", title: "Discount Plan", short: "Savings for your care.", description: "Explore discounts on services with participating providers. A discount plan is not health insurance and does not replace it.", details: ["Participating providers", "Included services and discounts", "Membership fees and terms"], icon: "badge-percent" },
-  { id: "medicare", title: "Medicare", short: "Understand your next step.", description: "Learn about Medicare options and what to review about enrollment, doctors, and prescriptions for your situation.", details: ["Medicare coverage options", "Doctors and prescriptions", "Eligibility and enrollment periods"], icon: "id-card" },
 ] as const;
+
+/**
+ * Medicare is hidden from the public site (management decision, 2026-10-28) until a dedicated
+ * compliance review is complete (CMS TPMO disclaimer, agent certification). The copy is kept
+ * here so it can be restored; nothing imports it, and the lead API rejects "medicare".
+ */
+export const hiddenMedicareService = {
+  es: { id: "medicare", title: "Medicare", short: "Entiende tu siguiente paso.", description: "Conoce las opciones de Medicare y qué revisar sobre inscripción, médicos y medicamentos según tu situación.", details: ["Opciones de cobertura de Medicare", "Médicos y medicamentos", "Requisitos y períodos de inscripción"], icon: "id-card" },
+  en: { id: "medicare", title: "Medicare", short: "Understand your next step.", description: "Learn about Medicare options and what to review about enrollment, doctors, and prescriptions for your situation.", details: ["Medicare coverage options", "Doctors and prescriptions", "Eligibility and enrollment periods"], icon: "id-card" },
+} as const;
 
 export type HealthServiceId = typeof healthServices[number]["id"];
 export type HealthLead = { name: string; email: string; phone: string; state: string; service: string; consent: boolean; locale: "es" | "en"; company_fax_hp?: string };

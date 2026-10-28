@@ -10,7 +10,7 @@ import a from "./agents.module.css";
 
 export const metadata: Metadata = {
   title: "Directorio de agentes de seguros | Alleanza Insurance Corp.",
-  description: "Conoce a los agentes de seguros de Alleanza, sus oficinas, idiomas, NPN y estados donde cuentan con licencia.",
+  description: "Conoce a los agentes de seguros de Alleanza, sus oficinas e idiomas. Contamos con agentes debidamente licenciados según el estado y el producto.",
   alternates: { canonical: "/agentes", languages: { "es-US": "/agentes", "en-US": "/en/agents", "x-default": "/agentes" } },
   openGraph: {
     title: "Conoce a tu agente | Alleanza Insurance Corp.",
@@ -26,7 +26,7 @@ export default function AgentsPage() {
       <section className={a.directoryHero}>
         <span className={a.eyebrow}>DIRECTORIO DE AGENTES</span>
         <h1>Personas reales.<br /><em>Credenciales claras.</em></h1>
-        <p>Conoce a la persona que te orientará antes de conversar. Consulta su ubicación, idiomas, NPN y estados donde cuenta con licencia.</p>
+        <p>Conoce a la persona que te orientará antes de conversar. Consulta su ubicación e idiomas.</p>
       </section>
       <section className={a.directoryGrid} aria-label="Agentes de Alleanza">
         {agents.map((agent) => <article className={a.directoryCard} key={agent.slug}>

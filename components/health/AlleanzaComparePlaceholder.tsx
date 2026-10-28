@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, BadgePercent, Check, ChevronRight, Eye, Heart, IdCard, MessageCircle, Plus, ShieldCheck, Sun } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BadgePercent, Check, ChevronRight, Eye, Heart, MessageCircle, Plus, ShieldCheck, Sun } from "lucide-react";
 import { healthServices, healthServicesEn, type HealthServiceId } from "@/lib/content/health";
 import c from "./compare.module.css";
 
@@ -11,7 +11,6 @@ const options = [
   { id: "dental", es: "Dental y visión", en: "Dental & vision", icon: Eye },
   { id: "supplemental", es: "Protección adicional", en: "Extra protection", icon: Plus },
   { id: "discount", es: "Plan de Descuento", en: "Discount Plan", icon: BadgePercent },
-  { id: "medicare", es: "Medicare", en: "Medicare", icon: IdCard },
 ] as const;
 
 const illustrativePlans = [

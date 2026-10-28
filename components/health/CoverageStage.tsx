@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
-import { healthServices, healthServicesEn } from "@/lib/content/health";
+import { acaAgentCertification, healthServices, healthServicesEn, licensingStatement } from "@/lib/content/health";
 import p from "./platform.module.css";
 import s from "./coverage-stage.module.css";
 
@@ -14,7 +14,6 @@ const plates = [
   { id: "dental", src: "/health/coverage/dental.jpg", position: "70% 46%" },
   { id: "supplemental", src: "/health/coverage/supplemental.jpg", position: "76% 42%" },
   { id: "discount", src: "/health/coverage/discount.jpg", position: "82% 42%" },
-  { id: "medicare", src: "/health/coverage/medicare.jpg", position: "68% 40%" },
 ] as const;
 
 export function CoverageStage({ locale }: { locale: Locale }) {
@@ -28,7 +27,6 @@ export function CoverageStage({ locale }: { locale: Locale }) {
     t("Coberturas diseñadas específicamente para servicios dentales y de visión.", "Coverage designed specifically for dental and vision services."),
     t("Beneficios adicionales para situaciones como accidentes, hospitalización o enfermedades graves.", "Additional benefits for situations such as accidents, hospitalization, or serious illness."),
     services[4].description,
-    services[5].description,
   ];
   const titles = [
     t("Seguro médico ACA", "ACA health insurance"),
@@ -36,14 +34,12 @@ export function CoverageStage({ locale }: { locale: Locale }) {
     services[2].title,
     services[3].title,
     services[4].title,
-    services[5].title,
   ];
   const notes = [
-    t("El Marketplace es un mercado, no una aseguradora ni una alianza corporativa.", "The Marketplace is a marketplace, not an insurance company or a corporate partnership."),
+    t(`El Marketplace es un mercado, no una aseguradora ni una alianza corporativa. ${acaAgentCertification.es} ${licensingStatement.es}`, `The Marketplace is a marketplace, not an insurance company or a corporate partnership. ${acaAgentCertification.en} ${licensingStatement.en}`),
     t("Los beneficios y las condiciones pueden ser distintos a los de un plan ACA. Revisa exclusiones y límites antes de elegir.", "Benefits and terms may differ from an ACA plan. Review exclusions and limits before choosing."),
     "",
     t("La cobertura complementaria no sustituye un seguro médico integral.", "Supplemental coverage does not replace comprehensive health insurance."),
-    "",
     "",
   ];
   const alts = [
@@ -52,7 +48,6 @@ export function CoverageStage({ locale }: { locale: Locale }) {
     t("Escena ilustrativa: una mujer con lentes ríe en una terraza al sol.", "Illustrative scene: a woman in glasses laughs at a sunny café."),
     t("Escena ilustrativa: un hombre habla por teléfono en su taller, con el día en marcha.", "Illustrative scene: a man talks on the phone in his workshop while the day keeps moving."),
     t("Escena ilustrativa: una mujer sonríe en el mostrador de una farmacia.", "Illustrative scene: a woman smiles at a pharmacy counter."),
-    t("Escena ilustrativa: un hombre mayor sonríe durante una videollamada en su sala.", "Illustrative scene: an older man smiles during a video call at home."),
   ];
 
   useEffect(() => {

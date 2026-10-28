@@ -1,8 +1,8 @@
 import { Instagram } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { instagramProfileUrl } from "@/lib/config/site";
-import { officeAddressLines, phones } from "@/lib/config/contact";
-import { legalRoutes, portalRoutes } from "@/lib/config/routes";
+import { officeAddressLines, publicContactLines } from "@/lib/config/contact";
+import { activePortalRoutes, legalRoutes } from "@/lib/config/routes";
 import f from "./site-footer.module.css";
 
 export function EnglishSiteFooter() {
@@ -11,8 +11,8 @@ export function EnglishSiteFooter() {
     <div className={f.brand}><Logo light width={180} /><p>We help you understand your coverage options and compare alternatives based on your needs.</p><span>An alliance with you.</span><a className={f.social} href={instagramProfileUrl} target="_blank" rel="noopener noreferrer" aria-label="Alleanza on Instagram"><Instagram size={18} aria-hidden="true" /></a></div>
     <div className={f.columns}>
       <div><h2>Office</h2><address>{officeAddressLines.map((line) => <span key={line}>{line}</span>)}</address><h2>Hours</h2><dl><div><dt>Monday–Friday</dt><dd>8:00 AM–7:00 PM</dd></div><div><dt>Saturday</dt><dd>10:00 AM–5:00 PM</dd></div></dl></div>
-      <div><h2>Contact</h2>{phones.map((phone) => <a key={phone.href} href={`tel:${phone.href}`}>{phone.label}</a>)}</div>
-      <nav aria-label="Explore Alleanza"><h2>Explore</h2>{portalRoutes.map((route) => <a key={route.id} href={route.id === "health" ? "/en/health" : route.href} {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{routeLabels[route.id]}{route.external ? " ↗" : ""}</a>)}</nav>
+      <div><h2>Contact</h2>{publicContactLines.map((line) => <a key={line.id} href={line.href} {...(line.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{line.labelEn}: {line.display}</a>)}</div>
+      <nav aria-label="Explore Alleanza"><h2>Explore</h2>{activePortalRoutes.map((route) => <a key={route.id} href={route.id === "health" ? "/en/health" : route.href} {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{routeLabels[route.id]}{route.external ? " ↗" : ""}</a>)}</nav>
     </div>
     <div className={f.legal}><p>© {new Date().getFullYear()} Alleanza Insurance Corp.</p><nav aria-label="Legal information">{legalRoutes.map((route) => <a key={route.href} href={route.href}>{route.labelEn}</a>)}</nav></div>
     <p className={f.note}>Alleanza Insurance Corp. is an independent insurance agency. Policies and coverage are issued by the applicable insurance companies and remain subject to availability, eligibility, terms, and conditions.</p>

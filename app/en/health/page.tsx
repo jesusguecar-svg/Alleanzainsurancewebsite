@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import HealthExperience from "@/components/health/HealthExperience";
 import { getGoogleReviews } from "@/lib/google-reviews";
 import { siteUrl } from "@/lib/config/site";
+import { primaryPhone } from "@/lib/config/contact";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,7 @@ export default async function EnglishHealthPage() {
     "@context": "https://schema.org", "@type": "InsuranceAgency", name: "Alleanza Insurance Corp.",
     url: `${siteUrl}/en/health`, areaServed: "US", availableLanguage: ["English", "Spanish"],
     address: { "@type": "PostalAddress", streetAddress: "3424 Midcourt Rd Ste 122", addressLocality: "Carrollton", addressRegion: "TX", postalCode: "75006", addressCountry: "US" },
-    telephone: "+1-214-997-4650",
+    telephone: primaryPhone.href,
   };
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} /><HealthExperience locale="en" reviews={reviews} reviewsUrl={process.env.GOOGLE_REVIEWS_URL} /></>;
 }

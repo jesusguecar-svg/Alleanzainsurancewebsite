@@ -15,7 +15,7 @@ type GalleryItem = { label: string; kicker: string; description: string; cta: st
 const gallery: GalleryItem[] = [
   { label: "Salud", kicker: "Decide con claridad", description: "Compara opciones ACA, privadas y complementarias con orientación en español.", cta: "Explorar mis opciones", href: "/health", src: "/cinematic/gallery/media/salud.mp4", kind: "video", position: "50% 38%" },
   { label: "Vida", kicker: "Familia", description: "Conoce opciones de seguro de vida temporal, permanente y gastos finales.", cta: "Conocer opciones de vida", href: "/life", src: "/cinematic/gallery/media/vida.mp4", kind: "video", position: "50% 48%" },
-  { label: "Propiedad", kicker: "Patrimonio", description: "Compara alternativas de cobertura para tu hogar, tus autos y tus bienes.", cta: "Explorar opciones", href: "/property-casualty", src: "/cinematic/gallery/media/propiedad.mp4", kind: "video" },
+  { label: "Propiedad", kicker: "Property & Casualty · Próximamente", description: "En desarrollo. Aún no disponible: estará sujeto a los requisitos de licencia y disponibilidad correspondientes.", cta: "Ver más", href: "/property-casualty", src: "/cinematic/gallery/media/propiedad.mp4", kind: "video" },
   { label: "Academia", kicker: "Formación", description: "Capacitación, herramientas y acompañamiento para agentes.", cta: "Aprender ahora", href: academyUrl, src: "/cinematic/gallery/media/academia.mp4", kind: "video", external: true },
   { label: "Trabajo", kicker: "Oportunidad", description: "Oportunidades profesionales para crecer con propósito.", cta: "Trabaja con nosotros", href: "/work", src: "/cinematic/gallery/media/oportunidad.mp4", kind: "video" },
   { label: "Empresas", kicker: "Beneficios", description: "Explora alternativas de beneficios complementarios para tu equipo.", cta: "Explorar beneficios", href: "/employers", src: "/cinematic/gallery/media/trabajo.png", position: "50% 48%" },
@@ -23,9 +23,21 @@ const gallery: GalleryItem[] = [
 
 const panelAngle = 360 / gallery.length;
 
+/**
+ * `useReducedMotion` is null during server rendering and true/false in the browser, so using it
+ * in render output breaks hydration for reduced-motion visitors (React #418). Report "reduce"
+ * only after mount, so the first client render matches the server HTML.
+ */
+function useReducedMotionAfterMount() {
+  const reduce = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted && reduce === true;
+}
+
 function GalleryMedia({ item, active, play = true }: { item: GalleryItem; active: boolean; play?: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionAfterMount();
   const shouldPlay = Boolean(play && active && item.kind === "video" && !reduceMotion);
 
   useEffect(() => {
@@ -73,7 +85,7 @@ export default function PortalHub() {
   const drag = useRef({ startX: 0, startRotation: 0, lastX: 0, lastTime: 0, velocity: 0 });
   const velocity = useRef({ value: 0, time: 0, timer: null as ReturnType<typeof setTimeout> | null });
   const liquidVelocity = useRef(0);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionAfterMount();
   const [compact, setCompact] = useState<boolean | null>(null);
   const current = gallery[active];
   const settle = useCallback((projected: number) => {
