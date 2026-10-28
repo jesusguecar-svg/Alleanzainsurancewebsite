@@ -70,7 +70,7 @@ export function FactorCarousel({ locale }: { locale: Locale }) {
             <br />
             <em>{t("una parte de la decisión.", "part of the decision.")}</em>
           </h2>
-          <a className={s.shop} href="#compare">
+          <a className={s.shop} href="#compare" data-cta="health_factor_compare" data-product-line="health">
             {t("Comparar opciones", "Compare options")}
             <ChevronRight size={18} aria-hidden="true" />
           </a>

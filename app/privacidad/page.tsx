@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalDocument } from "@/components/LegalDocument";
+import { ConsentPreferencesButton } from "@/components/analytics/ConsentPreferencesButton";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 
 const title = "Política de privacidad | Alleanza Insurance Corp.";
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <LegalDocument title="Política de privacidad" updated="16 de septiembre de 2026">
+    <LegalDocument title="Política de privacidad" updated="28 de octubre de 2026">
       <p>
         Esta política describe cómo Alleanza Insurance Corp. (“Alleanza”, “nosotros”) trata la información
         personal que recibimos a través de este sitio. No es un contrato de seguro ni un aviso de
@@ -67,10 +68,27 @@ export default function Page() {
 
       <h2>Medición opcional</h2>
       <p>
-        Si aceptas el aviso de medición, cargamos un píxel de Whop (<code>t.whop.tw</code>) para
-        entender de forma agregada cómo se usa el sitio. Ese píxel no se carga hasta que aceptas, y
-        puedes rechazarlo. La elección se guarda en tu navegador. Quitar el almacenamiento local del
-        sitio o usar otro dispositivo vuelve a mostrar el aviso.
+        Al entrar te preguntamos por dos categorías opcionales. No se cargan hasta que las aceptas y puedes
+        rechazarlas y seguir usando el sitio:
+      </p>
+      <ul>
+        <li>
+          <strong>Analítica:</strong> Google Analytics, a través de Google Tag Manager, para medir de forma
+          agregada las visitas y cuántas solicitudes se envían. No le enviamos tus respuestas de formularios
+          (nombre, correo, teléfono, estado de salud u otros datos personales). Con este permiso también
+          guardamos en tu navegador, hasta 90 días, de qué campaña o sitio llegaste, para saber qué canales
+          nos traen solicitudes; esa referencia se incluye en tu solicitud interna, nunca en Google Analytics.
+        </li>
+        <li>
+          <strong>Marketing:</strong> un píxel de Whop (<code>t.whop.tw</code>). Lo configuramos para que no lea
+          los campos de los formularios.
+        </li>
+      </ul>
+      <p>
+        Además usamos Vercel Web Analytics y Speed Insights, que no usan cookies, para conocer el tráfico
+        total y el rendimiento técnico del sitio. Tu elección se guarda en tu navegador; quitar el
+        almacenamiento local del sitio o usar otro dispositivo vuelve a mostrar el aviso.{" "}
+        <ConsentPreferencesButton label="Cambiar mis preferencias de medición" />
       </p>
 
       <h2>Conservación</h2>
@@ -83,7 +101,7 @@ export default function Page() {
       <h2>Tus opciones</h2>
       <ul>
         <li>Puedes pedir que dejemos de llamarte, escribirte o enviarte mensajes en cualquier momento.</li>
-        <li>Puedes rechazar la medición opcional y seguir usando el sitio.</li>
+        <li>Puedes rechazar la medición opcional, o cambiar tu elección después, y seguir usando el sitio.</li>
         <li>Puedes solicitar acceso o corrección de la información de contacto que nos hayas enviado.</li>
       </ul>
 

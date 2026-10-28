@@ -5,6 +5,8 @@ import { useState, type FormEvent } from "react";
 import { consentText, consentTextEn } from "@/lib/content/contact";
 import { healthEmail, healthServices, healthServicesEn, validateHealthLead } from "@/lib/content/health";
 import { primaryPhone, whatsappPhone, whatsappUrl } from "@/lib/config/contact";
+import { attributionForLead } from "@/lib/analytics";
+import { useLeadFormTracking } from "@/lib/analytics/useLeadFormTracking";
 import states from "./us-states.json";
 import { stateNamesEn } from "./state-names";
 import s from "./health.module.css";
@@ -34,6 +36,7 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [error, setError] = useState("");
   const [emailDraft, setEmailDraft] = useState(`mailto:${healthEmail}`);
+  const tracking = useLeadFormTracking("health");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,7 +44,7 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
     const form = new FormData(event.currentTarget);
     const value = { name: form.get("name"), email: form.get("email"), phone: form.get("phone"), state: selectedState, service: selectedService, consent: form.get("consent") === "on", company_fax_hp: form.get("company_fax_hp"), locale };
     const result = validateHealthLead(value);
-    if (!result.lead) { setError(result.error!); setStatus("error"); return; }
+    if (!result.lead) { tracking.error("validation"); setError(result.error!); setStatus("error"); return; }
     const lead = result.lead;
     const stateRecord = states.find(state => state.id === lead.state);
     const stateName = english ? stateNamesEn[lead.state] : stateRecord?.name;
@@ -52,12 +55,19 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
       : `Nombre: ${lead.name}\nCorreo: ${lead.email}\nTeléfono: ${lead.phone}\nEstado: ${stateName}\nInterés: ${serviceName}\n\n${consent}`;
     setEmailDraft(`mailto:${healthEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
     setStatus("sending"); setError("");
+    let reported = false;
     try {
-      const response = await fetch("/api/health/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(value), signal: AbortSignal.timeout(15000) });
-      const data = await response.json();
-      if (!response.ok || !data.ok) throw new Error(data.error ?? (english ? "We could not send your request. Please try again." : "No pudimos enviar tu solicitud. Inténtalo otra vez."));
+      const response = await fetch("/api/health/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...value, attribution: attributionForLead() }), signal: AbortSignal.timeout(15000) });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) {
+        tracking.error(response.ok ? 502 : response.status);
+        reported = true;
+        throw new Error(data.error ?? (english ? "We could not send your request. Please try again." : "No pudimos enviar tu solicitud. Inténtalo otra vez."));
+      }
+      tracking.success("health");
       setStatus("success");
     } catch (cause) {
+      if (!reported) tracking.error("network");
       setStatus("error");
       setError(cause instanceof Error && cause.name !== "TimeoutError" ? cause.message : (english ? "We could not connect. Try again or contact us directly." : "No pudimos conectar. Inténtalo otra vez o escríbenos directamente."));
     }
@@ -66,7 +76,7 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
   return <section id="contacto" className={s.contact} aria-labelledby="contact-heading">
     <div className={s.contactCopy}><span className={s.eyebrow}>{english ? "HELP WHEN YOU NEED IT" : "AYUDA CUANDO LA NECESITES"}</span><h2 id="contact-heading">{english ? <>Prefer to review your options<br /><em>with an advisor?</em></> : <>¿Prefieres revisar tus opciones<br /><em>con un asesor?</em></>}</h2><p>{english ? "Tell us how to reach you. One of our advisors can help you understand the next steps." : "Cuéntanos cómo contactarte y uno de nuestros asesores podrá ayudarte a entender los próximos pasos."}</p><a href={whatsapp} target="_blank" rel="noopener noreferrer" className={s.whatsappLink}><MessageCircle size={18} aria-hidden="true" /> {english ? "I prefer WhatsApp" : "Prefiero hablar por WhatsApp"} <ArrowUpRight size={16} aria-hidden="true" /></a><div className={s.contactDirect}><a href={`mailto:${healthEmail}`}><Mail size={16} aria-hidden="true" /> {healthEmail}</a><a href={`tel:${primaryPhone.href}`}><Phone size={16} aria-hidden="true" /> {english ? "Phone" : "Teléfono"}: {primaryPhone.label}</a><a href={whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle size={16} aria-hidden="true" /> WhatsApp: {whatsappPhone.label}</a></div></div>
     <div className={s.formCard}>
-      {status === "success" ? <div className={s.formSuccess} role="status"><span><Check size={34} /></span><h3>{english ? <>We received<br />your request.</> : <>Recibimos<br />tu solicitud.</>}</h3><p>{english ? "We received your request. An agent will contact you to provide guidance." : "Recibimos tu solicitud. Un asesor se pondrá en contacto contigo para orientarte."}</p><button type="button" className={s.textLink} onClick={() => setStatus("idle")}>{english ? "Send another request" : "Enviar otra consulta"} <ArrowUpRight size={16} /></button></div> : <form onSubmit={submit}>
+      {status === "success" ? <div className={s.formSuccess} role="status"><span><Check size={34} /></span><h3>{english ? <>We received<br />your request.</> : <>Recibimos<br />tu solicitud.</>}</h3><p>{english ? "We received your request. An agent will contact you to provide guidance." : "Recibimos tu solicitud. Un asesor se pondrá en contacto contigo para orientarte."}</p><button type="button" className={s.textLink} onClick={() => setStatus("idle")}>{english ? "Send another request" : "Enviar otra consulta"} <ArrowUpRight size={16} /></button></div> : <form onSubmit={submit} onChangeCapture={() => tracking.onStart("health")}>
         <div className={s.formTitle}><h3>{selectedService === "review" ? (english ? "Let’s review your coverage." : "Revisemos tu cobertura.") : (english ? "Find your coverage." : "Encuentra tu cobertura.")}</h3><span>{english ? "FREE GUIDANCE" : "ASESORÍA GRATUITA"}</span></div>
         <label className={s.field}>{english ? "Full name" : "Nombre completo"}<input name="name" autoComplete="name" placeholder={english ? "What is your name?" : "¿Cómo te llamas?"} minLength={2} maxLength={120} required /></label>
         <div className={s.formRow}><label className={s.field}>{english ? "Email" : "Correo electrónico"}<input name="email" autoComplete="email" type="email" placeholder="you@email.com" maxLength={180} required /></label><label className={s.field}>{english ? "Phone" : "Teléfono"}<input name="phone" autoComplete="tel" type="tel" placeholder="(000) 000-0000" minLength={7} maxLength={30} required /></label></div>

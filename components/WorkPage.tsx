@@ -19,7 +19,7 @@ export default function WorkPage() {
       <div className="pt-24">
         <CareersSection />
       </div>
-      <ContactSection />
+      <ContactSection productLine="work" />
       <SiteFooter />
     </main>
   );

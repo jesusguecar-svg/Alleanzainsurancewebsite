@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { leadInbox } from "@/lib/config/contact";
 import { consentText, honeypotFieldName, validateContact, type ContactRequest } from "@/lib/content/contact";
 import { products } from "@/lib/content/products";
+import { attributionEmailLines } from "@/lib/server/attribution";
 import { emailConfigured, sendEmail, senderFor } from "@/lib/server/email";
 import { allowSend, isCrossOrigin, maxFormBodyBytes } from "@/lib/server/form-guard";
 
@@ -92,6 +93,8 @@ export async function POST(request: Request) {
       payload.message?.trim() || "(sin mensaje)",
       "",
       `Consentimiento: ${consentText}`,
+      "",
+      ...attributionEmailLines(payload.attribution),
     ].join("\n"),
   });
 

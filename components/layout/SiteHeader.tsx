@@ -51,7 +51,7 @@ export function SiteHeader({
             <Instagram size={18} aria-hidden="true" />
           </a>
           {cta && (
-            <a href={cta.href} className="hidden items-center gap-2 rounded-full bg-cyan px-5 py-3 text-xs font-semibold text-navy shadow-[0_8px_25px_rgba(4,192,254,.35)] transition hover:-translate-y-0.5 md:flex">
+            <a href={cta.href} data-cta="header_cta" className="hidden items-center gap-2 rounded-full bg-cyan px-5 py-3 text-xs font-semibold text-navy shadow-[0_8px_25px_rgba(4,192,254,.35)] transition hover:-translate-y-0.5 md:flex">
               {cta.label} <ArrowRight aria-hidden="true" size={15} />
             </a>
           )}
@@ -84,7 +84,7 @@ export function SiteHeader({
               </a>
             );
           })}
-          {cta && <a href={cta.href} onClick={() => setOpen(false)} className="font-semibold text-cyan">{cta.label}</a>}
+          {cta && <a href={cta.href} data-cta="header_cta" onClick={() => setOpen(false)} className="font-semibold text-cyan">{cta.label}</a>}
         </nav>
       )}
     </header>

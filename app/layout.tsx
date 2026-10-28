@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { AnalyticsConsent } from "@/components/AnalyticsConsent";
+import { AnalyticsRuntime } from "@/components/analytics/AnalyticsRuntime";
+import { VercelObservability } from "@/components/analytics/VercelObservability";
 import { isProductionDeploy, siteUrl } from "@/lib/config/site";
 import "./globals.css";
 import { HealthTransition } from "@/components/transitions/HealthTransition";
@@ -39,13 +40,27 @@ export const metadata: Metadata = {
     : { index: false, follow: false },
 };
 
+/**
+ * Google Consent Mode v2 defaults. Runs before anything else on every page, so GTM, which loads
+ * later and only after the visitor allows analytics, always starts from "denied". Advertising
+ * signals stay denied in this phase; the consent banner only ever grants analytics_storage.
+ */
+const consentDefaults = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag("consent","default",{ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied",analytics_storage:"denied",functionality_storage:"denied",personalization_storage:"denied",security_storage:"granted",wait_for_update:500});
+gtag("set","ads_data_redaction",true);gtag("set","url_passthrough",false);
+gtag("set",{allow_google_signals:false,allow_ad_personalization_signals:false});`;
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es" className={`${inter.variable} scroll-smooth`}>
+      <head>
+        <script id="consent-defaults" dangerouslySetInnerHTML={{ __html: consentDefaults }} />
+      </head>
       <body>
         {children}
         <HealthTransition />
-        <AnalyticsConsent />
+        <AnalyticsRuntime googleTags={isProductionDeploy} />
+        <VercelObservability />
       </body>
     </html>
   );

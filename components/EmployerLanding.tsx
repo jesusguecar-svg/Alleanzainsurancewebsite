@@ -21,6 +21,8 @@ import { Logo } from "./Logo";
 import { SiteHeader, type NavLink } from "./layout/SiteHeader";
 import { phones } from "@/lib/config/contact";
 import { legalRoutes } from "@/lib/config/routes";
+import { attributionForLead } from "@/lib/analytics";
+import { useLeadFormTracking } from "@/lib/analytics/useLeadFormTracking";
 import { honeypotFieldName } from "@/lib/content/contact";
 import { ease, useReveal } from "@/lib/motion";
 
@@ -59,12 +61,14 @@ const fieldClass = "mt-2 w-full rounded-xl border border-navy/15 bg-white px-4 p
 
 function EmployerInquiryForm() {
   const [status, setStatus] = useState<Status>("idle");
+  const tracking = useLeadFormTracking("contact");
   const [errors, setErrors] = useState<FormErrors>({});
   const [formError, setFormError] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (status === "submitting") return;
     setFormError("");
     const data = new FormData(event.currentTarget);
     const values = {
@@ -86,24 +90,18 @@ function EmployerInquiryForm() {
     if (!values.consent) nextErrors.consent = "Please authorize us to contact you.";
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) {
+      tracking.error("validation");
       const first = Object.keys(nextErrors)[0];
       formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
       return;
     }
 
     setStatus("submitting");
-    const params = new URLSearchParams(window.location.search);
-    const attribution = ["utm_source", "utm_medium", "utm_campaign"]
-      .map((key) => params.get(key) ? `${key}: ${params.get(key)}` : "")
-      .filter(Boolean)
-      .join(" | ");
     const message = [
       "Employer benefits inquiry",
       `Organization: ${values.company}`,
       `Workforce size: ${values.employees}`,
       values.needs ? `Goals / questions: ${values.needs}` : "",
-      attribution ? `Campaign: ${attribution}` : "",
-      document.referrer ? `Referrer: ${document.referrer}` : "",
     ].filter(Boolean).join("\n").slice(0, 2000);
 
     try {
@@ -119,13 +117,16 @@ function EmployerInquiryForm() {
           consent: values.consent,
           source: window.location.pathname,
           [honeypotFieldName]: honeypotValue,
+          attribution: attributionForLead(),
         }),
       });
       if (response.ok) {
+        tracking.success("employer");
         setStatus("success");
         formRef.current?.reset();
         return;
       }
+      tracking.error(response.status);
       const body = await response.json().catch(() => null);
       if (response.status === 422 && body?.errors) {
         const next: FormErrors = {};
@@ -144,6 +145,7 @@ function EmployerInquiryForm() {
           : "We couldn't send your request. Please call us or try again in a moment.",
       );
     } catch {
+      tracking.error("network");
       setStatus("error");
       setFormError("We couldn't send your request. Please call us or try again in a moment.");
     }
@@ -161,7 +163,7 @@ function EmployerInquiryForm() {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} noValidate>
+    <form ref={formRef} onSubmit={handleSubmit} onChangeCapture={() => tracking.onStart("employer")} noValidate>
       <div className="mb-7">
         <p className="text-xs font-semibold uppercase tracking-[.2em] text-cyan">Start a conversation</p>
         <h2 className="mt-3 text-3xl font-bold tracking-tight">Tell us about your organization.</h2>
@@ -203,7 +205,7 @@ export default function EmployerLanding() {
             <motion.h1 initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .1, duration: .85, ease }} className="mt-8 max-w-4xl text-balance text-[clamp(3.2rem,6.8vw,6.4rem)] font-bold leading-[.93] tracking-[-.05em]">Benefits your people can <span className="text-cyan">understand.</span> Support they can <span className="text-aqua">feel.</span></motion.h1>
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .45, duration: .8 }} className="mt-8 max-w-2xl text-lg leading-relaxed text-white/65">Give employees access to voluntary supplemental insurance with a clear enrollment experience—and give your team a hands-on partner from planning through ongoing support.</motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .6, duration: .7 }} className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href="#contact" className="group flex w-fit items-center gap-3 rounded-full bg-cyan px-7 py-4 text-sm font-semibold text-navy shadow-[0_16px_45px_rgba(4,192,254,.25)]">Explore benefits for your team <ArrowRight size={17} className="transition group-hover:translate-x-1" /></a>
+              <a href="#contact" data-cta="employers_explore_benefits" data-product-line="employer" className="group flex w-fit items-center gap-3 rounded-full bg-cyan px-7 py-4 text-sm font-semibold text-navy shadow-[0_16px_45px_rgba(4,192,254,.25)]">Explore benefits for your team <ArrowRight size={17} className="transition group-hover:translate-x-1" /></a>
               <a href={`tel:${phones[0].href}`} className="flex w-fit items-center gap-3 rounded-full border border-white/20 px-7 py-4 text-sm font-semibold text-white transition hover:border-white/45"><Phone size={16} /> {phones[0].label}</a>
             </motion.div>
             <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-xs font-medium text-white/55"><span className="inline-flex items-center gap-2"><BadgeCheck size={15} className="text-cyan" /> Licensed guidance</span><span className="inline-flex items-center gap-2"><MessageSquareText size={15} className="text-cyan" /> Employee education</span><span className="inline-flex items-center gap-2"><Users size={15} className="text-cyan" /> Enrollment support</span></div>

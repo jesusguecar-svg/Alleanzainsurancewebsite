@@ -5,7 +5,9 @@ import { ArrowRight, Check, Clock, MapPin, Phone } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { StabilizationSequence } from "../cinematic";
 import { consentText, honeypotFieldName, optionsForLines, productOptions, validateContact, type FieldErrors } from "@/lib/content/contact";
-import type { Product } from "@/lib/content/products";
+import { products, type Product } from "@/lib/content/products";
+import { attributionForLead, type ProductLine } from "@/lib/analytics";
+import { useLeadFormTracking } from "@/lib/analytics/useLeadFormTracking";
 import { officeAddressLines, officeHours, publicContactLines } from "@/lib/config/contact";
 import { useReveal } from "@/lib/motion";
 
@@ -14,8 +16,12 @@ type Status = "idle" | "submitting" | "success" | "error";
 const fieldClass =
   "mt-2 w-full rounded-2xl border border-navy/15 bg-white px-4 py-3 text-sm text-navy outline-none transition focus:border-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy";
 
-export function ContactSection({ lines }: { lines?: readonly Product["line"][] } = {}) {
+/** `productLine` labels this form's leads in analytics when no product is selected (e.g. "work"). */
+export function ContactSection({ lines, productLine }: { lines?: readonly Product["line"][]; productLine?: ProductLine } = {}) {
   const options = lines ? optionsForLines(lines) : productOptions;
+  const tracking = useLeadFormTracking("contact");
+  const lineFor = (productId?: string) =>
+    (products.find((product) => product.id === productId)?.line ?? productLine ?? (lines?.length === 1 ? lines[0] : undefined)) as ProductLine | undefined;
   const reveal = useReveal({ y: 40 });
   const formId = useId();
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -28,6 +34,7 @@ export function ContactSection({ lines }: { lines?: readonly Product["line"][] }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (status === "submitting") return;
     setFormError(null);
 
     const data = new FormData(event.currentTarget);
@@ -40,11 +47,13 @@ export function ContactSection({ lines }: { lines?: readonly Product["line"][] }
       consent: data.get("consent") === "on",
       source: window.location.pathname,
       [honeypotFieldName]: String(data.get(honeypotFieldName) ?? ""),
+      attribution: attributionForLead(),
     };
 
     const nextErrors = validateContact(payload);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
+      tracking.error("validation");
       const first = Object.keys(nextErrors)[0];
       formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
       return;
@@ -59,10 +68,12 @@ export function ContactSection({ lines }: { lines?: readonly Product["line"][] }
       });
 
       if (response.ok) {
+        tracking.success(lineFor(payload.productId));
         setStatus("success");
         return;
       }
 
+      tracking.error(response.status);
       const body = await response.json().catch(() => null);
       if (response.status === 422 && body?.errors) {
         setErrors(body.errors as FieldErrors);
@@ -72,6 +83,7 @@ export function ContactSection({ lines }: { lines?: readonly Product["line"][] }
       setFormError(body?.error ?? "No pudimos enviar tu solicitud. Intenta de nuevo.");
       setStatus("error");
     } catch {
+      tracking.error("network");
       setFormError("No pudimos enviar tu solicitud. Revisa tu conexión e intenta de nuevo.");
       setStatus("error");
     }
@@ -134,7 +146,7 @@ export function ContactSection({ lines }: { lines?: readonly Product["line"][] }
               <p className="text-sm leading-relaxed text-navy/60">Recibimos tus datos. Un agente de seguros con licencia se pondrá en contacto contigo.</p>
             </div>
           ) : (
-            <form ref={formRef} onSubmit={handleSubmit} noValidate>
+            <form ref={formRef} onSubmit={handleSubmit} onChangeCapture={() => tracking.onStart(lineFor())} noValidate>
               <div aria-live="polite">
                 {formError && <p className="mb-5 rounded-2xl bg-navy/5 px-4 py-3 text-sm font-semibold text-navy">{formError}</p>}
               </div>

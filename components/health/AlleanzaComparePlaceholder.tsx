@@ -53,7 +53,7 @@ export function AlleanzaComparePlaceholder({ locale = "es" }: { locale?: "es" | 
           <li><Check size={14} aria-hidden="true" />{en ? "No obligation" : "Sin compromiso"}</li>
           <li><Check size={14} aria-hidden="true" />{en ? "English & Spanish" : "En español"}</li>
         </ul>
-        <a className={c.advisor} href="#contacto"><MessageCircle size={17} aria-hidden="true" />{en ? "Not sure where to start? Talk to an advisor." : "¿No sabes por dónde empezar? Habla con un asesor."}<ArrowUpRight size={15} aria-hidden="true" /></a>
+        <a className={c.advisor} href="#contacto" data-cta="health_compare_advisor" data-product-line="health"><MessageCircle size={17} aria-hidden="true" />{en ? "Not sure where to start? Talk to an advisor." : "¿No sabes por dónde empezar? Habla con un asesor."}<ArrowUpRight size={15} aria-hidden="true" /></a>
         <p className={c.note}>{en ? "Explore our coverage guide. Personalized online quotes are coming soon." : "Explora nuestra guía de coberturas. Las cotizaciones personalizadas en línea estarán disponibles próximamente."}</p>
       </div>
       <div className={c.visual}>

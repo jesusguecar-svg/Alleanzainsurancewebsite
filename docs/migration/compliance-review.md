@@ -78,12 +78,22 @@ Priority: **P1** = resolve before cutover, **P2** = resolve soon after.
 | 17 | P2 | **OPEN** | `app/nosotros/page.tsx` | Uses only facts already on the site; P&C was removed from its description and from its list of lines. Management can supply an approved mission or history. |
 | 18 | P2 | **OPEN** | `app/contacto/page.tsx` | Shows `info@alleanzainsurance.org`, the Teléfono line and the WhatsApp line. Confirm the inbox is monitored. |
 
+## Privacy and measurement (added 2026-10-28)
+
+Details: `docs/measurement/measurement-plan.md` §10.
+
+| # | Pri | Status | Where | Finding |
+|---|---|---|---|---|
+| 22 | P1 | **FIXED IN MEASUREMENT PR** (not yet merged) | Whop pixel, `lib/analytics/consent.ts` | On the live site, after a visitor accepts the measurement notice, the Whop pixel sends the name, email and phone typed into any form (including `/health`) to Whop before submission, and any email/phone found in URL parameters. The measurement PR turns both captures off and loads Whop only with marketing consent. |
+| 23 | P2 | **OPEN** | Whop pixel | Even with captures off, Whop receives every page URL with its query string (including visits to `/health`), a device fingerprint, and the GA client id once GA4 runs. Management to decide whether Whop stays, and whether it runs on health routes. |
+| 24 | P2 | **OPEN** | `app/privacidad/page.tsx` | The "Medición opcional" section was rewritten for Google Analytics, the Whop pixel, Vercel Analytics and 90-day first-party attribution, and has a link to change preferences. Needs legal/management review before go-live. |
+
 ## Still open
 
-No P1 items remain. Open P2 items: #6 (employer-benefits licensing), #9 (Discount Plan disclosure),
+No P1 items remain open (#22 is fixed in the measurement PR, pending merge). Open P2 items: #6 (employer-benefits licensing), #9 (Discount Plan disclosure),
 #10 (carrier logos and appointments), #12 ("asesoría gratuita" wording), #15 (BBB re-check at
 launch), #17 (approved mission or history for Nosotros), #18 (confirm the info@ inbox is
-monitored), #21 (agent direct line).
+monitored), #21 (agent direct line), #23 (Whop scope), #24 (privacy text review).
 
 ## Technical fixes in the same PR
 
