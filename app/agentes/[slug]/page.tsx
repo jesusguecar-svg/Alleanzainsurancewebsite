@@ -74,7 +74,7 @@ export default async function AgentProfilePage({ params }: Props) {
   return <div className={a.page}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema).replace(/</g, "\\u003c") }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
-    <header className={a.header}><Link href="/"><Logo width={174} /></Link><nav><LanguageSwitch locale="es" spanishHref={`/agentes/${agent.slug}`} englishHref={`/en/agents/${agent.slug}`} className={a.languageSwitch} /><Link href="/agentes"><ArrowLeft size={15} /> Todos los agentes</Link><Link href="/health#contacto" className={a.headerCta}>Solicitar orientación <ArrowUpRight size={15} /></Link></nav></header>
+    <header className={a.header}><Link href="/"><Logo width={174} /></Link><nav><LanguageSwitch locale="es" spanishHref={`/agentes/${agent.slug}`} englishHref={`/en/agents/${agent.slug}`} className={a.languageSwitch} /><Link href="/agentes"><ArrowLeft size={15} /> Todos los agentes</Link><Link href="/health#contacto" data-cta="agent_request_guidance" data-product-line="health" className={a.headerCta}>Solicitar orientación <ArrowUpRight size={15} /></Link></nav></header>
     <main>
       <section className={a.profileHero}>
         <div className={a.profilePhoto}>
@@ -86,7 +86,7 @@ export default async function AgentProfilePage({ params }: Props) {
           <h1>{agent.fullName}</h1>
           <p className={a.profileRole}>{agent.title}<small>{agent.titleEn}</small></p>
           <p className={a.profileLead}>{agent.shortBio}</p>
-          <div className={a.profileActions}><a href={`tel:${agent.phone.href}`}><Phone size={17} /> Llamar {agent.phone.label}</a><Link href="/health#contacto">Solicitar orientación <ArrowUpRight size={17} /></Link></div>
+          <div className={a.profileActions}><a href={`tel:${agent.phone.href}`}><Phone size={17} /> Llamar {agent.phone.label}</a><Link href="/health#contacto" data-cta="agent_request_guidance" data-product-line="health">Solicitar orientación <ArrowUpRight size={17} /></Link></div>
           <div className={a.trustStrip}><span><ShieldCheck size={17} /><strong>Agente licenciado</strong><small>Según estado y producto</small></span><span><Languages size={17} /><strong>Bilingüe</strong><small>Español e inglés</small></span><span><MapPin size={17} /><strong>Carrollton, TX</strong><small>Teléfono o videollamada</small></span></div>
         </div>
       </section>

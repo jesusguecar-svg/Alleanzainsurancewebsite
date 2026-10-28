@@ -154,7 +154,7 @@ export default function LifeLanding({ media }: { media: LifeMedia }) {
           </motion.p>
 
           <motion.div {...entranceCta} transition={{ delay: .9, duration: .8 }} className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <a href="#contacto" className="group flex w-fit items-center gap-3 rounded-full bg-cyan px-7 py-4 text-sm font-semibold text-navy shadow-[0_15px_45px_rgba(4,192,254,.25)]">
+            <a href="#contacto" data-cta="life_talk_advisor" data-product-line="life" className="group flex w-fit items-center gap-3 rounded-full bg-cyan px-7 py-4 text-sm font-semibold text-navy shadow-[0_15px_45px_rgba(4,192,254,.25)]">
               Quiero orientación gratuita <ArrowRight aria-hidden="true" size={17} className="transition group-hover:translate-x-1" />
             </a>
             <a href="#conceptos" className="flex w-fit items-center gap-3 px-4 py-3 text-sm font-medium text-white/75">

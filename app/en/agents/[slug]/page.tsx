@@ -83,7 +83,7 @@ export default async function EnglishAgentProfilePage({ params }: Props) {
           <h1>{agent.fullName}</h1>
           <p className={a.profileRole}>{agent.titleEn}<small>{agent.title}</small></p>
           <p className={a.profileLead}>{agent.shortBioEn}</p>
-          <div className={a.profileActions}><a href={`tel:${agent.phone.href}`}><Phone size={17} /> Call {agent.phone.label}</a><a href={`mailto:${healthEmail}`}>Request guidance <ArrowUpRight size={17} /></a></div>
+          <div className={a.profileActions}><a href={`tel:${agent.phone.href}`}><Phone size={17} /> Call {agent.phone.label}</a><a href={`mailto:${healthEmail}`} data-cta="agent_request_guidance" data-product-line="health">Request guidance <ArrowUpRight size={17} /></a></div>
           <div className={a.trustStrip}><span><ShieldCheck size={17} /><strong>Licensed agent</strong><small>By state and product</small></span><span><Languages size={17} /><strong>Bilingual</strong><small>English and Spanish</small></span><span><MapPin size={17} /><strong>Carrollton, TX</strong><small>Phone or video call</small></span></div>
         </div>
       </section>

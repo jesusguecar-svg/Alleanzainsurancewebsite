@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalDocument } from "@/components/LegalDocument";
+import { ConsentPreferencesButton } from "@/components/analytics/ConsentPreferencesButton";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 
 const title = "Política de privacidad | Alleanza Insurance Corp.";
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <LegalDocument title="Política de privacidad" updated="16 de septiembre de 2026">
+    <LegalDocument title="Política de privacidad" updated="28 de octubre de 2026">
       <p>
         Esta política describe cómo Alleanza Insurance Corp. (“Alleanza”, “nosotros”) trata la información
         personal que recibimos a través de este sitio. No es un contrato de seguro ni un aviso de
@@ -65,12 +66,31 @@ export default function Page() {
         información solo para prestar el servicio.
       </p>
 
-      <h2>Medición opcional</h2>
+      <h2>Medición del sitio</h2>
       <p>
-        Si aceptas el aviso de medición, cargamos un píxel de Whop (<code>t.whop.tw</code>) para
-        entender de forma agregada cómo se usa el sitio. Ese píxel no se carga hasta que aceptas, y
-        puedes rechazarlo. La elección se guarda en tu navegador. Quitar el almacenamiento local del
-        sitio o usar otro dispositivo vuelve a mostrar el aviso.
+        <strong>Analítica (opcional).</strong> Si la aceptas en el aviso de medición, cargamos Google Tag
+        Manager y Google Analytics 4 para medir de forma agregada las visitas, los clics en botones de
+        contacto y cuántas solicitudes se envían. No se cargan hasta que aceptas, y puedes rechazarlos y
+        seguir usando el sitio. Nunca les enviamos tus respuestas de formularios ni datos personales como
+        tu nombre, correo, teléfono o estado de salud. No usamos publicidad, remarketing ni anuncios
+        personalizados.
+      </p>
+      <p>
+        <strong>Origen de tu visita (con analítica aceptada).</strong> Guardamos en tu navegador, hasta 90
+        días, de qué campaña o sitio llegaste (por ejemplo, una búsqueda en Google o un enlace de una
+        campaña). Si envías una solicitud, esa referencia se incluye en el correo interno que recibe
+        nuestro equipo, para saber qué canales nos traen solicitudes; no se envía a Google Analytics. Si
+        rechazas la analítica, no guardamos nada y solo se incluye el origen de la visita en curso.
+      </p>
+      <p>
+        <strong>Rendimiento del sitio.</strong> Usamos Vercel Web Analytics y Vercel Speed Insights para
+        conocer el tráfico total y la velocidad del sitio. No usan cookies ni reciben datos de tus
+        formularios.
+      </p>
+      <p>
+        Tu elección se guarda en tu navegador; quitar el almacenamiento local del sitio o usar otro
+        dispositivo vuelve a mostrar el aviso.{" "}
+        <ConsentPreferencesButton label="Cambiar mis preferencias de medición" />
       </p>
 
       <h2>Conservación</h2>
@@ -83,7 +103,7 @@ export default function Page() {
       <h2>Tus opciones</h2>
       <ul>
         <li>Puedes pedir que dejemos de llamarte, escribirte o enviarte mensajes en cualquier momento.</li>
-        <li>Puedes rechazar la medición opcional y seguir usando el sitio.</li>
+        <li>Puedes rechazar la analítica, o cambiar tu elección después, y seguir usando el sitio.</li>
         <li>Puedes solicitar acceso o corrección de la información de contacto que nos hayas enviado.</li>
       </ul>
 
