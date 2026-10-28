@@ -84,16 +84,16 @@ Details: `docs/measurement/measurement-plan.md` §10.
 
 | # | Pri | Status | Where | Finding |
 |---|---|---|---|---|
-| 22 | P1 | **FIXED IN MEASUREMENT PR** (not yet merged) | Whop pixel, `lib/analytics/consent.ts` | On the live site, after a visitor accepts the measurement notice, the Whop pixel sends the name, email and phone typed into any form (including `/health`) to Whop before submission, and any email/phone found in URL parameters. The measurement PR turns both captures off and loads Whop only with marketing consent. |
-| 23 | P2 | **OPEN** | Whop pixel | Even with captures off, Whop receives every page URL with its query string (including visits to `/health`), a device fingerprint, and the GA client id once GA4 runs. Management to decide whether Whop stays, and whether it runs on health routes. |
-| 24 | P2 | **OPEN** | `app/privacidad/page.tsx` | The "Medición opcional" section was rewritten for Google Analytics, the Whop pixel, Vercel Analytics and 90-day first-party attribution, and has a link to change preferences. Needs legal/management review before go-live. |
+| 22 | P1 | **RESOLVED IN MEASUREMENT PR #31** (live until merged) | Whop pixel | On the live site, after a visitor accepts the measurement notice, the Whop pixel sends the name, email and phone typed into any form (including `/health`) to Whop before submission, and any email/phone found in URL parameters. Management decided (2026-10-28) to remove Whop from alleanzainsurance.org entirely; PR #31 removes it and deletes its leftover `_wuid` cookies. Whop may still be used for Alleanza Academy, off this site. |
+| 23 | P2 | **RESOLVED IN PR #31** | Whop pixel | Residual Whop exposure (page URLs, `/health` visits, fingerprint) ends with the removal above. |
+| 24 | P2 | **OPEN** | `app/privacidad/page.tsx` | The measurement section now describes only the final stack: GTM + GA4 (opt-in), 90-day first-party campaign attribution in internal lead emails, and cookieless Vercel Web Analytics / Speed Insights. There are no Whop references, and visitors can change their measurement preferences. Needs legal/management review before go-live. |
 
 ## Still open
 
-No P1 items remain open (#22 is fixed in the measurement PR, pending merge). Open P2 items: #6 (employer-benefits licensing), #9 (Discount Plan disclosure),
+No P1 items remain open (#22 is resolved in measurement PR #31, live until it is merged). Open P2 items: #6 (employer-benefits licensing), #9 (Discount Plan disclosure),
 #10 (carrier logos and appointments), #12 ("asesoría gratuita" wording), #15 (BBB re-check at
 launch), #17 (approved mission or history for Nosotros), #18 (confirm the info@ inbox is
-monitored), #21 (agent direct line), #23 (Whop scope), #24 (privacy text review).
+monitored), #21 (agent direct line), #24 (privacy text review).
 
 ## Technical fixes in the same PR
 

@@ -1,6 +1,6 @@
 /**
  * The site's only analytics API. Components call these functions; nothing else touches gtag,
- * dataLayer, Vercel custom events or the Whop pixel. Events go to window.dataLayer for GTM, only
+ * dataLayer or Vercel custom events. Events go to window.dataLayer for GTM, only
  * with analytics consent, and only with the allowlisted parameters below — never form values.
  * Taxonomy and GTM setup: docs/measurement/measurement-plan.md.
  */
@@ -8,7 +8,7 @@ import { leadAttribution, sourceGroup } from "./attribution";
 import { analyticsAllowed } from "./consent";
 import { cleanUrl, safeHost, safePath } from "./sanitize";
 
-export type FormType = "contact" | "health";
+export type FormType = "contact" | "health" | "work";
 export type ProductLine = "health" | "life" | "employer" | "academy" | "work";
 export type Language = "es" | "en";
 export type ErrorCategory = "validation" | "rate_limited" | "unavailable" | "server" | "network";
@@ -33,7 +33,7 @@ type EventParams = {
   error_category?: ErrorCategory;
 };
 
-const formTypes: readonly string[] = ["contact", "health"];
+const formTypes: readonly string[] = ["contact", "health", "work"];
 const productLines: readonly string[] = ["health", "life", "employer", "academy", "work"];
 const errorCategories: readonly string[] = ["validation", "rate_limited", "unavailable", "server", "network"];
 const token = (value: unknown) => (typeof value === "string" && /^[a-z0-9_]{1,50}$/.test(value) ? value : undefined);

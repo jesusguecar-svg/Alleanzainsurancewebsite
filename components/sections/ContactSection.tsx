@@ -19,7 +19,8 @@ const fieldClass =
 /** `productLine` labels this form's leads in analytics when no product is selected (e.g. "work"). */
 export function ContactSection({ lines, productLine }: { lines?: readonly Product["line"][]; productLine?: ProductLine } = {}) {
   const options = lines ? optionsForLines(lines) : productOptions;
-  const tracking = useLeadFormTracking("contact");
+  // Job applications from /work are reported as their own form type, apart from insurance leads.
+  const tracking = useLeadFormTracking(productLine === "work" ? "work" : "contact");
   const lineFor = (productId?: string) =>
     (products.find((product) => product.id === productId)?.line ?? productLine ?? (lines?.length === 1 ? lines[0] : undefined)) as ProductLine | undefined;
   const reveal = useReveal({ y: 40 });

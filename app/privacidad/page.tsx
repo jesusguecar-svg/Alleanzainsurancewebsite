@@ -66,28 +66,30 @@ export default function Page() {
         información solo para prestar el servicio.
       </p>
 
-      <h2>Medición opcional</h2>
+      <h2>Medición del sitio</h2>
       <p>
-        Al entrar te preguntamos por dos categorías opcionales. No se cargan hasta que las aceptas y puedes
-        rechazarlas y seguir usando el sitio:
+        <strong>Analítica (opcional).</strong> Si la aceptas en el aviso de medición, cargamos Google Tag
+        Manager y Google Analytics 4 para medir de forma agregada las visitas, los clics en botones de
+        contacto y cuántas solicitudes se envían. No se cargan hasta que aceptas, y puedes rechazarlos y
+        seguir usando el sitio. Nunca les enviamos tus respuestas de formularios ni datos personales como
+        tu nombre, correo, teléfono o estado de salud. No usamos publicidad, remarketing ni anuncios
+        personalizados.
       </p>
-      <ul>
-        <li>
-          <strong>Analítica:</strong> Google Analytics, a través de Google Tag Manager, para medir de forma
-          agregada las visitas y cuántas solicitudes se envían. No le enviamos tus respuestas de formularios
-          (nombre, correo, teléfono, estado de salud u otros datos personales). Con este permiso también
-          guardamos en tu navegador, hasta 90 días, de qué campaña o sitio llegaste, para saber qué canales
-          nos traen solicitudes; esa referencia se incluye en tu solicitud interna, nunca en Google Analytics.
-        </li>
-        <li>
-          <strong>Marketing:</strong> un píxel de Whop (<code>t.whop.tw</code>). Lo configuramos para que no lea
-          los campos de los formularios.
-        </li>
-      </ul>
       <p>
-        Además usamos Vercel Web Analytics y Speed Insights, que no usan cookies, para conocer el tráfico
-        total y el rendimiento técnico del sitio. Tu elección se guarda en tu navegador; quitar el
-        almacenamiento local del sitio o usar otro dispositivo vuelve a mostrar el aviso.{" "}
+        <strong>Origen de tu visita (con analítica aceptada).</strong> Guardamos en tu navegador, hasta 90
+        días, de qué campaña o sitio llegaste (por ejemplo, una búsqueda en Google o un enlace de una
+        campaña). Si envías una solicitud, esa referencia se incluye en el correo interno que recibe
+        nuestro equipo, para saber qué canales nos traen solicitudes; no se envía a Google Analytics. Si
+        rechazas la analítica, no guardamos nada y solo se incluye el origen de la visita en curso.
+      </p>
+      <p>
+        <strong>Rendimiento del sitio.</strong> Usamos Vercel Web Analytics y Vercel Speed Insights para
+        conocer el tráfico total y la velocidad del sitio. No usan cookies ni reciben datos de tus
+        formularios.
+      </p>
+      <p>
+        Tu elección se guarda en tu navegador; quitar el almacenamiento local del sitio o usar otro
+        dispositivo vuelve a mostrar el aviso.{" "}
         <ConsentPreferencesButton label="Cambiar mis preferencias de medición" />
       </p>
 
@@ -101,7 +103,7 @@ export default function Page() {
       <h2>Tus opciones</h2>
       <ul>
         <li>Puedes pedir que dejemos de llamarte, escribirte o enviarte mensajes en cualquier momento.</li>
-        <li>Puedes rechazar la medición opcional, o cambiar tu elección después, y seguir usando el sitio.</li>
+        <li>Puedes rechazar la analítica, o cambiar tu elección después, y seguir usando el sitio.</li>
         <li>Puedes solicitar acceso o corrección de la información de contacto que nos hayas enviado.</li>
       </ul>
 

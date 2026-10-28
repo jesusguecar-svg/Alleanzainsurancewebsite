@@ -6,9 +6,9 @@ export const gtmContainerId = "GTM-PP5RBPJH";
 /** Configured inside GTM (Google Tag). Listed here for reference and documentation only. */
 export const ga4MeasurementId = "G-GKHH8TDY77";
 
-/** The visitor's consent choice: { v, analytics, marketing }. */
+/** The visitor's consent choice: { v, analytics }. */
 export const consentStorageKey = "alleanza-consent";
-/** Pre-GA4 single-checkbox choice. Its scope (Whop only) no longer matches, so it is discarded and the visitor is asked again. */
+/** Pre-GA4 single-checkbox choice. It covered a tracker that has been removed, so it is discarded and the visitor is asked again. */
 export const legacyConsentStorageKey = "alleanza-analytics-consent";
 export const consentVersion = 2;
 
@@ -16,4 +16,5 @@ export const consentVersion = 2;
 export const attributionStorageKey = "alleanza-attribution";
 export const attributionMaxAgeMs = 90 * 24 * 60 * 60 * 1000;
 
-export const whopPixelScope = "biz_36KJ2dEIlKiSlt";
+/** First-party cookies left on visitors' browsers by the removed Whop pixel; deleted on every page load. */
+export const retiredTrackerCookiePrefixes = ["_wuid"];

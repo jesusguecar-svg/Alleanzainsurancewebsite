@@ -1,6 +1,6 @@
 # Measurement plan — alleanzainsurance.org
 
-Status: **code ready for review, not live.** GTM container not published, GA4 settings untouched, no custom dimensions, no advertising features. Last updated 28 Oct 2026.
+Status: **code ready for review, not live.** Whop pixel removed by management decision (§10). GTM container not published, GA4 settings untouched, no custom dimensions, no advertising features. Last updated 28 Oct 2026.
 
 ## 1. Goal
 
@@ -32,7 +32,7 @@ session → generate_lead → working_lead → qualify_lead → quote_start/quot
 app/layout.tsx
  ├─ <head> inline script: Consent Mode v2 defaults (all denied) — runs before anything else
  ├─ <AnalyticsRuntime googleTags={VERCEL_ENV === "production"}>
- │    ├─ initConsent()        lib/analytics/consent.ts   stored choice → gtag consent update → load GTM / Whop
+ │    ├─ initConsent()        lib/analytics/consent.ts   stored choice → gtag consent update → load GTM
  │    ├─ captureAttribution() lib/analytics/attribution.ts first/last touch (stored only with analytics consent)
  │    ├─ installClickTracking() lib/analytics/clicks.ts  tel:/WhatsApp/data-cta clicks
  │    ├─ trackPageView() on every pathname change        the ONLY page_view source
@@ -47,8 +47,9 @@ lib/server/attribution.ts   re-sanitizes attribution and formats the "Atribució
 
 Rules:
 
-- Components never call `gtag`, `dataLayer`, Vercel custom events or `whop` directly. They call `lib/analytics` or add `data-cta` attributes.
+- Components never call `gtag`, `dataLayer` or Vercel custom events directly. They call `lib/analytics` or add `data-cta` attributes.
 - Nothing is pushed to `dataLayer` without analytics consent. With consent, every push carries the same fixed key set (unused keys = `undefined`) so GTM's data model never leaks a value from an earlier event.
+- No marketing, advertising or remarketing tracker runs on the site. The Whop pixel was removed (§10).
 - GTM loads only on the production deployment (`VERCEL_ENV=production`) and only after analytics consent ("basic" consent mode: no Google request at all before consent). Previews and local builds still fill `window.dataLayer` for testing but never contact Google.
 
 ## 4. Page views
@@ -85,7 +86,7 @@ Without step 2, GA4 double-counts every client-side navigation.
 
 | Param | Values |
 |---|---|
-| `form_type` | `contact` \| `health` |
+| `form_type` | `contact` \| `health` \| `work` |
 | `product_line` | `health` \| `life` \| `employer` \| `academy` \| `work` |
 | `language` | `es` \| `en` |
 | `error_category` | `validation` \| `rate_limited` \| `unavailable` \| `server` \| `network` |
@@ -111,7 +112,7 @@ Name, email, phone, SSN/ITIN, date of birth, address, ZIP tied to a person, inco
 | /contacto | form, phone, WhatsApp, `header_cta` |
 | /life | `life_talk_advisor`, `header_cta`, form |
 | /employers | `employers_explore_benefits`, `header_cta`, form (`form_type=contact`, `product_line=employer`) |
-| /work | `header_cta`, form (`product_line=work`) |
+| /work | `header_cta`, form (`form_type=work`, `product_line=work`: recruiting, kept apart from insurance leads) |
 | Agent pages | `agent_request_guidance` |
 | Everywhere | `phone_click` / `whatsapp_click` with location `header`, `footer`, `section_<id>` or an explicit `data-cta-location` |
 
@@ -160,44 +161,60 @@ Agent links: `utm_source=agent&utm_medium=agent_link&utm_campaign=<campaign>`; n
 
 ## 9. Consent (Google Consent Mode v2)
 
+Two kinds of storage:
+
+- **Necessary** (no consent needed): the consent choice itself, form protection (honeypot, rate limit), and the cookieless Vercel Analytics/Speed Insights (§11).
+- **Analytics** (opt-in): GTM + GA4 and first-party attribution storage.
+
+There is no marketing category because no marketing tracker exists in this phase.
+
 Defaults, set inline in `<head>` before anything else:
 
-| Signal | Default | After "Analytics" | After "Marketing" |
+| Signal | Default | After "Aceptar analítica" | After "Rechazar analítica" |
 |---|---|---|---|
-| `analytics_storage` | denied | granted | — |
-| `ad_storage` | denied | denied | denied (phase 1) |
-| `ad_user_data` | denied | denied | denied (phase 1) |
-| `ad_personalization` | denied | denied | denied (phase 1) |
+| `analytics_storage` | denied | granted | denied |
+| `ad_storage` | denied | denied | denied |
+| `ad_user_data` | denied | denied | denied |
+| `ad_personalization` | denied | denied | denied |
 
 Also set: `ads_data_redaction=true`, `url_passthrough=false`, `allow_google_signals=false`, `allow_ad_personalization_signals=false`.
 
-Banner: *Rechazar* / *Elegir* (Analítica, Marketing) / *Aceptar todo*. Choice stored in `localStorage["alleanza-consent"]` (`v: 2`). The old single-checkbox key is discarded, so returning visitors are asked again (the scope now includes Google Analytics). Reopen from /privacidad → "Cambiar mis preferencias de medición".
+- Banner: **Rechazar analítica** / **Aceptar analítica** (English on /en and /employers).
+- The choice is stored in `localStorage["alleanza-consent"]` as `{ v: 2, analytics }`.
+- The old key from the Whop-era notice is discarded, so returning visitors are asked again.
+- The choice can be changed at any time from /privacidad → "Cambiar mis preferencias de medición". The banner reopens showing the current choice.
+- Rejecting or withdrawing analytics: nothing is pushed to `dataLayer`, GTM is not loaded, and stored attribution and `_ga` cookies are deleted.
+- Phase 1 exclusions: no Google Signals, remarketing, personalized ads, enhanced conversions with visitor PII, or session replay. Any future advertising tag needs a new consent category and a management decision before any `ad_*` signal is granted.
 
-- Analytics → GTM + GA4, first-party attribution storage.
-- Marketing → Whop pixel (see §10). Future advertising tags would also require marketing consent **and** a new decision to grant `ad_*` signals.
-- Phase 1 exclusions: no Google Signals, remarketing, personalized ads, enhanced conversions with visitor PII, or session replay.
+## 10. Whop pixel: audited and removed
 
-## 10. Whop pixel audit (28 Oct 2026)
+Audited 28 Oct 2026 on production, with fake data and every Whop request blocked. The pixel was on every route, including `/health`, once a visitor clicked "Aceptar". What it did:
 
-Verified on production with fake data and all Whop requests blocked.
+- sent the **name, email and phone typed into any form to Whop as `identify` events, while the visitor was typing, before submit**;
+- sent email, phone or name found in URL parameters;
+- sent every full page URL with its query string, plus referrer, title, device details, a device fingerprint (`fingerprint.js`) and an anonymous id cookie (`_wuid`);
+- read the `_fbp`, `_fbc`, `_ga` and `_ttp` cookies.
 
-| Question | Before this change | After this change |
-|---|---|---|
-| Where it loads | `t.whop.tw/s.js`, injected by the consent component after "Aceptar" | Same script, now loaded by `lib/analytics/consent.ts` on **marketing** consent |
-| Routes | Every route, including `/health`, `/en/health`, `/contacto`; tracks SPA navigations itself (patches `history`) and page "leave" with time on page | Unchanged |
-| Data per event | Full page URL **including query string**, referrer, title, user agent, screen size, language, timezone, anonymous id cookie (`_wuid`), reads `_fbp`/`_fbc`/`_ga`/`_ttp` cookies; loads `fingerprint.js` and `sc.js` | Unchanged |
-| Form fields | **Sends name, email and phone to Whop as the visitor types them** in any form (on `change`, before submit) as `identify` events | **Off** (`forms: false`) — verified no `identify` and no typed values |
-| URL identity | **Sends email/phone/name found in URL parameters** (`?email=` etc.) as `identify` | **Off** (`urlIdentity: false`) |
+**Management decision (28 Oct 2026): remove Whop from alleanzainsurance.org completely.** GA4/GTM and Vercel replace it. Whop may still be used separately for Alleanza Academy / the Whop commerce environment, never on this site.
 
-**Flagged for management review:**
+This PR removes the loader, scope, configuration, consent category and every reference to `t.whop.tw`. Leftover first-party `_wuid*` cookies from past visits are deleted on every page load. Verified:
+- zero requests to any Whop host;
+- zero Whop cookies;
+- no "whop" string anywhere in the built client or server output.
 
-1. The form-capture leak is live on the current production site for visitors who clicked "Aceptar". This PR stops it; consider shipping that part promptly.
-2. Whop still receives every page URL with its full query string, the fact that a visitor viewed `/health`, a device fingerprint, and, once GA4 runs, the `_ga` client id. Decide whether Whop should run on health routes at all, and whether it is needed.
-3. Classification: treated as **marketing** (it performs identity resolution and conversion tracking). Confirm.
+The live production site keeps the old pixel until this PR is merged and deployed.
 
 ## 11. Vercel Web Analytics / Speed Insights
 
-Use for traffic sanity checks, Core Web Vitals and runtime performance — not as the business source of truth (no custom events). Both are cookieless; reported URLs keep only `utm_*` parameters. They load on every visit, independent of the consent banner. Their scripts are already served on Vercel deployments (verified on the PR preview). **Confirm both are enabled in the Vercel project (Analytics and Speed Insights tabs)** so that data is collected and reported. Locally the scripts are not served, which is expected.
+Use these for traffic sanity checks, Core Web Vitals and runtime performance. They are **not** the business source of truth: no Vercel custom events are sent, and conversions come from GA4 only.
+
+They load on every visit, **independent of the analytics choice**. That is justified because:
+- they set no cookies and use no local storage for identification;
+- they never receive form values;
+- the URLs they report are reduced to origin + path + `utm_*` (`beforeSend` in `components/analytics/VercelObservability.tsx`);
+- the data stays with Vercel, the site's hosting provider.
+
+If any of those stops being true, move them behind analytics consent. Their scripts are already served on Vercel deployments (verified on the PR preview). **Confirm both are enabled in the Vercel project (Analytics and Speed Insights tabs)** so that data is collected and reported. Locally the scripts are not served, which is expected.
 
 ## 12. Search Console ↔ GA4
 
@@ -245,4 +262,4 @@ Enrollment happens off-site (HealthSherpa / carrier), so it can only be measured
 
 ## 15. Testing
 
-For the PR, the end-to-end checks ran with Playwright against a local production build (`VERCEL_ENV=production`), with Resend replaced by a local recorder and Google/Whop requests aborted. Covered: consent defaults, banner, reject/accept/choose, withdrawal, one page_view per route (initial, Link, back, forward, hash), CTA/phone/WhatsApp events, gallery rotation not tracked, form_start once, form_error categories, exactly one generate_lead after success (double-click and retry), dataLayer key allowlist, no PII-like values, attribution stored/not stored by consent, attribution in both lead emails, employer form, and Whop with form capture off.
+For the PR, the end-to-end checks ran with Playwright against a local production build (`VERCEL_ENV=production`), with Resend replaced by a local recorder, Google requests aborted, and every request to a Whop host recorded and blocked. Covered: zero Whop requests and cookies, removal of leftover `_wuid` cookies, the /work form (`form_type=work`), consent defaults, banner, reject/accept, withdrawal, one page_view per route (initial, Link, back, forward, hash), CTA/phone/WhatsApp events, gallery rotation not tracked, form_start once, form_error categories, exactly one generate_lead after success (double-click and retry), dataLayer key allowlist, no PII-like values, attribution stored/not stored by consent, attribution in all lead emails, and the contact, health, employer and work forms.
