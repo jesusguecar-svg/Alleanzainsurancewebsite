@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { LegalDocument } from "@/components/LegalDocument";
 import { officeAddressLines, officeHours, phones } from "@/lib/config/contact";
-import { portalRoutes } from "@/lib/config/routes";
+import { activePortalRoutes } from "@/lib/config/routes";
 
 const title = "Nosotros | Alleanza Insurance Corp.";
 const description =
-  "Alleanza Insurance Corp. es una agencia de seguros independiente en Carrollton, Texas, que orienta a familias hispanas en salud, vida, propiedad y beneficios para empresas.";
+  "Alleanza Insurance Corp. es una agencia de seguros independiente en Carrollton, Texas, que orienta a familias hispanas en salud, vida y beneficios para empresas.";
 
 export const metadata: Metadata = {
   title,
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
  * belong in lib/config/company.ts and stay off this page until verified.
  */
 export default function Page() {
-  const lines = portalRoutes.filter((route) => !route.external);
+  const lines = activePortalRoutes.filter((route) => !route.external);
 
   return (
     <LegalDocument title="Nosotros">

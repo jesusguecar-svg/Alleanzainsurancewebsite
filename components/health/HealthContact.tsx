@@ -3,8 +3,8 @@
 import { ArrowUpRight, Check, Loader2, Mail, MessageCircle, Phone } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { consentText, consentTextEn } from "@/lib/content/contact";
-import { healthEmail, healthOfficePhone, healthServices, healthServicesEn, validateHealthLead } from "@/lib/content/health";
-import { phones } from "@/lib/config/contact";
+import { healthEmail, healthServices, healthServicesEn, validateHealthLead } from "@/lib/content/health";
+import { primaryPhone, whatsappPhone, whatsappUrl } from "@/lib/config/contact";
 import states from "./us-states.json";
 import { stateNamesEn } from "./state-names";
 import s from "./health.module.css";
@@ -13,7 +13,7 @@ export function getHealthWhatsapp(locale: "es" | "en" = "es") {
   const message = locale === "en"
     ? "Hello, I would like guidance about health insurance options with Alleanza Insurance Corp."
     : "Hola, me gustaría recibir orientación sobre seguros de salud con Alleanza Insurance Corp.";
-  return `https://wa.me/${phones[0].href.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
+  return whatsappUrl(message);
 }
 
 export const healthWhatsapp = getHealthWhatsapp("es");
@@ -64,7 +64,7 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
   }
 
   return <section id="contacto" className={s.contact} aria-labelledby="contact-heading">
-    <div className={s.contactCopy}><span className={s.eyebrow}>{english ? "HELP WHEN YOU NEED IT" : "AYUDA CUANDO LA NECESITES"}</span><h2 id="contact-heading">{english ? <>Prefer to review your options<br /><em>with an advisor?</em></> : <>¿Prefieres revisar tus opciones<br /><em>con un asesor?</em></>}</h2><p>{english ? "Tell us how to reach you. One of our advisors can help you understand the next steps." : "Cuéntanos cómo contactarte y uno de nuestros asesores podrá ayudarte a entender los próximos pasos."}</p><a href={whatsapp} target="_blank" rel="noopener noreferrer" className={s.whatsappLink}><MessageCircle size={18} aria-hidden="true" /> {english ? "I prefer WhatsApp" : "Prefiero hablar por WhatsApp"} <ArrowUpRight size={16} aria-hidden="true" /></a><div className={s.contactDirect}><a href={`mailto:${healthEmail}`}><Mail size={16} aria-hidden="true" /> {healthEmail}</a><a href={`tel:${phones[0].href}`}><Phone size={16} aria-hidden="true" /> {phones[0].label}</a><a href={`tel:${healthOfficePhone.href}`}><Phone size={16} aria-hidden="true" /> {healthOfficePhone.label}</a></div></div>
+    <div className={s.contactCopy}><span className={s.eyebrow}>{english ? "HELP WHEN YOU NEED IT" : "AYUDA CUANDO LA NECESITES"}</span><h2 id="contact-heading">{english ? <>Prefer to review your options<br /><em>with an advisor?</em></> : <>¿Prefieres revisar tus opciones<br /><em>con un asesor?</em></>}</h2><p>{english ? "Tell us how to reach you. One of our advisors can help you understand the next steps." : "Cuéntanos cómo contactarte y uno de nuestros asesores podrá ayudarte a entender los próximos pasos."}</p><a href={whatsapp} target="_blank" rel="noopener noreferrer" className={s.whatsappLink}><MessageCircle size={18} aria-hidden="true" /> {english ? "I prefer WhatsApp" : "Prefiero hablar por WhatsApp"} <ArrowUpRight size={16} aria-hidden="true" /></a><div className={s.contactDirect}><a href={`mailto:${healthEmail}`}><Mail size={16} aria-hidden="true" /> {healthEmail}</a><a href={`tel:${primaryPhone.href}`}><Phone size={16} aria-hidden="true" /> {english ? "Phone" : "Teléfono"}: {primaryPhone.label}</a><a href={whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle size={16} aria-hidden="true" /> WhatsApp: {whatsappPhone.label}</a></div></div>
     <div className={s.formCard}>
       {status === "success" ? <div className={s.formSuccess} role="status"><span><Check size={34} /></span><h3>{english ? <>We received<br />your request.</> : <>Recibimos<br />tu solicitud.</>}</h3><p>{english ? "We received your request. An agent will contact you to provide guidance." : "Recibimos tu solicitud. Un asesor se pondrá en contacto contigo para orientarte."}</p><button type="button" className={s.textLink} onClick={() => setStatus("idle")}>{english ? "Send another request" : "Enviar otra consulta"} <ArrowUpRight size={16} /></button></div> : <form onSubmit={submit}>
         <div className={s.formTitle}><h3>{selectedService === "review" ? (english ? "Let’s review your coverage." : "Revisemos tu cobertura.") : (english ? "Find your coverage." : "Encuentra tu cobertura.")}</h3><span>{english ? "FREE GUIDANCE" : "ASESORÍA GRATUITA"}</span></div>

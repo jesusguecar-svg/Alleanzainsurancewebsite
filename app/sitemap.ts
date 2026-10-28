@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/config/site";
-import { portalRoutes } from "@/lib/config/routes";
+import { activePortalRoutes } from "@/lib/config/routes";
 import { agents } from "@/lib/content/agents";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: siteUrl, lastModified, changeFrequency: "monthly", priority: 1 },
-    ...portalRoutes
+    ...activePortalRoutes
       .filter((route) => !route.external)
       .map((route) => ({
         url: `${siteUrl}${route.href}`,

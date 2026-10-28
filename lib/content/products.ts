@@ -282,6 +282,13 @@ export const healthProducts = products.filter((product) => product.line === "hea
 export const lifeProducts = products.filter((product) => product.line === "life");
 export const propertyProducts = products.filter((product) => product.line === "property");
 
+/**
+ * Lines that can be requested today. Property is not offered (Alleanza is not licensed for
+ * P&C yet), so its products stay out of lead forms and validation.
+ */
+export const offeredLines = ["health", "life"] as const satisfies readonly Product["line"][];
+export const offeredProducts = products.filter((product) => (offeredLines as readonly string[]).includes(product.line));
+
 export const featuredHealthProducts = healthProducts.filter((product) => product.featured);
 export const additionalHealthProducts = healthProducts.filter((product) => !product.featured);
 export const featuredLifeProducts = lifeProducts.filter((product) => product.featured);

@@ -6,7 +6,7 @@ import { useId, useRef, useState } from "react";
 import { StabilizationSequence } from "../cinematic";
 import { consentText, honeypotFieldName, optionsForLines, productOptions, validateContact, type FieldErrors } from "@/lib/content/contact";
 import type { Product } from "@/lib/content/products";
-import { officeAddressLines, officeHours, phones } from "@/lib/config/contact";
+import { officeAddressLines, officeHours, publicContactLines } from "@/lib/config/contact";
 import { useReveal } from "@/lib/motion";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -113,11 +113,12 @@ export function ContactSection({ lines }: { lines?: readonly Product["line"][] }
             </div>
 
             <div className="sm:col-span-2">
-              <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em]"><Phone aria-hidden="true" size={15} /> Teléfonos</h3>
+              <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em]"><Phone aria-hidden="true" size={15} /> Teléfono y WhatsApp</h3>
               <ul className="mt-3 grid gap-x-6 gap-y-1 text-sm text-navy/70 sm:grid-cols-2">
-                {phones.map((phone) => (
-                  <li key={phone.href}>
-                    <a href={`tel:${phone.href}`} className="font-semibold underline-offset-4 transition hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">{phone.label}</a>
+                {publicContactLines.map((line) => (
+                  <li key={line.id}>
+                    {line.label}:{" "}
+                    <a href={line.href} {...(line.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="font-semibold underline-offset-4 transition hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">{line.display}</a>
                   </li>
                 ))}
               </ul>

@@ -18,7 +18,7 @@ const inter = localFont({
 
 const title = "Alleanza Insurance Corp. | Orientación para elegir con claridad";
 const description =
-  "Seguros para familias hispanas en Texas: seguro médico, Obamacare (ACA), seguro de vida y coberturas complementarias como accidentes, hospitalización, cáncer y eventos cardíacos. Te lo explicamos en español, con agentes de seguros con licencia.";
+  "Seguros para familias hispanas, desde Carrollton, Texas, con una red de agentes licenciados en los 50 estados: seguro médico, Obamacare (ACA), seguro de vida y coberturas complementarias. Te lo explicamos en español; la disponibilidad depende del estado y la elegibilidad.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

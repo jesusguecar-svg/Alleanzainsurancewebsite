@@ -10,6 +10,11 @@ export type GoogleReviews = {
   checkedOn?: string;
 };
 
+/**
+ * Google listing of the Carrollton office team. It is published under the Villard Agency name;
+ * management confirmed on 2026-10-28 that Villard Agency and Alleanza share ownership. Label
+ * these reviews as the Carrollton team's, never as "Alleanza Insurance Corp reviews".
+ */
 export const googleReviewsProfileUrl = "https://www.google.com/maps/place/Globe+Life+Family+Heritage+Division:+Villard+Agency/@32.9629058,-96.8434504,17z/data=!3m1!4b1!4m6!3m5!1s0x864c27f8e100b355:0x8ff33e26608d6b39!8m2!3d32.9629058!4d-96.8408701!16s%2Fg%2F11xcs5swz_?entry=ttu";
 
 // Public Google profile snapshot verified on 2026-09-26. The Places API

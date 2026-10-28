@@ -66,7 +66,6 @@ function journeyScenes(locale: Locale): JourneyScene[] {
         { kind: "pill", title: t("Dental y visión", "Dental and vision"), depth: 0.55 },
         { kind: "pill", title: t("Complementaria", "Supplemental"), depth: 1.1 },
         { kind: "pill", title: t("Descuento", "Discount plan"), depth: 0.7 },
-        { kind: "pill", title: "Medicare", depth: 1 },
       ],
     },
     {

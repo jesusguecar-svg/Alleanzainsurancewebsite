@@ -2,14 +2,15 @@ import { healthServices, healthServicesEn } from "@/lib/content/health";
 
 /**
  * Salud credibility facts.
- * Subscriber floor: stated by the business on 2026-10-21 for this page only.
+ * No customer or subscriber counts: the former "20,000 subscribers" figure was removed by
+ * management decision on 2026-10-28 because it could not be supported. Do not replace it with
+ * another count unless it is verified through `companyFacts`.
+ * Operating since 2019 and the 50-state agent network: confirmed by management, 2026-10-28.
  * Founding year, place, and BBB rating: BBB profile for Alleanza Insurance Corp,
  * Carrollton. The A+ is a rating, not BBB accreditation.
  * This file does not publish companyFacts.
  */
 export type CredibilityLocale = "es" | "en";
-
-export const healthSubscriberFloor = 20000;
 
 export const bbbProfileUrl = "https://www.bbb.org/us/tx/carrollton/profile/health-insurance/alleanza-insurance-corp-0875-91352784";
 
@@ -47,7 +48,6 @@ const benefits: Record<CredibilityLocale, readonly CredibilityBenefit[]> = {
 export function credibilityContent(locale: CredibilityLocale) {
   const en = locale === "en";
   const services = en ? healthServicesEn : healthServices;
-  const subscribers = en ? "20,000+" : "+20,000";
   return {
     headlineLead: en ? "More than finding insurance." : "Más que encontrar un seguro.",
     headlineEmphasis: en ? "Finding peace of mind." : "Encontrar tranquilidad.",
@@ -57,10 +57,10 @@ export function credibilityContent(locale: CredibilityLocale) {
     benefits: benefits[locale],
     facts: [
       {
-        id: "subscribers",
-        value: subscribers,
-        label: en ? "health insurance subscribers" : "suscriptores de salud",
-        note: en ? "More than 20,000. Health coverage only." : "Más de 20,000. Solo seguro de salud.",
+        id: "founded",
+        value: "2019",
+        label: en ? "Protecting families since 2019" : "Protegiendo familias desde 2019",
+        note: en ? "Alleanza Insurance Corp. Carrollton, Texas." : "Alleanza Insurance Corp. Carrollton, Texas.",
       },
       {
         id: "categories",
@@ -71,10 +71,10 @@ export function credibilityContent(locale: CredibilityLocale) {
         linkLabel: en ? `${services.length} coverage categories in the health guide` : `${services.length} categorías de cobertura en la guía de salud`,
       },
       {
-        id: "founded",
-        value: "2019",
-        label: en ? "founded in Texas" : "fundada en Texas",
-        note: en ? "Carrollton. Cynthia and Guillermo Villard." : "Carrollton. Cynthia y Guillermo Villard.",
+        id: "network",
+        value: "50",
+        label: en ? "states with licensed-agent service" : "estados con atención de agentes licenciados",
+        note: en ? "Product availability varies by state, licensing, and eligibility." : "La disponibilidad de productos depende del estado, las licencias y la elegibilidad.",
       },
       {
         id: "bbb",

@@ -1,3 +1,5 @@
+import { primaryPhone } from "@/lib/config/contact";
+
 export type Agent = {
   slug: string;
   fullName: string;
@@ -54,7 +56,7 @@ export const agents: readonly Agent[] = [
       postalCode: "75006",
       country: "US",
     },
-    phone: { label: "(214) 997-4650", href: "+12149974650" },
+    phone: primaryPhone,
     shortBio:
       "Orientación bilingüe y clara para que personas y familias entiendan sus opciones de protección.",
     shortBioEn:

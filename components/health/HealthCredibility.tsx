@@ -5,7 +5,7 @@ import p from "./platform.module.css";
 import c from "./credibility.module.css";
 
 const factIcons: Record<string, LucideIcon> = {
-  subscribers: Users,
+  network: Users,
   google: Star,
   categories: LayoutGrid,
   founded: MapPin,
@@ -29,11 +29,11 @@ export function HealthCredibility({ locale = "es", reviews }: { locale?: "es" | 
     facts.splice(1, 0, {
       id: "google",
       value: google.rating.toFixed(1),
-      label: en ? `${google.count} Google reviews` : `${google.count} reseñas en Google`,
-      note: en ? "Public profile. Not a customer count." : "Perfil público. No es un conteo de clientes.",
+      label: en ? `${google.count} Google reviews of our Carrollton team` : `${google.count} reseñas en Google de nuestro equipo en Carrollton`,
+      note: en ? "Listing published as Villard Agency, same ownership. Not a customer count." : "Perfil publicado como Villard Agency, misma propiedad. No es un conteo de clientes.",
       href: google.url,
       external: true,
-      linkLabel: en ? `${google.rating.toFixed(1)} out of 5, ${google.count} Google reviews` : `${google.rating.toFixed(1)} de 5, ${google.count} reseñas en Google`,
+      linkLabel: en ? `${google.rating.toFixed(1)} out of 5, ${google.count} Google reviews of our Carrollton team (Villard Agency listing)` : `${google.rating.toFixed(1)} de 5, ${google.count} reseñas en Google de nuestro equipo en Carrollton (perfil de Villard Agency)`,
     });
   }
 

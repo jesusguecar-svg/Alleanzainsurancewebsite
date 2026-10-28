@@ -8,6 +8,6 @@ export default async function OpengraphImage() {
   return renderOgCard({
     headline: "Elige el camino correcto",
     accent: "para proteger lo que más importa.",
-    subtitle: "Salud, vida, propiedad, academia y carrera. En español.",
+    subtitle: "Salud, vida, academia y carrera. En español.",
   });
 }

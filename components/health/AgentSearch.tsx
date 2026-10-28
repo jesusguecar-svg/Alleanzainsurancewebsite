@@ -18,7 +18,7 @@ export function AgentSearch({ city, locale = "es", addressLine, localityLine, ma
   }, [city, locale, normalized]);
 
   return <div className={s.agentFinder}>
-    {addressLine && localityLine && mapUrl && <a className={s.officeAddressCard} href={mapUrl} target="_blank" rel="noopener noreferrer"><MapPin size={15} /><span><small>{locale === "en" ? `${city} office` : `Oficina de ${city}`}</small><strong>{addressLine}</strong><em>{localityLine}</em></span><ArrowUpRight size={14} /></a>}
+    {addressLine && localityLine && mapUrl && <a className={s.officeAddressCard} href={mapUrl} target="_blank" rel="noopener noreferrer"><MapPin size={15} /><span><small>{locale === "en" ? "Main office · Carrollton, TX" : "Oficina principal · Carrollton, TX"}</small><strong>{addressLine}</strong><em>{localityLine}</em></span><ArrowUpRight size={14} /></a>}
     <label className={s.agentSearch}>
       <Search size={14} aria-hidden="true" />
       <span className="sr-only">{locale === "en" ? "Search for an agent by name, city, or state" : "Buscar un agente por nombre, ciudad o estado"}</span>
@@ -30,7 +30,7 @@ export function AgentSearch({ city, locale = "es", addressLine, localityLine, ma
         <span><strong>{agent.fullName}</strong><small>{locale === "en" ? agent.titleEn : agent.title}</small><em><ShieldCheck size={11} /> NPN {agent.npn}</em></span>
         <ArrowUpRight size={16} aria-hidden="true" />
       </Link>)}
-    </div> : <p className={s.agentEmpty}>{locale === "en" ? "There is no published profile for this city yet. Search by name or choose another office." : "Aún no hay un perfil publicado para esta ciudad. Busca por nombre o elige otra oficina."}</p>}
+    </div> : <p className={s.agentEmpty}>{locale === "en" ? "There is no published profile for this city yet. Search by name or choose another service area." : "Aún no hay un perfil publicado para esta ciudad. Busca por nombre o elige otra área de atención."}</p>}
     <Link href={locale === "en" ? "/en/agents" : "/agentes"} className={s.agentDirectoryLink}>{locale === "en" ? "View agent directory" : "Ver directorio de agentes"} <ArrowUpRight size={14} /></Link>
   </div>;
 }

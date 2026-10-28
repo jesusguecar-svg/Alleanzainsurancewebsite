@@ -17,6 +17,12 @@ export type PortalRoute = {
   external?: boolean;
   /** False while the route is still a branded shell rather than a full page. */
   complete: boolean;
+  /**
+   * Not currently offered. Kept out of navigation, footers, the sitemap and lead forms; the
+   * route only shows a "Próximamente" notice. Property & Casualty: Alleanza is not licensed
+   * for P&C yet (management decision, 2026-10-28).
+   */
+  comingSoon?: boolean;
 };
 
 export const portalRoutes: PortalRoute[] = [
@@ -39,10 +45,11 @@ export const portalRoutes: PortalRoute[] = [
   {
     id: "property-casualty",
     href: "/property-casualty",
-    label: "Propiedad",
-    title: "Propiedad",
-    description: "Cobertura para propiedad y riesgos cotidianos.",
-    complete: true,
+    label: "Property & Casualty",
+    title: "Property & Casualty — Próximamente",
+    description: "En desarrollo. Sujeto a los requisitos de licencia y disponibilidad correspondientes.",
+    complete: false,
+    comingSoon: true,
   },
   {
     id: "academy",
@@ -85,5 +92,8 @@ export const legalRoutes = [
   { href: "/licencias", label: "Licencias", labelEn: "Licenses" },
 ] as const;
 
+/** Lines and destinations that are live today: navigation, footers, sitemap and forms use these. */
+export const activePortalRoutes = portalRoutes.filter((route) => !route.comingSoon);
+
 /** Navigation shown in the header on every route except the health landing. */
-export const portalNavLinks = portalRoutes.map(({ href, label }) => ({ href, label }));
+export const portalNavLinks = activePortalRoutes.map(({ href, label }) => ({ href, label }));
