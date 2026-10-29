@@ -7,6 +7,7 @@ import { StabilizationSequence } from "../cinematic";
 import { consentText, honeypotFieldName, optionsForLines, productOptions, validateContact, type FieldErrors } from "@/lib/content/contact";
 import { products, type Product } from "@/lib/content/products";
 import { attributionForLead, type ProductLine } from "@/lib/analytics";
+import { useSubmissionId } from "@/lib/forms/useSubmissionId";
 import { useLeadFormTracking } from "@/lib/analytics/useLeadFormTracking";
 import { officeAddressLines, officeHours, publicContactLines } from "@/lib/config/contact";
 import { useReveal } from "@/lib/motion";
@@ -20,7 +21,9 @@ const fieldClass =
 export function ContactSection({ lines, productLine }: { lines?: readonly Product["line"][]; productLine?: ProductLine } = {}) {
   const options = lines ? optionsForLines(lines) : productOptions;
   // Job applications from /work are reported as their own form type, apart from insurance leads.
-  const tracking = useLeadFormTracking(productLine === "work" ? "work" : "contact");
+  const formType = productLine === "work" ? "work" : "contact";
+  const tracking = useLeadFormTracking(formType);
+  const submission = useSubmissionId();
   const lineFor = (productId?: string) =>
     (products.find((product) => product.id === productId)?.line ?? productLine ?? (lines?.length === 1 ? lines[0] : undefined)) as ProductLine | undefined;
   const reveal = useReveal({ y: 40 });
@@ -49,6 +52,9 @@ export function ContactSection({ lines, productLine }: { lines?: readonly Produc
       source: window.location.pathname,
       [honeypotFieldName]: String(data.get(honeypotFieldName) ?? ""),
       attribution: attributionForLead(),
+      form_type: formType,
+      product_line: lineFor(String(data.get("productId") ?? "")),
+      submission_id: submission.current(),
     };
 
     const nextErrors = validateContact(payload);
@@ -70,6 +76,7 @@ export function ContactSection({ lines, productLine }: { lines?: readonly Produc
 
       if (response.ok) {
         tracking.success(lineFor(payload.productId));
+        submission.reset();
         setStatus("success");
         return;
       }

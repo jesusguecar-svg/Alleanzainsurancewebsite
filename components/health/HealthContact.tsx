@@ -6,6 +6,7 @@ import { consentText, consentTextEn } from "@/lib/content/contact";
 import { healthEmail, healthServices, healthServicesEn, validateHealthLead } from "@/lib/content/health";
 import { primaryPhone, whatsappPhone, whatsappUrl } from "@/lib/config/contact";
 import { attributionForLead } from "@/lib/analytics";
+import { useSubmissionId } from "@/lib/forms/useSubmissionId";
 import { useLeadFormTracking } from "@/lib/analytics/useLeadFormTracking";
 import states from "./us-states.json";
 import { stateNamesEn } from "./state-names";
@@ -37,6 +38,7 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
   const [error, setError] = useState("");
   const [emailDraft, setEmailDraft] = useState(`mailto:${healthEmail}`);
   const tracking = useLeadFormTracking("health");
+  const submission = useSubmissionId();
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -57,7 +59,7 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
     setStatus("sending"); setError("");
     let reported = false;
     try {
-      const response = await fetch("/api/health/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...value, attribution: attributionForLead() }), signal: AbortSignal.timeout(15000) });
+      const response = await fetch("/api/health/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...value, attribution: attributionForLead(), submission_id: submission.current() }), signal: AbortSignal.timeout(15000) });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) {
         tracking.error(response.ok ? 502 : response.status);
@@ -65,6 +67,7 @@ export function HealthContact({ selectedState, onState, selectedService, onServi
         throw new Error(data.error ?? (english ? "We could not send your request. Please try again." : "No pudimos enviar tu solicitud. Inténtalo otra vez."));
       }
       tracking.success("health");
+      submission.reset();
       setStatus("success");
     } catch (cause) {
       if (!reported) tracking.error("network");

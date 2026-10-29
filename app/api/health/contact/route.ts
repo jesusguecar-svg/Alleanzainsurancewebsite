@@ -5,6 +5,8 @@ import states from "@/components/health/us-states.json";
 import { attributionEmailLines } from "@/lib/server/attribution";
 import { emailConfigured, sendEmail, senderFor } from "@/lib/server/email";
 import { allowSend, isCrossOrigin, maxFormBodyBytes } from "@/lib/server/form-guard";
+import { alreadyDelivered, deliverLeadOnce, submissionKey, type Lead } from "@/lib/server/lead-intake";
+import { ledgerLeadRecord, recordLeadInLedger } from "@/lib/server/lead-ledger";
 
 export const runtime = "nodejs";
 
@@ -23,13 +25,19 @@ export async function POST(request: Request) {
   const state = states.find(s => s.id === lead.state);
   if (!state) return NextResponse.json({ error: english ? "Select a valid state." : "Selecciona un estado válido." }, { status: 422 });
   if (!emailConfigured("health")) return NextResponse.json({ error: english ? "Direct submission is unavailable right now. You can send your request by email or WhatsApp." : "El envío directo no está disponible en este momento. Puedes enviarnos tu solicitud por correo o WhatsApp." }, { status: 503 });
-  if (!allowSend(request, "health")) return NextResponse.json({ error: english ? "We received several requests in a row. Please wait a few minutes or email us." : "Recibimos varias solicitudes seguidas. Espera unos minutos o escríbenos por correo." }, { status: 429 });
+  // A retry of a lead that already reached the inbox is answered without counting against the limit.
+  const key = submissionKey((input as { submission_id?: unknown }).submission_id);
+  if (!alreadyDelivered(key) && !allowSend(request, "health")) return NextResponse.json({ error: english ? "We received several requests in a row. Please wait a few minutes or email us." : "Recibimos varias solicitudes seguidas. Espera unos minutos o escríbenos por correo." }, { status: 429 });
   const services = english ? healthServicesEn : healthServices;
   const service = lead.service === "review" ? (english ? "Existing coverage review" : "Revisión de cobertura existente") : services.find(s => s.id === lead.service)?.title ?? (english ? "General guidance" : "Orientación general");
-  const sent = await sendEmail({
-    from: senderFor("health")!, to: [healthEmail], replyTo: lead.email, subject: `Nueva solicitud de salud: ${service}`,
-    text: `Solicitud desde Alleanza ${english ? "/en/health" : "/health"}\n\nNombre: ${lead.name}\nCorreo: ${lead.email}\nTeléfono: ${lead.phone}\nEstado: ${state.name}\nInterés: ${service}\nIdioma: ${english ? "English" : "Español"}\n\nConsentimiento: ${english ? consentTextEn : consentText}\nFecha: ${new Date().toISOString()}\n\n${attributionEmailLines((input as { attribution?: unknown }).attribution).join("\n")}`,
+  const attribution = (input as { attribution?: unknown }).attribution;
+  const send = (record: Lead) => sendEmail({
+    from: senderFor("health")!, to: [healthEmail], replyTo: lead.email, subject: `Nueva solicitud de salud: ${service} · ${record.id}`,
+    text: `ID de lead: ${record.id}\n\nSolicitud desde Alleanza ${english ? "/en/health" : "/health"}\n\nNombre: ${lead.name}\nCorreo: ${lead.email}\nTeléfono: ${lead.phone}\nEstado: ${state.name}\nInterés: ${service}\nIdioma: ${english ? "English" : "Español"}\n\nConsentimiento: ${english ? consentTextEn : consentText}\nFecha: ${record.createdAt}\n\n${attributionEmailLines(attribution).join("\n")}`,
   });
-  if (!sent) return NextResponse.json({ error: english ? "We could not send your request. Try again or contact us directly." : "No pudimos enviar tu solicitud. Inténtalo otra vez o contáctanos directamente." }, { status: 502 });
+  const { lead: record, delivered, replayed } = await deliverLeadOnce(key, send);
+  if (!delivered) return NextResponse.json({ error: english ? "We could not send your request. Try again or contact us directly." : "No pudimos enviar tu solicitud. Inténtalo otra vez o contáctanos directamente." }, { status: 502 });
+  if (!replayed) recordLeadInLedger(ledgerLeadRecord({ lead: record, formType: "health", productLine: "health", stateFips: state.id, language: english ? "en" : "es", attribution }));
+  // The lead ID stays server-side: it is never returned to the browser.
   return NextResponse.json({ ok: true });
 }
