@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalDocument } from "@/components/LegalDocument";
+import { contentDates, formatContentDate } from "@/lib/config/content-dates";
 import { ConsentPreferencesButton } from "@/components/analytics/ConsentPreferencesButton";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <LegalDocument title="Política de privacidad" updated="1 de noviembre de 2026">
+    <LegalDocument title="Política de privacidad" updated={formatContentDate(contentDates["/privacidad"])}>
       <p>
         <a href="/en/privacy" hrefLang="en" lang="en">Read this policy in English</a>
       </p>

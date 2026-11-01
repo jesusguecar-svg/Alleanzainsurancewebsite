@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import HealthExperience from "@/components/health/HealthExperience";
 import { getGoogleReviews } from "@/lib/google-reviews";
 import { siteUrl } from "@/lib/config/site";
-import { primaryPhone } from "@/lib/config/contact";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { organizationRef } from "@/lib/seo/schema";
 
 export const dynamic = "force-dynamic";
 
@@ -21,10 +22,8 @@ export const metadata: Metadata = {
 export default async function EnglishHealthPage() {
   const reviews = await getGoogleReviews("en");
   const structuredData = {
-    "@context": "https://schema.org", "@type": "InsuranceAgency", name: "Alleanza Insurance Corp.",
-    url: `${siteUrl}/en/health`, areaServed: "US", availableLanguage: ["English", "Spanish"],
-    address: { "@type": "PostalAddress", streetAddress: "3424 Midcourt Rd Ste 122", addressLocality: "Carrollton", addressRegion: "TX", postalCode: "75006", addressCountry: "US" },
-    telephone: primaryPhone.href,
+    "@context": "https://schema.org", "@type": "WebPage", "@id": `${siteUrl}/en/health#webpage`,
+    url: `${siteUrl}/en/health`, inLanguage: "en", about: organizationRef,
   };
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} /><HealthExperience locale="en" reviews={reviews} reviewsUrl={process.env.GOOGLE_REVIEWS_URL} /></>;
+  return <><JsonLd data={structuredData} /><HealthExperience locale="en" reviews={reviews} reviewsUrl={process.env.GOOGLE_REVIEWS_URL} /></>;
 }

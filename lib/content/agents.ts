@@ -1,4 +1,4 @@
-import { primaryPhone } from "@/lib/config/contact";
+import { office, officeCountry, primaryPhone } from "@/lib/config/contact";
 
 export type Agent = {
   slug: string;
@@ -51,11 +51,11 @@ export const agents: readonly Agent[] = [
     officeName: "Oficina Dallas–Fort Worth",
     officeNameEn: "Dallas–Fort Worth Office",
     address: {
-      street: "3424 Midcourt Rd, Suite 122",
-      locality: "Carrollton",
-      region: "TX",
-      postalCode: "75006",
-      country: "US",
+      street: office.street,
+      locality: office.city,
+      region: office.state,
+      postalCode: office.postalCode,
+      country: officeCountry,
     },
     phone: primaryPhone,
     shortBio:

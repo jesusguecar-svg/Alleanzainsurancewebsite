@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Mail } from "lucide-react";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { portalNavLinks } from "@/lib/config/routes";
 import { healthEmail } from "@/lib/content/health";
+import { organizationSchema } from "@/lib/seo/schema";
 
 const title = "Contacto | Alleanza Insurance Corp.";
 const description =
@@ -20,6 +22,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <main className="bg-white text-navy">
+      <JsonLd data={organizationSchema()} />
       <SiteHeader links={portalNavLinks} cta={{ href: "#contacto", label: "Hablar con un asesor" }} />
       <section className="mx-auto max-w-7xl px-5 pb-10 pt-36 md:pb-14 md:pt-44">
         <p className="text-xs font-semibold uppercase tracking-[.22em] text-cyan">Alleanza Insurance</p>

@@ -1,4 +1,4 @@
-import { leadInbox } from "@/lib/config/contact";
+import { leadInbox, officeAddressLines } from "@/lib/config/contact";
 
 export const healthEmail = leadInbox;
 
@@ -12,8 +12,8 @@ export const healthOffices = [
     state: "Texas",
     stateId: "48",
     coordinates: [-96.8408701, 32.9629058],
-    addressLine: "3424 Midcourt Rd, Suite 122",
-    localityLine: "Carrollton, TX 75006",
+    addressLine: officeAddressLines[0],
+    localityLine: officeAddressLines[1],
     mapUrl: "https://www.google.com/maps/place/Globe+Life+Family+Heritage+Division:+Villard+Agency/@32.9629058,-96.8434504,17z/data=!3m1!4b1!4m6!3m5!1s0x864c27f8e100b355:0x8ff33e26608d6b39!8m2!3d32.9629058!4d-96.8408701!16s%2Fg%2F11xcs5swz_?entry=ttu",
   },
   { city: "El Paso", state: "Texas", stateId: "48", coordinates: [-106.485, 31.7619] },

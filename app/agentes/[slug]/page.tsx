@@ -9,6 +9,8 @@ import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { agents, getAgent } from "@/lib/content/agents";
 import { healthEmail, licensingStatement } from "@/lib/content/health";
 import { siteUrl } from "@/lib/config/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { organizationRef } from "@/lib/seo/schema";
 import a from "../agents.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -47,7 +49,7 @@ export default async function AgentProfilePage({ params }: Props) {
     description: agent.shortBio,
     knowsLanguage: agent.languages,
     telephone: agent.phone.href,
-    worksFor: { "@type": "InsuranceAgency", name: "Alleanza Insurance Corp.", url: siteUrl },
+    worksFor: organizationRef,
     workLocation: {
       "@type": "Place",
       name: agent.officeName,
@@ -72,8 +74,8 @@ export default async function AgentProfilePage({ params }: Props) {
   };
 
   return <div className={a.page}>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema).replace(/</g, "\\u003c") }} />
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
+    <JsonLd data={personSchema} />
+    <JsonLd data={faqSchema} />
     <header className={a.header}><Link href="/"><Logo width={174} /></Link><nav><LanguageSwitch locale="es" spanishHref={`/agentes/${agent.slug}`} englishHref={`/en/agents/${agent.slug}`} className={a.languageSwitch} /><Link href="/agentes"><ArrowLeft size={15} /> Todos los agentes</Link><Link href="/health#contacto" data-cta="agent_request_guidance" data-product-line="health" className={a.headerCta}>Solicitar orientación <ArrowUpRight size={15} /></Link></nav></header>
     <main>
       <section className={a.profileHero}>

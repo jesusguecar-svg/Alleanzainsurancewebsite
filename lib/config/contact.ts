@@ -24,15 +24,37 @@ export const office = {
   postalCode: "75006",
 } as const;
 
+export const legalName = "Alleanza Insurance Corp.";
+
+export const officeCountry = "US";
+
 export const officeAddressLines = [
   office.street,
   `${office.city}, ${office.state} ${office.postalCode}`,
 ] as const;
 
-export const officeHours = [
-  { days: "Lunes a viernes", hours: "8:00 – 19:00" },
-  { days: "Sábado", hours: "10:00 – 17:00" },
+/** The office schedule. Display hours and structured data are all derived from this. */
+export const officeSchedule = [
+  { dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "08:00", closes: "19:00", days: "Lunes a viernes", daysEn: "Monday–Friday" },
+  { dayOfWeek: ["Saturday"], opens: "10:00", closes: "17:00", days: "Sábado", daysEn: "Saturday" },
 ] as const;
+
+const time24 = (time: string) => time.replace(/^0/, "");
+
+function time12(time: string) {
+  const [hour, minutes] = time.split(":").map(Number);
+  return `${hour % 12 || 12}:${String(minutes).padStart(2, "0")} ${hour < 12 ? "AM" : "PM"}`;
+}
+
+export const officeHours = officeSchedule.map(({ days, opens, closes }) => ({
+  days,
+  hours: `${time24(opens)} – ${time24(closes)}`,
+}));
+
+export const officeHoursEn = officeSchedule.map(({ daysEn, opens, closes }) => ({
+  days: daysEn,
+  hours: `${time12(opens)}–${time12(closes)}`,
+}));
 
 /**
  * Public phone hierarchy (management decision, 2026-10-28): one corporate line labelled

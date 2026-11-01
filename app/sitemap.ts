@@ -1,47 +1,27 @@
 import type { MetadataRoute } from "next";
+import { contentDates } from "@/lib/config/content-dates";
 import { siteUrl } from "@/lib/config/site";
-import { activePortalRoutes } from "@/lib/config/routes";
+import { activePortalRoutes, companyRoutes, legalRoutes } from "@/lib/config/routes";
 import { agents } from "@/lib/content/agents";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
+const dates: Readonly<Record<string, string>> = contentDates;
 
+function entry(path: string): MetadataRoute.Sitemap[number] {
+  const lastModified = dates[path];
+  return { url: `${siteUrl}${path}`, ...(lastModified ? { lastModified } : {}) };
+}
+
+export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    { url: siteUrl, lastModified, changeFrequency: "monthly", priority: 1 },
-    ...activePortalRoutes
-      .filter((route) => !route.external)
-      .map((route) => ({
-        url: `${siteUrl}${route.href}`,
-        lastModified,
-        changeFrequency: "monthly" as const,
-        priority: route.complete ? 0.9 : 0.5,
-      })),
-    ...["/nosotros", "/contacto"].map((path) => ({
-      url: `${siteUrl}${path}`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
-    ...["/privacidad", "/en/privacy", "/terminos", "/licencias"].map((path) => ({
-      url: `${siteUrl}${path}`,
-      lastModified,
-      changeFrequency: "yearly" as const,
-      priority: 0.3,
-    })),
-    { url: `${siteUrl}/agentes`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${siteUrl}/en/agents`, lastModified, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${siteUrl}/en/health`, lastModified, changeFrequency: "monthly", priority: 0.9 },
-    ...agents.map((agent) => ({
-      url: `${siteUrl}/agentes/${agent.slug}`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.85,
-    })),
-    ...agents.map((agent) => ({
-      url: `${siteUrl}/en/agents/${agent.slug}`,
-      lastModified,
-      changeFrequency: "monthly" as const,
-      priority: 0.85,
-    })),
+    { url: siteUrl },
+    ...activePortalRoutes.filter((route) => !route.external).map((route) => entry(route.href)),
+    ...companyRoutes.map((route) => entry(route.href)),
+    ...legalRoutes.map((route) => entry(route.href)),
+    entry("/en/privacy"),
+    entry("/agentes"),
+    entry("/en/agents"),
+    entry("/en/health"),
+    ...agents.map((agent) => entry(`/agentes/${agent.slug}`)),
+    ...agents.map((agent) => entry(`/en/agents/${agent.slug}`)),
   ];
 }

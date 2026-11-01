@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalDocument } from "@/components/LegalDocument";
+import { contentDates, formatContentDate } from "@/lib/config/content-dates";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 
 const title = "Términos de uso | Alleanza Insurance Corp.";
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <LegalDocument title="Términos de uso" updated="16 de septiembre de 2026">
+    <LegalDocument title="Términos de uso" updated={formatContentDate(contentDates["/terminos"])}>
       <p>
         Al usar este sitio aceptas estos términos. Si no estás de acuerdo, no lo uses. El sitio es
         informativo: no emite una póliza, no garantiza cobertura y no sustituye una conversación con
