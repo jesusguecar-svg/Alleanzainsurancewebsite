@@ -1,6 +1,9 @@
 import { legalName, officeAddressLines, officeHours, publicContactLines } from "@/lib/config/contact";
-import { companyRoutes } from "@/lib/config/routes";
+import { activePortalRoutes, companyRoutes } from "@/lib/config/routes";
 import { agencySummary, portalGallery } from "@/lib/content/portal-gallery";
+
+/** Gallery cards for lines that are live; routes.ts keeps coming-soon lines out of navigation. */
+const directoryLines = portalGallery.filter((item) => activePortalRoutes.some((route) => route.href === item.href));
 
 /** Crawlable text and links below the home gallery. Copy comes from the gallery and the footer. */
 export function HomeDirectory() {
@@ -8,10 +11,10 @@ export function HomeDirectory() {
     <section className="home-directory" aria-labelledby="home-directory-title" data-cta-location="home_directory">
       <div className="home-directory-inner">
         <div>
-          <h2 id="home-directory-title">Seis formas de orientarte</h2>
+          <h2 id="home-directory-title">Cinco formas de orientarte</h2>
           <p className="home-directory-summary">{agencySummary}</p>
           <ul className="home-directory-lines">
-            {portalGallery.map((item) => (
+            {directoryLines.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}

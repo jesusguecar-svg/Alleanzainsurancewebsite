@@ -193,6 +193,8 @@ for (const path of ["/health", "/en/health"]) {
 }
 check(fullOrganizations.length === fullOrganizationPages.size && new Set(fullOrganizations.map((node) => JSON.stringify(node))).size === 1, "full agency node is identical on every page that emits it");
 check(jsonLd(htmlCache.get("/") ?? "").some((node) => node["@type"] === "WebSite"), "/: has a WebSite node");
+const homeDirectory = (htmlCache.get("/") ?? "").split('class="home-directory"')[1]?.split("</section>")[0] ?? "";
+check(homeDirectory.includes('href="/health"') && !homeDirectory.includes('href="/property-casualty"'), "/: home directory lists live lines and not Property & Casualty");
 
 for (const [path, html] of htmlCache) {
   const own = hreflangs(html);
