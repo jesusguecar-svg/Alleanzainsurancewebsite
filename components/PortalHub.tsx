@@ -3,24 +3,12 @@
 import { animate as animateMotion, AnimatePresence, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from "framer-motion";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
 import { LiquidHeadline } from "./cinematic/LiquidHeadline";
 import { LiquidGallerySurface } from "./cinematic/LiquidGallerySurface";
-import { academyUrl } from "@/lib/config/contact";
 import { legalRoutes } from "@/lib/config/routes";
-import type { ProductLine } from "@/lib/analytics";
-
-type GalleryItem = { label: string; kicker: string; description: string; cta: string; href: string; src: string; secondarySrc?: string; kind?: "video"; position?: string; external?: boolean; track?: { cta: string; line: ProductLine } };
-
-const gallery: GalleryItem[] = [
-  { label: "Salud", kicker: "Decide con claridad", description: "Compara opciones ACA, privadas y complementarias con orientación en español.", cta: "Explorar mis opciones", href: "/health", src: "/cinematic/gallery/media/salud.mp4", kind: "video", position: "50% 38%" , track: { cta: "home_health", line: "health" } },
-  { label: "Vida", kicker: "Familia", description: "Conoce opciones de seguro de vida temporal, permanente y gastos finales.", cta: "Conocer opciones de vida", href: "/life", src: "/cinematic/gallery/media/vida.mp4", kind: "video", position: "50% 48%" , track: { cta: "home_life", line: "life" } },
-  { label: "Propiedad", kicker: "Property & Casualty · Próximamente", description: "En desarrollo. Aún no disponible: estará sujeto a los requisitos de licencia y disponibilidad correspondientes.", cta: "Ver más", href: "/property-casualty", src: "/cinematic/gallery/media/propiedad.mp4", kind: "video" },
-  { label: "Academia", kicker: "Formación", description: "Capacitación, herramientas y acompañamiento para agentes.", cta: "Aprender ahora", href: academyUrl, src: "/cinematic/gallery/media/academia.mp4", kind: "video", external: true , track: { cta: "home_academy", line: "academy" } },
-  { label: "Trabajo", kicker: "Oportunidad", description: "Oportunidades profesionales para crecer con propósito.", cta: "Trabaja con nosotros", href: "/work", src: "/cinematic/gallery/media/oportunidad.mp4", kind: "video" , track: { cta: "home_work", line: "work" } },
-  { label: "Empresas", kicker: "Beneficios", description: "Explora alternativas de beneficios complementarios para tu equipo.", cta: "Explorar beneficios", href: "/employers", src: "/cinematic/gallery/media/trabajo.png", position: "50% 48%" , track: { cta: "home_employers", line: "employer" } },
-];
+import { portalGallery as gallery, type GalleryItem } from "@/lib/content/portal-gallery";
 
 const panelAngle = 360 / gallery.length;
 
@@ -74,7 +62,7 @@ function MagneticLink({ href, label, external, track }: { href: string; label: s
   return <span className="gallery-magnetic-zone" onPointerMove={(event) => { const box = event.currentTarget.getBoundingClientRect(); x.set(Math.max(-13, Math.min(13, (event.clientX - box.left - box.width / 2) * .22))); y.set(Math.max(-9, Math.min(9, (event.clientY - box.top - box.height / 2) * .22))); }} onPointerLeave={() => { x.set(0); y.set(0); }}><motion.a href={href} data-cta={track?.cta} data-product-line={track?.line} data-cta-location="home_gallery_cta" style={{ x: springX, y: springY }} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{label}</motion.a></span>;
 }
 
-export default function PortalHub() {
+export default function PortalHub({ children }: { children?: ReactNode }) {
   const [active, setActive] = useState(0);
   const dragging = useRef(false);
   const [intro, setIntro] = useState(true);
@@ -132,7 +120,9 @@ export default function PortalHub() {
 
   const handleWheel = (event: React.WheelEvent) => {
     if (window.matchMedia("(max-width: 767px)").matches) return;
-    const distance = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    // Vertical wheel scrolls the page to the directory below the gallery; only horizontal turns it.
+    if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+    const distance = event.deltaX;
     if (Math.abs(distance) < 1) return;
     motionControl.current?.stop();
     wheelVelocity.current = wheelVelocity.current * .72 - distance * .018;
@@ -142,7 +132,7 @@ export default function PortalHub() {
   };
 
   return (
-    <main className={`gallery-home ${intro ? "is-loading" : ""}`} onWheel={handleWheel}>
+    <main className={`gallery-home ${intro ? "is-loading" : ""}`}>
       <AnimatePresence>{intro && <motion.div className="gallery-intro" role="status" aria-label="Cargando sitio de Alleanza" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.12 }} transition={{ duration: .75, ease: [.76,0,.24,1] }}><motion.div className="gallery-intro-ring" initial={{ rotate: -110, scale: .72 }} animate={{ rotate: 250, scale: 1 }} transition={{ duration: 1.65, ease: [.16,1,.3,1] }}><i/><i/><i/><i/><i/></motion.div><motion.div initial={{ opacity: 0, filter: "blur(8px)" }} animate={{ opacity: 1, filter: "blur(0px)" }} transition={{ delay: .25 }}><Logo width={190}/><span>PROTECCIÓN EN MOVIMIENTO</span></motion.div></motion.div>}</AnimatePresence>
       <header className="gallery-header">
         <a href="/" aria-label="Alleanza — inicio"><Logo width={160} /></a>
@@ -152,7 +142,7 @@ export default function PortalHub() {
 
       <div className="mobile-story">
         <section className="mobile-protection-scene" aria-labelledby="mobile-protection-title">
-          <h1 id="mobile-protection-title" className="sr-only">Protección Alleanza</h1>
+          <p id="mobile-protection-title" className="sr-only">Protección Alleanza</p>
           <p className="mobile-scene-index" aria-hidden="true">01 / 03</p>
           <LiquidHeadline text="PROTECCIÓN" className="mobile-protection-liquid" enabled={compact === true} />
           <p className="mobile-touch-hint">Toca y mueve tus dedos</p>
@@ -176,10 +166,10 @@ export default function PortalHub() {
         </section>
       </div>
 
-      <section id="galeria" className="gallery-stage" aria-label="Explora tus opciones con Alleanza Insurance Corp.">
+      <section id="galeria" className="gallery-stage" aria-label="Explora tus opciones con Alleanza Insurance Corp." onWheel={handleWheel}>
         <LiquidHeadline text="PROTECCIÓN" className="gallery-desktop-headline" enabled={compact === false} />
         <p className="mobile-scene-index mobile-gallery-index" aria-hidden="true">03 / 03</p>
-        <p className="mobile-gallery-label">Seis formas de orientarte</p>
+        <p className="mobile-gallery-label">Formas de orientarte</p>
         <div className="gallery-aura" aria-hidden="true" />
         <div className="gallery-orbit-tilt">
           <motion.div ref={orbitRef} className="gallery-orbit" style={{ rotateY: rotation }} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { motionControl.current?.stop(); event.currentTarget.setPointerCapture(event.pointerId); const now = performance.now(); drag.current = { startX: event.clientX, startRotation: rotation.get(), lastX: event.clientX, lastTime: now, velocity: 0 }; dragging.current = true; }} onPointerMove={(event) => { if (!dragging.current) return; const now = performance.now(); const elapsed = Math.max(8, now - drag.current.lastTime); drag.current.velocity = (event.clientX - drag.current.lastX) / elapsed; drag.current.lastX = event.clientX; drag.current.lastTime = now; rotation.set(drag.current.startRotation + (event.clientX - drag.current.startX) * .18); }} onPointerUp={() => { if (!dragging.current) return; dragging.current = false; settle(rotation.get() + drag.current.velocity * 90); }} onPointerCancel={() => { dragging.current = false; settle(rotation.get()); }}>
@@ -206,6 +196,7 @@ export default function PortalHub() {
           ))}
         </nav>
       </section>
+      {children}
     </main>
   );
 }

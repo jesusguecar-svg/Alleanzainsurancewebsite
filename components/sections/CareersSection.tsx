@@ -47,7 +47,7 @@ export function CareersSection() {
       <div className="relative mx-auto max-w-7xl">
         <motion.div {...reveal} className="max-w-3xl">
           <p className="text-xs font-bold uppercase tracking-[.22em] text-cyan">Trabaja con nosotros</p>
-          <h2 className="mt-5 font-display text-5xl tracking-tight md:text-7xl font-bold">Construye una carrera ayudando a familias.</h2>
+          <h1 className="mt-5 font-display text-5xl tracking-tight md:text-7xl font-bold">Construye una carrera ayudando a familias.</h1>
           <p className="mt-6 text-lg leading-relaxed text-white/60">Buscamos personas que quieran crecer en el mundo de los seguros y acompañar a su comunidad en español. Si te interesa, conversemos sobre cómo sería tu camino con nosotros.</p>
         </motion.div>
 

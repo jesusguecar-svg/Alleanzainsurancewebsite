@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { HomeDirectory } from "@/components/home/HomeDirectory";
 import PortalHub from "@/components/PortalHub";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { organizationSchema, websiteSchema } from "@/lib/seo/schema";
 
 export const metadata: Metadata = {
   title: "Alleanza Insurance Corp. | Salud, vida, academia y carrera",
@@ -18,5 +21,11 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <PortalHub />;
+  return (
+    <>
+      <JsonLd data={organizationSchema()} />
+      <JsonLd data={websiteSchema()} />
+      <PortalHub><HomeDirectory /></PortalHub>
+    </>
+  );
 }

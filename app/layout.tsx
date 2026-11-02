@@ -25,7 +25,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
-  alternates: { canonical: "/" },
   // No `url` here: pages without their own openGraph would otherwise announce the homepage.
   openGraph: {
     type: "website",
@@ -34,7 +33,8 @@ export const metadata: Metadata = {
     title,
     description,
   },
-  twitter: { card: "summary_large_image", title, description },
+  // No title or description here: each page falls back to its own Open Graph text.
+  twitter: { card: "summary_large_image" },
   robots: isProductionDeploy
     ? { index: true, follow: true }
     : { index: false, follow: false },

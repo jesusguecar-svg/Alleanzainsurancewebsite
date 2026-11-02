@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { LegalDocument } from "@/components/LegalDocument";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { organizationSchema } from "@/lib/seo/schema";
 import { officeAddressLines, officeHours, phones } from "@/lib/config/contact";
 import { activePortalRoutes } from "@/lib/config/routes";
 
@@ -24,6 +26,7 @@ export default function Page() {
 
   return (
     <LegalDocument title="Nosotros">
+      <JsonLd data={organizationSchema()} />
       <p>
         Alleanza Insurance Corp. es una agencia de seguros independiente. Te ayudamos a entender, comparar y acceder a
         opciones de seguro, en español, y un agente de seguros con licencia confirma la elegibilidad y los detalles antes

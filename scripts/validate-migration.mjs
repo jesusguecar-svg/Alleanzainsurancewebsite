@@ -12,9 +12,11 @@
  * Checks legacy redirects (permanent, single hop, no loops, intended destination), canonical
  * and Open Graph URLs, structured data, sitemap, robots.txt, internal links and in-page
  * anchors, and form validation (requests that are rejected before anything is sent).
+ * Also checks SEO foundations: one H1 per route, reciprocal hreflang, one robots tag, consistent
+ * JSON-LD @ids, truthful sitemap fields, and that the address and hours live only in contact.ts.
  * Exits non-zero on any failure.
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 
 const BASE = (process.env.BASE_URL || "http://localhost:3100").replace(/\/$/, "");
 const CANONICAL = (process.env.EXPECT_CANONICAL || "https://alleanzainsurance.org").replace(/\/$/, "");
@@ -94,8 +96,22 @@ for (const { path } of legacy.gone) {
 const robots = await (await get("/robots.txt")).text();
 if (EXPECT_INDEXABLE) {
   check(robots.includes(`Sitemap: ${CANONICAL}/sitemap.xml`), "robots.txt points to the canonical sitemap");
-  check(robots.includes(`Host: ${CANONICAL}`), "robots.txt Host is the canonical host");
-  check(/Allow: \//.test(robots) && !/Disallow: \/\s*$/m.test(robots), "robots.txt allows crawling");
+  check(!/^Host:/mi.test(robots), "robots.txt has no Host line");
+  // A crawler obeys the group that names it, so each is checked against its own group.
+  const robotsGroups = robots.split(/\n\s*\n/).map((block) => ({
+    agents: [...block.matchAll(/^User-Agent:\s*(.+)$/gim)].map((m) => m[1].trim().toLowerCase()),
+    allowed: /^Allow: \/\s*$/m.test(block),
+    blocked: /^Disallow: \/\s*$/m.test(block),
+  }));
+  const robotsGroup = (agent) => robotsGroups.filter((group) => group.agents.includes(agent.toLowerCase()));
+  for (const agent of ["*", "Googlebot", "Bingbot", "OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "Google-Extended"]) {
+    const groups = robotsGroup(agent);
+    check(groups.length === 1 && groups[0].allowed && !groups[0].blocked, `robots.txt allows ${agent}`);
+  }
+  for (const agent of ["GPTBot", "ClaudeBot"]) {
+    const groups = robotsGroup(agent);
+    check(groups.length === 1 && groups[0].blocked && !groups[0].allowed, `robots.txt disallows ${agent}`);
+  }
 } else {
   check(/Disallow: \//.test(robots), "robots.txt disallows crawling on a non-production deployment");
 }
@@ -109,6 +125,7 @@ check(!sitemap.includes("vercel.app"), "sitemap has no vercel.app reference");
 for (const required of ["/contacto", "/nosotros", "/health", "/life", "/work"]) {
   check(locs.includes(CANONICAL + required), `sitemap includes ${required}`);
 }
+check(!/<changefreq>|<priority>/.test(sitemap), "sitemap has no changefreq or priority");
 
 // ---------------------------------------------------------------- pages: metadata, links
 const pages = [...new Set(locs.map((l) => pathOf(l.replace(CANONICAL, BASE)) || "/"))];
@@ -155,6 +172,73 @@ for (const path of pages) {
     internalLinks.get(p).add(path);
     if (hash) anchorRefs.push({ page: path, target: p, hash });
   }
+}
+
+// ---------------------------------------------------------------- SEO foundations
+const robotsTags = (html) => [...html.split("</head>")[0].matchAll(/<meta name="robots"/g)].length;
+const hreflangs = (html) => new Map([...html.split("</head>")[0].matchAll(/<link rel="alternate" hrefLang="([^"]+)" href="([^"]+)"/g)].map((m) => [m[1], m[2]]));
+const jsonLd = (html) => [...html.matchAll(/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)].flatMap((m) => {
+  try { return [JSON.parse(m[1])]; } catch { return []; }
+});
+const organizationId = `${CANONICAL}/#organization`;
+const fullOrganizationPages = new Set(["/", "/contacto", "/nosotros"]);
+const fullOrganizations = [];
+
+const noindexPage = await (await get("/property-casualty")).text();
+for (const [path, html] of [...htmlCache, ["/property-casualty", noindexPage]]) {
+  const h1s = html.match(/<h1[\s>]/g)?.length ?? 0;
+  check(h1s === 1, `${path}: exactly one <h1> (got ${h1s})`);
+  check(robotsTags(html) === 1, `${path}: one robots meta tag (got ${robotsTags(html)})`);
+  const nodes = jsonLd(html);
+  const organizations = nodes.filter((node) => node["@type"] === "InsuranceAgency");
+  check(organizations.length === (fullOrganizationPages.has(path) ? 1 : 0), `${path}: full agency node only on ${[...fullOrganizationPages].join(", ")} (got ${organizations.length})`);
+  fullOrganizations.push(...organizations);
+  const raw = JSON.stringify(nodes);
+  check(!/aggregateRating|"review"|Villard|Globe Life|npn/i.test(raw), `${path}: JSON-LD has no listing, review or NPN data`);
+  check(!raw.includes("areaServed"), `${path}: JSON-LD makes no areaServed claim`);
+  const ids = [...raw.matchAll(/"@id":"([^"]+#organization)"/g)].map((m) => m[1]);
+  check(ids.every((id) => id === organizationId), `${path}: JSON-LD uses one organization @id`);
+  for (const node of nodes.filter((n) => n["@type"] === "Person")) {
+    check(node.worksFor?.["@id"] === organizationId, `${path}: Person.worksFor references the organization`);
+  }
+}
+for (const path of ["/health", "/en/health"]) {
+  const page = jsonLd(htmlCache.get(path) ?? "").find((node) => node["@type"] === "WebPage");
+  check(page?.about?.["@id"] === organizationId, `${path}: references the organization by @id`);
+}
+check(fullOrganizations.length === fullOrganizationPages.size && new Set(fullOrganizations.map((node) => JSON.stringify(node))).size === 1, "full agency node is identical on every page that emits it");
+check(jsonLd(htmlCache.get("/") ?? "").some((node) => node["@type"] === "WebSite"), "/: has a WebSite node");
+check(!/(seis|cinco) formas de orientarte/i.test(htmlCache.get("/") ?? ""), "/: no count in the service-category wording");
+const homeDirectory = (htmlCache.get("/") ?? "").split('class="home-directory"')[1]?.split("</section>")[0] ?? "";
+check(homeDirectory.includes('href="/health"') && !homeDirectory.includes('href="/property-casualty"'), "/: home directory lists live lines and not Property & Casualty");
+
+for (const [path, html] of htmlCache) {
+  const own = hreflangs(html);
+  if (!own.size) continue;
+  const self = CANONICAL + (path === "/" ? "" : path);
+  check([...own.values()].includes(self), `${path}: hreflang includes itself`);
+  for (const [lang, url] of own) {
+    const target = url.slice(CANONICAL.length) || "/";
+    const other = htmlCache.get(target) ?? (await (await get(target)).text());
+    check([...hreflangs(other).values()].includes(self), `${path}: hreflang ${lang} -> ${target} links back`);
+  }
+}
+
+const missing = await get("/ruta-que-no-existe-validacion");
+const missingHtml = await missing.text();
+check(missing.status === 404, `unknown route returns 404 (got ${missing.status})`);
+check(robotsTags(missingHtml) === 1 && /<meta name="robots" content="noindex/.test(missingHtml), `404 page: one noindex robots tag (got ${robotsTags(missingHtml)})`);
+check(!/<link rel="canonical"/.test(missingHtml), "404 page: no canonical");
+check((missingHtml.match(/<h1[\s>]/g)?.length ?? 0) === 1, "404 page: exactly one <h1>");
+
+// The address and hours may be written only in lib/config/contact.ts.
+const napLiteral = /Midcourt|75006|\b\d{1,2}:00\b|Lunes a viernes|Monday.Friday/;
+const sourceFiles = (dir) => readdirSync(new URL(`../${dir}/`, import.meta.url), { recursive: true, withFileTypes: true })
+  .filter((entry) => entry.isFile() && /\.tsx?$/.test(entry.name))
+  .map((entry) => `${entry.parentPath ?? entry.path}/${entry.name}`);
+for (const file of ["app", "components", "lib"].flatMap(sourceFiles)) {
+  if (file.endsWith("lib/config/contact.ts")) continue;
+  check(!napLiteral.test(readFileSync(file, "utf8")), `${file}: address and hours come from contact.ts`);
 }
 
 for (const [link, from] of internalLinks) {

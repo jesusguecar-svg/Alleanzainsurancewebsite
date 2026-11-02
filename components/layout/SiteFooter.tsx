@@ -4,6 +4,7 @@ import f from "./site-footer.module.css";
 import { Logo } from "../Logo";
 import { officeAddressLines, officeHours, publicContactLines } from "@/lib/config/contact";
 import { activePortalRoutes, companyRoutes, legalRoutes } from "@/lib/config/routes";
+import { agencySummary } from "@/lib/content/portal-gallery";
 
 /** Shared footer for every route. Carries the office details and portal map. */
 export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
@@ -15,9 +16,7 @@ export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
           <div>
             <Logo light width={200} />
             <p className="mt-6 max-w-sm text-xs leading-relaxed text-white/40">
-              Alleanza Insurance Corp. orienta a familias para entender, comparar y acceder a opciones de
-              seguro de salud, vida y protección complementaria. Las pólizas las emiten las compañías
-              aseguradoras correspondientes; su disponibilidad varía según el estado y la compañía.
+              {agencySummary}
             </p>
             <a href={instagramProfileUrl} target="_blank" rel="noopener noreferrer" aria-label="Alleanza en Instagram" className="mt-6 grid h-10 w-10 place-items-center rounded-full border border-white/25 text-white transition hover:border-cyan hover:text-cyan">
               <Instagram size={18} aria-hidden="true" />

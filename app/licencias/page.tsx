@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalDocument } from "@/components/LegalDocument";
+import { contentDates, formatContentDate } from "@/lib/config/content-dates";
 import { companyFacts } from "@/lib/config/company";
 import { officeAddressLines, phones } from "@/lib/config/contact";
 import { acaAgentCertification, licensingStatement } from "@/lib/content/health";
@@ -26,7 +27,7 @@ export default function Page() {
   const states = companyFacts.licensedStates;
 
   return (
-    <LegalDocument title="Licencias" updated="28 de octubre de 2026">
+    <LegalDocument title="Licencias" updated={formatContentDate(contentDates["/licencias"])}>
       <p>
         Alleanza Insurance Corp. opera como agencia de seguros independiente. Los productos que se presentan en este sitio
         los explica y, cuando corresponde, los ofrece un agente de seguros con licencia. La

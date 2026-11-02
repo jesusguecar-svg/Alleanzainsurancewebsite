@@ -9,6 +9,8 @@ import { EnglishSiteFooter } from "@/components/layout/EnglishSiteFooter";
 import { agents, getAgent } from "@/lib/content/agents";
 import { healthEmail, licensingStatement } from "@/lib/content/health";
 import { siteUrl } from "@/lib/config/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { organizationRef } from "@/lib/seo/schema";
 import a from "../../../agentes/agents.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -47,7 +49,7 @@ export default async function EnglishAgentProfilePage({ params }: Props) {
     description: agent.shortBioEn,
     knowsLanguage: ["English", "Spanish"],
     telephone: agent.phone.href,
-    worksFor: { "@type": "InsuranceAgency", name: "Alleanza Insurance Corp.", url: siteUrl },
+    worksFor: organizationRef,
     workLocation: {
       "@type": "Place",
       name: agent.officeNameEn,
@@ -72,8 +74,8 @@ export default async function EnglishAgentProfilePage({ params }: Props) {
   };
 
   return <div className={a.page} lang="en">
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema).replace(/</g, "\\u003c") }} />
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, "\\u003c") }} />
+    <JsonLd data={personSchema} />
+    <JsonLd data={faqSchema} />
     <header className={a.header}><Link href="/"><Logo width={174} /></Link><nav><LanguageSwitch locale="en" spanishHref={`/agentes/${agent.slug}`} englishHref={`/en/agents/${agent.slug}`} className={a.languageSwitch} /><Link href="/en/agents"><ArrowLeft size={15} /> All agents</Link><a href={`tel:${agent.phone.href}`} className={a.headerCta}>Contact Jesus <ArrowUpRight size={15} /></a></nav></header>
     <main>
       <section className={a.profileHero}>
