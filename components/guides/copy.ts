@@ -25,7 +25,7 @@ export const guideCopy = {
     notGovernment: "Este sitio no pertenece al gobierno federal ni implica su respaldo.",
     cta: "Habla con un agente con licencia",
     nav: [{ href: "/health", label: "Salud" }, { href: "/aprende", label: "Aprende" }, { href: "/agentes", label: "Agentes" }],
-    headerCta: { href: "/contacto", label: "Hablar con un asesor" },
+    headerCta: { href: "/health#contacto", label: "Hablar con un asesor" },
   },
   en: {
     health: { href: "/en/health", label: "Health" },

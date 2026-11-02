@@ -19,7 +19,7 @@ export function GuidePage({ guide, locale }: { guide: Guide; locale: GuideLocale
       locale={locale}
       spanishHref={guidePath(guide, "es")}
       englishHref={guidePath(guide, "en")}
-      afterArticle={locale === "en" ? <GuideContactForm /> : undefined}
+      afterArticle={<GuideContactForm locale={locale} />}
     >
       <JsonLd data={guideArticleSchema(guide, locale)} />
       <JsonLd data={guideBreadcrumbSchema(guide, locale)} />
@@ -79,7 +79,7 @@ export function GuidePage({ guide, locale }: { guide: Guide; locale: GuideLocale
           <p>{copy.notGovernment}</p>
         </div>
 
-        <a href={locale === "es" ? "/contacto" : "#contacto"} {...ctaProps} className="mt-8 inline-flex items-center gap-2 rounded-full bg-cyan px-6 py-4 text-sm font-semibold text-navy">
+        <a href="#contacto" {...ctaProps} className="mt-8 inline-flex items-center gap-2 rounded-full bg-cyan px-6 py-4 text-sm font-semibold text-navy">
           {copy.cta} <ArrowRight aria-hidden="true" size={16} />
         </a>
       </article>

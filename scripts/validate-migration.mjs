@@ -16,7 +16,7 @@
  * JSON-LD @ids, truthful sitemap fields, and that the address and hours live only in contact.ts.
  * Also checks guides: required fields and translation parity from the content files, then each
  * published guide's rendered page. To check the sample guide, build without VERCEL_ENV=production
- * and set EXPECT_INDEXABLE=0: production builds leave out guides that still say TODO-CONTENT.
+ * and set EXPECT_INDEXABLE=0: production leaves out guides without editorial approval or with a blocker.
  * Exits non-zero on any failure.
  */
 import { readdirSync, readFileSync } from "node:fs";
@@ -218,7 +218,7 @@ check(homeDirectory.includes('href="/health"') && !homeDirectory.includes('href=
 // ---------------------------------------------------------------- guides
 // Node runs these TypeScript files directly: they import only types.
 const guidesDir = new URL("../lib/content/guides/", import.meta.url);
-const { validateGuides, isPlaceholderGuide } = await import(new URL("validate.ts", guidesDir).href);
+const { validateGuides, isPublishableGuide } = await import(new URL("validate.ts", guidesDir).href);
 const guideRegistry = readFileSync(new URL("index.ts", guidesDir), "utf8");
 const allGuides = [];
 for (const file of readdirSync(new URL("entries/", guidesDir))) {
@@ -229,8 +229,8 @@ for (const problem of validateGuides(allGuides)) fail(`guide content: ${problem}
 check(allGuides.length > 0, `guide content checked (${allGuides.length})`);
 
 const guidePathsOf = (guide) => ({ es: `/health/${guide.es.slug}`, en: `/en/health/${guide.en.slug}` });
-// Sample guides are public only outside production.
-const publicGuides = allGuides.filter((guide) => !EXPECT_INDEXABLE || !isPlaceholderGuide(guide));
+// Guides without editorial approval, or with an open blocker, are public only outside production.
+const publicGuides = allGuides.filter((guide) => !EXPECT_INDEXABLE || isPublishableGuide(guide));
 const lastmodOf = (path) => sitemap.split("<url>").find((block) => block.includes(`<loc>${CANONICAL}${path}</loc>`))?.match(/<lastmod>([^<]+)</)?.[1] ?? "";
 const guideLabels = {
   es: { line: "Revisado por", agent: "agente con licencia", disclaimer: "Información educativa general", notice: "no pertenece al gobierno federal", index: "/aprende", health: "/health" },
@@ -276,8 +276,8 @@ for (const guide of publicGuides) {
     const crumbs = nodes.find((node) => node["@type"] === "BreadcrumbList")?.itemListElement ?? [];
     check(crumbs.at(-1)?.item === CANONICAL + path, `${path}: BreadcrumbList ends on the guide`);
     check(!nodes.some((node) => node["@type"] === "FAQPage"), `${path}: no FAQPage`);
-    if (locale === "es") check(/href="\/contacto"[^>]*data-cta="guide_agent"/.test(html), `${path}: CTA goes to /contacto`);
-    else check(html.includes('id="contacto"') && html.includes('name="consent"') && /href="#contacto"[^>]*data-cta="guide_agent"/.test(html), `${path}: CTA goes to the health contact form`);
+    check(!html.split('id="contacto"')[0].includes('href="/contacto"'), `${path}: no link to /contacto before the guide's form`);
+    check(html.includes('id="contacto"') && html.includes('name="consent"') && /href="#contacto"[^>]*data-cta="guide_agent"/.test(html), `${path}: CTA goes to the health contact form`);
     check((htmlCache.get(labels.index) ?? "").includes(`href="${path}"`), `${labels.index}: lists ${path}`);
     check((htmlCache.get(labels.health) ?? "").includes(`href="${path}"`), `${labels.health}: Guides block lists ${path}`);
   }

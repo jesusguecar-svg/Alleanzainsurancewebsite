@@ -31,6 +31,8 @@ export type Guide = {
   reviewedDate: string;
   /** YYYY-MM-DD. Becomes the sitemap lastmod and the Article dateModified. */
   updatedDate: string;
+  /** YYYY-MM-DD, set only after editorial approval. Without it the guide stays out of production. */
+  editorialApprovedDate?: string;
   /** Ids of other guides. May be empty. */
   relatedGuides: string[];
 };

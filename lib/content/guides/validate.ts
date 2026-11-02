@@ -14,6 +14,19 @@ function isPastDate(value: unknown) {
   return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value) && date.getTime() <= Date.now();
 }
 
+/**
+ * Open issues that keep every guide out of production, whatever its content.
+ * english-html-lang: the root layout sets <html lang="es"> on every page, so English guides would
+ * ship the wrong document language. A per-request fix would make every static page dynamic; the safe
+ * fix is locale root layouts through route groups, a separate change. Remove this entry with that fix.
+ */
+export const guidePublicationBlockers: readonly string[] = ["english-html-lang"];
+
+/** Production shows a guide only with no placeholder text, editorial approval and no open blocker. */
+export function isPublishableGuide(guide: Guide, blockers: readonly string[] = guidePublicationBlockers) {
+  return !isPlaceholderGuide(guide) && Boolean(guide.editorialApprovedDate) && blockers.length === 0;
+}
+
 const hasText = (value: unknown) => typeof value === "string" && value.trim().length > 0;
 
 function copyErrors(copy: GuideCopy | undefined, label: string): string[] {
@@ -65,6 +78,7 @@ export function validateGuides(guides: readonly Guide[]): string[] {
     if (/\bNPN\b/i.test(JSON.stringify(guide))) errors.push(`${label}: NPNs are not published`);
     if (!isPastDate(guide.reviewedDate)) errors.push(`${label}: reviewedDate must be YYYY-MM-DD, not in the future`);
     if (!isPastDate(guide.updatedDate)) errors.push(`${label}: updatedDate must be YYYY-MM-DD, not in the future`);
+    if (guide.editorialApprovedDate !== undefined && !isPastDate(guide.editorialApprovedDate)) errors.push(`${label}: editorialApprovedDate must be YYYY-MM-DD, not in the future`);
     if (!Array.isArray(guide.relatedGuides)) errors.push(`${label}: relatedGuides is required (it may be empty)`);
     for (const id of guide.relatedGuides ?? []) {
       if (id === guide.id || !ids.has(id)) errors.push(`${label}: related guide ${id} does not exist`);

@@ -1,7 +1,7 @@
 import { isProductionDeploy } from "@/lib/config/site";
 import openEnrollment2027 from "./entries/open-enrollment-2027";
 import type { Guide, GuideLocale } from "./types";
-import { isPlaceholderGuide, validateGuides } from "./validate";
+import { isPublishableGuide, validateGuides } from "./validate";
 
 export type { Guide, GuideCopy, GuideLocale } from "./types";
 
@@ -12,8 +12,8 @@ const allGuides: readonly Guide[] = [openEnrollment2027];
 const problems = validateGuides(allGuides);
 if (problems.length) throw new Error(`Invalid guide content:\n- ${problems.join("\n- ")}`);
 
-/** Previews show every guide. Production shows only those with no TODO-CONTENT left. */
-export const guides = allGuides.filter((guide) => !isProductionDeploy || !isPlaceholderGuide(guide));
+/** Previews show every guide. Production shows only publishable ones (see ./validate.ts). */
+export const guides = allGuides.filter((guide) => !isProductionDeploy || isPublishableGuide(guide));
 
 export function guidePath(guide: Guide, locale: GuideLocale) {
   return locale === "es" ? `/health/${guide.es.slug}` : `/en/health/${guide.en.slug}`;
