@@ -9,6 +9,8 @@ import { alreadyDelivered, deliverLeadOnce, submissionKey, type Lead } from "@/l
 import { ledgerLeadRecord, logLedgerSkippedNoSubmissionKey, recordLeadInLedger } from "@/lib/server/lead-ledger";
 
 export const runtime = "nodejs";
+/** Covers ledger delivery after the response: about 32.5 s at worst (three 10 s attempts plus delays). */
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
 const sendFailed = "No pudimos enviar tu solicitud. Intenta de nuevo.";

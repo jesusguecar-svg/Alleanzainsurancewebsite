@@ -169,6 +169,8 @@ record and absent from the other counts as a difference.
 same `lead_id` and the same content but its own `created_at`. Nothing else is relaxed.
 
 - **Retries:** three attempts in total, 0.5 s and then 2 s apart, each with the identical body.
+- **Function duration:** both lead routes export `maxDuration = 60`, which covers the worst case of
+  about 32.5 s (three 10 s attempts plus delays) without depending on the Vercel project's defaults.
 - **Never blocks the visitor:** the POST runs after the visitor's response is sent (Next `after()`),
   so the ledger never delays or fails a submission. The visitor always gets `{"ok":true}` once the
   email is sent.
