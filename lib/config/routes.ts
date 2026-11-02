@@ -87,9 +87,9 @@ export const companyRoutes = [
 ] as const;
 
 export const legalRoutes = [
-  { href: "/privacidad", label: "Privacidad", labelEn: "Privacy" },
-  { href: "/terminos", label: "Términos", labelEn: "Terms" },
-  { href: "/licencias", label: "Licencias", labelEn: "Licenses" },
+  { href: "/privacidad", hrefEn: "/en/privacy", label: "Privacidad", labelEn: "Privacy" },
+  { href: "/terminos", hrefEn: "/terminos", label: "Términos", labelEn: "Terms" },
+  { href: "/licencias", hrefEn: "/licencias", label: "Licencias", labelEn: "Licenses" },
 ] as const;
 
 /** Lines and destinations that are live today: navigation, footers, sitemap and forms use these. */
@@ -97,3 +97,8 @@ export const activePortalRoutes = portalRoutes.filter((route) => !route.comingSo
 
 /** Navigation shown in the header on every route except the health landing. */
 export const portalNavLinks = activePortalRoutes.map(({ href, label }) => ({ href, label }));
+
+const englishRouteLabels: Record<string, string> = { health: "Health", life: "Life", "property-casualty": "Property", academy: "Academy", work: "Careers", employers: "Employers" };
+
+/** The same navigation for English legal pages. Only the health page has an English route. */
+export const englishPortalNavLinks = activePortalRoutes.map(({ id, href }) => ({ href: id === "health" ? "/en/health" : href, label: englishRouteLabels[id] }));

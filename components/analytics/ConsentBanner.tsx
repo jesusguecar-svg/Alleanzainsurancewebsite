@@ -64,7 +64,7 @@ export function ConsentBanner({ ready }: { ready: boolean }) {
         <div className="text-sm leading-relaxed text-navy/70">
           <p>
             {t.intro}
-            <a href="/privacidad" className="font-semibold underline-offset-4 hover:underline">{t.policy}</a>.
+            <a href={english ? "/en/privacy" : "/privacidad"} className="font-semibold underline-offset-4 hover:underline">{t.policy}</a>.
           </p>
           {reopened && <p className="mt-2 font-semibold text-navy">{t.status}</p>}
         </div>
