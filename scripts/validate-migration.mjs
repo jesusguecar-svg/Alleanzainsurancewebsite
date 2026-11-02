@@ -14,6 +14,9 @@
  * anchors, and form validation (requests that are rejected before anything is sent).
  * Also checks SEO foundations: one H1 per route, reciprocal hreflang, one robots tag, consistent
  * JSON-LD @ids, truthful sitemap fields, and that the address and hours live only in contact.ts.
+ * Also checks guides: required fields and translation parity from the content files, then each
+ * published guide's rendered page. To check the sample guide, build without VERCEL_ENV=production
+ * and set EXPECT_INDEXABLE=0: production leaves out guides without editorial approval or with a blocker.
  * Exits non-zero on any failure.
  */
 import { readdirSync, readFileSync } from "node:fs";
@@ -211,6 +214,78 @@ check(jsonLd(htmlCache.get("/") ?? "").some((node) => node["@type"] === "WebSite
 check(!/(seis|cinco) formas de orientarte/i.test(htmlCache.get("/") ?? ""), "/: no count in the service-category wording");
 const homeDirectory = (htmlCache.get("/") ?? "").split('class="home-directory"')[1]?.split("</section>")[0] ?? "";
 check(homeDirectory.includes('href="/health"') && !homeDirectory.includes('href="/property-casualty"'), "/: home directory lists live lines and not Property & Casualty");
+
+// ---------------------------------------------------------------- guides
+// Node runs these TypeScript files directly: they import only types.
+const guidesDir = new URL("../lib/content/guides/", import.meta.url);
+const { validateGuides, isPublishableGuide } = await import(new URL("validate.ts", guidesDir).href);
+const guideRegistry = readFileSync(new URL("index.ts", guidesDir), "utf8");
+const allGuides = [];
+for (const file of readdirSync(new URL("entries/", guidesDir))) {
+  allGuides.push((await import(new URL(`entries/${file}`, guidesDir).href)).default);
+  check(guideRegistry.includes(`./entries/${file.replace(/\.ts$/, "")}"`), `guide file ${file} is registered in lib/content/guides/index.ts`);
+}
+for (const problem of validateGuides(allGuides)) fail(`guide content: ${problem}`);
+check(allGuides.length > 0, `guide content checked (${allGuides.length})`);
+
+const guidePathsOf = (guide) => ({ es: `/health/${guide.es.slug}`, en: `/en/health/${guide.en.slug}` });
+// Guides without editorial approval, or with an open blocker, are public only outside production.
+const publicGuides = allGuides.filter((guide) => !EXPECT_INDEXABLE || isPublishableGuide(guide));
+const lastmodOf = (path) => sitemap.split("<url>").find((block) => block.includes(`<loc>${CANONICAL}${path}</loc>`))?.match(/<lastmod>([^<]+)</)?.[1] ?? "";
+const guideLabels = {
+  es: { line: "Revisado por", agent: "agente con licencia", disclaimer: "Información educativa general", notice: "no pertenece al gobierno federal", index: "/aprende", health: "/health" },
+  en: { line: "Reviewed by", agent: "licensed agent", disclaimer: "General educational information", notice: "not operated or endorsed by the federal government", index: "/en/learn", health: "/en/health" },
+};
+
+for (const guide of allGuides.filter((candidate) => !publicGuides.includes(candidate))) {
+  for (const path of Object.values(guidePathsOf(guide))) {
+    check((await get(path)).status === 404, `${path}: sample guide is not public in production`);
+    check(!locs.includes(CANONICAL + path), `${path}: sample guide is not in the sitemap`);
+  }
+}
+for (const [path, html] of htmlCache) {
+  if (EXPECT_INDEXABLE) check(!html.includes("TODO-CONTENT"), `${path}: no TODO-CONTENT in production`);
+}
+if (!publicGuides.length) {
+  for (const path of ["/aprende", "/en/learn"]) {
+    check((await get(path)).status === 404, `${path}: no guide index until a guide is published`);
+    check(!locs.includes(CANONICAL + path), `${path}: not in the sitemap until a guide is published`);
+  }
+}
+for (const guide of publicGuides) {
+  const paths = guidePathsOf(guide);
+  for (const locale of ["es", "en"]) {
+    const path = paths[locale];
+    const labels = guideLabels[locale];
+    const content = guide[locale];
+    const html = htmlCache.get(path) ?? "";
+    check(locs.includes(CANONICAL + path), `${path}: in the sitemap`);
+    check(lastmodOf(path).startsWith(guide.updatedDate), `${path}: lastmod is updatedDate (${lastmodOf(path)})`);
+    const own = hreflangs(html);
+    check(own.get("es-US") === CANONICAL + paths.es && own.get("en-US") === CANONICAL + paths.en && own.get("x-default") === CANONICAL + paths.es, `${path}: hreflang pair`);
+    check((html.match(/<h1[\s>]/g)?.length ?? 0) === 1, `${path}: exactly one <h1>`);
+    const visible = html.replace(/<!-- -->/g, "");
+    check(visible.includes(`${labels.line} ${guide.reviewer}, ${labels.agent}`), `${path}: visible reviewer line`);
+    check(visible.includes(labels.disclaimer) && visible.includes(labels.notice), `${path}: disclaimer and government notice`);
+    check(content.sources.every((source) => html.includes(source.url)), `${path}: sources listed`);
+    const nodes = jsonLd(html);
+    const article = nodes.find((node) => node["@type"] === "Article");
+    check(article?.publisher?.["@id"] === organizationId, `${path}: Article JSON-LD publisher references the organization`);
+    check(article?.author?.name === guide.author && article?.mainEntityOfPage?.reviewedBy?.name === guide.reviewer, `${path}: Article JSON-LD author and reviewer`);
+    check(article?.dateModified === guide.updatedDate && article?.inLanguage === `${locale}-US`, `${path}: Article JSON-LD dateModified and inLanguage`);
+    const crumbs = nodes.find((node) => node["@type"] === "BreadcrumbList")?.itemListElement ?? [];
+    check(crumbs.at(-1)?.item === CANONICAL + path, `${path}: BreadcrumbList ends on the guide`);
+    check(!nodes.some((node) => node["@type"] === "FAQPage"), `${path}: no FAQPage`);
+    check(!html.split('id="contacto"')[0].includes('href="/contacto"'), `${path}: no link to /contacto before the guide's form`);
+    check(html.includes('id="contacto"') && html.includes('name="consent"') && /href="#contacto"[^>]*data-cta="guide_agent"/.test(html), `${path}: CTA goes to the health contact form`);
+    check((htmlCache.get(labels.index) ?? "").includes(`href="${path}"`), `${labels.index}: lists ${path}`);
+    check((htmlCache.get(labels.health) ?? "").includes(`href="${path}"`), `${labels.health}: Guides block lists ${path}`);
+  }
+}
+for (const index of publicGuides.length ? ["/aprende", "/en/learn"] : []) {
+  check(locs.includes(CANONICAL + index), `${index}: in the sitemap`);
+  check(/^\d{4}-/.test(lastmodOf(index)), `${index}: has a lastmod`);
+}
 
 for (const [path, html] of htmlCache) {
   const own = hreflangs(html);

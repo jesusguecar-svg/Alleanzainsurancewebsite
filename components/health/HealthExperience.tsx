@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Instagram, Menu, X } from "lucide-react";
 import { Logo } from "../Logo";
@@ -18,7 +18,7 @@ import type { GoogleReviews } from "@/lib/google-reviews";
 import s from "./health.module.css";
 import p from "./platform.module.css";
 
-export default function HealthExperience({ reviews, reviewsUrl, locale = "es" }: { reviews: GoogleReviews | null; reviewsUrl?: string; locale?: "es" | "en" }) {
+export default function HealthExperience({ reviews, reviewsUrl, locale = "es", guides }: { reviews: GoogleReviews | null; reviewsUrl?: string; locale?: "es" | "en"; guides?: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formService, setFormService] = useState("guidance");
   const [formState, setFormState] = useState("");
@@ -67,6 +67,7 @@ export default function HealthExperience({ reviews, reviewsUrl, locale = "es" }:
       <HealthFAQ locale={locale} />
       <div className={p.advisor}><HealthContact locale={locale} selectedState={formState} onState={setFormState} selectedService={formService} onService={setFormService} /></div>
       <HealthEducation locale={locale} />
+      {guides}
       <HealthFinalCTA locale={locale} />
     </main>
     {en ? <EnglishSiteFooter /> : <SiteFooter editorial />}
