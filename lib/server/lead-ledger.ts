@@ -53,8 +53,11 @@ const uspsByFips: Record<string, string> = Object.fromEntries(
  * - medium: one of the controlled mediums;
  * - campaign: only an approved campaign ID from `LEAD_LEDGER_CAMPAIGN_IDS`. Shape alone cannot tell
  *   "aca_oe_2027" from "diabetes", so unknown campaigns are left out.
+ * - landing page: kept only up to the receiver's 80 characters. The receiver rejects a whole record
+ *   over a longer one, and a bad attribution value must never cost the lead its ledger row.
  * The lead itself is never affected.
  */
+const maxLandingPageLength = 80;
 const registryId = /^[a-z0-9_-]{1,64}$/;
 const hostName = /^(?=.{4,100}$)[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/;
 
@@ -97,7 +100,7 @@ export function ledgerLeadRecord(input: {
       [`${prefix}_source`]: trusted ? source : undefined,
       [`${prefix}_medium`]: trusted ? ledgerMedium(t?.medium) : undefined,
       [`${prefix}_campaign`]: trusted ? ledgerCampaign(t?.campaign) : undefined,
-      [`${prefix}_landing_page`]: t?.landing_page,
+      [`${prefix}_landing_page`]: t?.landing_page && t.landing_page.length <= maxLandingPageLength ? t.landing_page : undefined,
     };
   };
   const record = {
@@ -124,12 +127,13 @@ let warnedUnconfigured = false;
  * `LEAD_LEDGER_ENDPOINT` (https; http only for localhost) and `LEAD_LEDGER_WEBHOOK_SECRET`, or
  * undefined. Delivery also requires `LEAD_ID_SECRET`: without it lead IDs are random per
  * instance, and those unstable identities must not enter the ledger. The lead is still emailed.
+ * A missing endpoint or webhook secret is an error in production, where the ledger is expected.
  */
 export function ledgerConfig(env: Record<string, string | undefined> = process.env): LedgerConfig | undefined {
   const endpoint = env.LEAD_LEDGER_ENDPOINT?.trim();
   const webhookSecret = env.LEAD_LEDGER_WEBHOOK_SECRET?.trim();
   if (!endpoint || !webhookSecret) {
-    if (!warnedUnconfigured) console.info("Lead ledger is not configured; leads are emailed only.");
+    if (!warnedUnconfigured) (env.VERCEL_ENV === "production" ? console.error : console.info)("Lead ledger is not configured; leads are emailed only.");
     warnedUnconfigured = true;
     return undefined;
   }
@@ -155,6 +159,14 @@ export function ledgerEnvelope(record: LedgerLeadRecord, webhookSecret: string) 
   const payload = Buffer.from(JSON.stringify(record), "utf8").toString("base64url");
   const signature = createHmac("sha256", webhookSecret).update(payload).digest("base64url");
   return { version: 1 as const, payload, signature };
+}
+
+/**
+ * A submission without a valid key has a random lead ID, so a retry would look like a new lead.
+ * Those unstable identities must not enter the ledger; the lead email has already been sent.
+ */
+export function logLedgerSkippedNoSubmissionKey(leadId: string) {
+  console.error(`Lead ledger: skipped ${leadId}; no valid submission key. The lead email was sent.`);
 }
 
 export type LedgerResult = "created" | "duplicate" | "id_conflict" | "unauthorized" | "failed";

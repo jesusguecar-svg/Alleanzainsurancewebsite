@@ -6,7 +6,7 @@ import { attributionEmailLines } from "@/lib/server/attribution";
 import { emailConfigured, sendEmail, senderFor } from "@/lib/server/email";
 import { allowSend, isCrossOrigin, maxFormBodyBytes } from "@/lib/server/form-guard";
 import { alreadyDelivered, deliverLeadOnce, submissionKey, type Lead } from "@/lib/server/lead-intake";
-import { ledgerLeadRecord, recordLeadInLedger } from "@/lib/server/lead-ledger";
+import { ledgerLeadRecord, logLedgerSkippedNoSubmissionKey, recordLeadInLedger } from "@/lib/server/lead-ledger";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -118,7 +118,9 @@ export async function POST(request: Request) {
 
   const { lead, delivered, replayed } = await deliverLeadOnce(key, send);
   if (!delivered) return NextResponse.json({ error: sendFailed }, { status: 502 });
-  if (!replayed) {
+  if (!key) {
+    logLedgerSkippedNoSubmissionKey(lead.id);
+  } else if (!replayed) {
     recordLeadInLedger(
       ledgerLeadRecord({
         lead,

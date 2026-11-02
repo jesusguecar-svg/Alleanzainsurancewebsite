@@ -41,7 +41,8 @@ lead_id = "LD-" + symbols[0..5] + "-" + symbols[5..10]
 ```
 
 Without a `submission_id` (an older cached page) or without `LEAD_ID_SECRET`, the same mapping runs
-over 32 random bytes. Without `LEAD_ID_SECRET` the lead is emailed but never sent to the ledger.
+over 32 random bytes. In both cases the lead is emailed but **never sent to the ledger**, because a
+random ID would make a retry look like a new lead.
 
 - **Collisions:** across one million leads in total, the chance that any two share an ID is about
   6 × 10⁻⁴. The receiver enforces uniqueness (`id_conflict`).
@@ -81,7 +82,9 @@ so aggregate GA4 counts and ledger counts can be compared by segment.
    which staff can recognize as a duplicate. That instance also posts the record again, with its
    own `created_at` (the time it handled the submission); every other field is the same, so the
    receiver answers `duplicate` (see [Receiver responses](#receiver-responses)).
-5. **The receiving ledger is responsible for uniqueness and idempotency on `lead_id`.** The website
+5. **No valid `submission_id`:** the identity is not stable, so the lead is emailed but not posted
+   to the ledger. The server logs `Lead ledger: skipped LD-…; no valid submission key. The lead email was sent.`
+6. **The receiving ledger is responsible for uniqueness and idempotency on `lead_id`.** The website
    has no database.
 
 ## Environment variables
@@ -94,11 +97,13 @@ so aggregate GA4 counts and ledger counts can be compared by segment.
 | `LEAD_LEDGER_CAMPAIGN_IDS` | Not a secret. Comma-separated approved campaign IDs, e.g. `aca_oe_2027,oe2027_texas_aca` (lowercase letters, digits, `_`, `-`). Only these may appear as `first_campaign` / `last_campaign`. Optional: without it no campaign is sent |
 | `LEAD_LEDGER_SOURCE_IDS` | Not a secret. Comma-separated approved custom sources: IDs (lowercase letters, digits, `_`, `-`) or referral host names, e.g. `healthsherpa,partner_xyz,examplepartner.com`. Added to the built-in sources below. Optional. Kept separate from campaigns |
 
-The ledger client sends only when **all three** are set. Otherwise the forms behave exactly as
+The ledger client sends only when **all three** are set and the submission has a valid
+`submission_id`. Otherwise the forms behave exactly as
 before and the email still carries a `lead_id`:
 
 - `LEAD_LEDGER_ENDPOINT` or `LEAD_LEDGER_WEBHOOK_SECRET` missing: the server logs
-  `Lead ledger is not configured; leads are emailed only.` once per instance.
+  `Lead ledger is not configured; leads are emailed only.` once per instance, at error level in
+  production (`VERCEL_ENV=production`) and info level elsewhere. Nothing unsigned is ever sent.
 - `LEAD_ID_SECRET` missing: lead IDs are random per request, so a retry on another instance would
   get a new ID. Those unstable identities must not enter the ledger, so **nothing is sent**. The
   server logs, once per instance (in production even when the ledger is not configured):
@@ -228,8 +233,11 @@ simply left out of the record (the lead is never blocked, and the email still sh
 - **`*_campaign`:** only an **approved campaign ID** listed in `LEAD_LEDGER_CAMPAIGN_IDS`
   (case-insensitive, stored lowercase). A pattern check cannot tell `aca_oe_2027` from `diabetes`,
   so any unregistered campaign is omitted. **Campaigns used for lead-level business attribution must
-  be registered/approved** before launch. Landing pages are
-paths without query strings. `utm_content`, `utm_term` and the referrer appear in the email but are
+  be registered/approved** before launch.
+- **`*_landing_page`:** a path without a query string, at most 80 characters. The receiver rejects a
+  whole record with a longer one, so a longer path is omitted and the lead is sent without it.
+
+ `utm_content`, `utm_term` and the referrer appear in the email but are
 **not** sent to the ledger.
 
 **Never sent:** the consumer's name, email, phone, message or any free text, date of birth, address,
@@ -245,5 +253,6 @@ income, health, medical or immigration information, company name or workforce si
 | `tests/lead-id.test.ts` | Format, no date, uniform symbols, determinism, secret separation, retry/idempotency, concurrency |
 | `tests/lead-instances.test.ts` | Separate Node processes posting over HTTP to the receiver model: a cross-instance retry gets the same ID, a different `created_at`, and `duplicate` (not `id_conflict`); a real difference is still `id_conflict`; webhook-secret rotation keeps the ID; a different ID secret changes it; without `LEAD_ID_SECRET` nothing reaches the ledger |
 | `tests/lead-ledger.test.ts` | Payload allowlist and PII rejection, config (all three variables), envelope plus test vector, every receiver response, retries, logging |
-| `tests/lead-routes.test.ts` | Contact, employer and health routes end to end against the receiver model: missing config, production without `LEAD_ID_SECRET`, ledger down, wrong secret, `/work`, invalid submissions |
+| `tests/lead-ledger-config.test.ts` | Fresh processes: a missing endpoint or webhook secret logs at error level in production and info level elsewhere; the lead is emailed and no ledger request is made |
+| `tests/lead-routes.test.ts` | Contact, employer and health routes end to end against the receiver model: missing config, production without `LEAD_ID_SECRET`, no valid `submission_id`, ledger down, wrong secret, `/work`, invalid submissions |
 | `tests/fake-receiver.ts` | Not a test: the model of the canonical receiver (HMAC check, duplicate rule above) used by the two files above |

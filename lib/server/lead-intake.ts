@@ -44,7 +44,8 @@ export function alreadyDelivered(key: string | undefined) {
  * keeps a retry on the same instance from emailing a delivered lead again and makes concurrent
  * duplicates wait for the first request. A retry that reaches a different instance while or after
  * the first one delivers can send a second internal email, with the same lead ID; the ledger
- * enforces uniqueness on lead_id. Without a key (an older page) every request is a new lead.
+ * enforces uniqueness on lead_id. Without a key (an older page) every request is a new lead with
+ * a random ID, which the routes email but do not send to the ledger.
  */
 export async function deliverLeadOnce(
   key: string | undefined,

@@ -208,6 +208,28 @@ test("missing or broken attribution still produces a valid record", () => {
   }
 });
 
+test("a landing page over the receiver's 80 characters is omitted; the lead stays valid", () => {
+  const withPath = (landing_page: string, first = false) => {
+    const touch = { source: "google", medium: "organic", landing_page };
+    return ledgerLeadRecord({ lead, formType: "health", productLine: "health", language: "es", attribution: first ? { consent: "granted", first: touch } : { consent: "denied", last: touch } });
+  };
+  const at80 = `/${"a".repeat(79)}`;
+  const at81 = `/${"a".repeat(80)}`;
+  assert.equal(withPath(at80).last_landing_page, at80);
+  assert.equal(withPath(at80, true).first_landing_page, at80);
+  for (const [record, prefix] of [[withPath(at81), "last"], [withPath(at81, true), "first"]] as const) {
+    assert.ok(!(`${prefix}_landing_page` in record));
+    assert.ok(!JSON.stringify(record).includes(at81));
+    // Everything else about the lead, and that touch, is unchanged.
+    assert.equal(record[`${prefix}_source`], "google");
+    assert.equal(record[`${prefix}_medium`], "organic");
+    assert.deepEqual(
+      [record.schema_version, record.lead_id, record.created_at, record.channel_of_entry, record.form_type, record.product_line, record.language],
+      [1, lead.id, lead.createdAt, "web_form", "health", "health", "es"],
+    );
+  }
+});
+
 test("the ledger is off unless all three env variables are set", () => {
   const endpoint = config.endpoint;
   const idSecret = { LEAD_ID_SECRET: "test-lead-id-secret" };

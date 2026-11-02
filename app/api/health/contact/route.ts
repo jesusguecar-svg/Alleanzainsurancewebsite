@@ -6,7 +6,7 @@ import { attributionEmailLines } from "@/lib/server/attribution";
 import { emailConfigured, sendEmail, senderFor } from "@/lib/server/email";
 import { allowSend, isCrossOrigin, maxFormBodyBytes } from "@/lib/server/form-guard";
 import { alreadyDelivered, deliverLeadOnce, submissionKey, type Lead } from "@/lib/server/lead-intake";
-import { ledgerLeadRecord, recordLeadInLedger } from "@/lib/server/lead-ledger";
+import { ledgerLeadRecord, logLedgerSkippedNoSubmissionKey, recordLeadInLedger } from "@/lib/server/lead-ledger";
 
 export const runtime = "nodejs";
 
@@ -37,7 +37,8 @@ export async function POST(request: Request) {
   });
   const { lead: record, delivered, replayed } = await deliverLeadOnce(key, send);
   if (!delivered) return NextResponse.json({ error: english ? "We could not send your request. Try again or contact us directly." : "No pudimos enviar tu solicitud. Inténtalo otra vez o contáctanos directamente." }, { status: 502 });
-  if (!replayed) recordLeadInLedger(ledgerLeadRecord({ lead: record, formType: "health", productLine: "health", stateFips: state.id, language: english ? "en" : "es", attribution }));
+  if (!key) logLedgerSkippedNoSubmissionKey(record.id);
+  else if (!replayed) recordLeadInLedger(ledgerLeadRecord({ lead: record, formType: "health", productLine: "health", stateFips: state.id, language: english ? "en" : "es", attribution }));
   // The lead ID stays server-side: it is never returned to the browser.
   return NextResponse.json({ ok: true });
 }

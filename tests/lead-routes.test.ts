@@ -254,6 +254,29 @@ test("production without LEAD_ID_SECRET: the visitor succeeds and is emailed, no
   }
 });
 
+test("no valid submission_id: the lead is emailed, nothing reaches the ledger, one safe error", async () => {
+  const cases: Array<[(request: Request) => Promise<Response>, string, Record<string, unknown>]> = [
+    [contact.POST, "/api/contacto", contactBody({ submission_id: undefined })],
+    [contact.POST, "/api/contacto", contactBody({ submission_id: "too-short" })],
+    [health.POST, "/api/health/contact", healthBody({ submission_id: undefined })],
+    [health.POST, "/api/health/contact", healthBody({ submission_id: "too-short" })],
+  ];
+  for (const [handler, path, body] of cases) {
+    emails = [];
+    logs.length = 0;
+    const response = await handler(post(path, body));
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { ok: true });
+    await settle();
+    assert.equal(emails.length, 1);
+    const id = emailLeadId(emails[0]);
+    assert.equal(ledgerCalls, 0);
+    assert.deepEqual(logs, [`Lead ledger: skipped ${id}; no valid submission key. The lead email was sent.`]);
+    assertNoPii(logs);
+    assert.ok(!logs[0].includes("test-webhook-secret") && !logs[0].includes("test-lead-id-secret"));
+  }
+});
+
 test("ledger unavailable: the visitor's response is unchanged", async () => {
   ledgerMode = "down";
   const response = await contact.POST(post("/api/contacto", contactBody()));
