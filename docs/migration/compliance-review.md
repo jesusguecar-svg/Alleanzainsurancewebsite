@@ -87,13 +87,14 @@ Details: `docs/measurement/measurement-plan.md` §10.
 | 22 | P1 | **RESOLVED IN MEASUREMENT PR #31** (live until merged) | Whop pixel | On the live site, after a visitor accepts the measurement notice, the Whop pixel sends the name, email and phone typed into any form (including `/health`) to Whop before submission, and any email/phone found in URL parameters. Management decided (2026-10-28) to remove Whop from alleanzainsurance.org entirely; PR #31 removes it and deletes its leftover `_wuid` cookies. Whop may still be used for Alleanza Academy, off this site. |
 | 23 | P2 | **RESOLVED IN PR #31** | Whop pixel | Residual Whop exposure (page URLs, `/health` visits, fingerprint) ends with the removal above. |
 | 24 | P2 | **OPEN** | `app/privacidad/page.tsx` | The measurement section now describes only the final stack: GTM + GA4 (opt-in), 90-day first-party campaign attribution in internal lead emails, and cookieless Vercel Web Analytics / Speed Insights. There are no Whop references, and visitors can change their measurement preferences. Needs legal/management review before go-live. |
+| 25 | P2 | **OPEN** | `lib/server/lead-ledger.ts` | Lead ledger (added 2026-10-29, **not connected**): each insurance lead gets an internal `lead_id` (`LD-XXXXX-XXXXX`). Once `LEAD_ID_SECRET`, `LEAD_LEDGER_ENDPOINT` and `LEAD_LEDGER_WEBHOOK_SECRET` are all configured, a signed record is sent to the canonical lead ledger. The record has no consumer name, email, phone or free text, but includes form, product line, state (health), language and campaign attribution. Because the `lead_id` links the record to the lead email, the ledger is **pseudonymous, not anonymous**. Before connecting it, confirm the ledger's access controls and retention, and decide whether the privacy notice should mention it (see #24). |
 
 ## Still open
 
 No P1 items remain open (#22 is resolved in measurement PR #31, live until it is merged). Open P2 items: #6 (employer-benefits licensing), #9 (Discount Plan disclosure),
 #10 (carrier logos and appointments), #12 ("asesoría gratuita" wording), #15 (BBB re-check at
 launch), #17 (approved mission or history for Nosotros), #18 (confirm the info@ inbox is
-monitored), #21 (agent direct line), #24 (privacy text review).
+monitored), #21 (agent direct line), #24 (privacy text review), #25 (lead ledger before connecting).
 
 ## Technical fixes in the same PR
 

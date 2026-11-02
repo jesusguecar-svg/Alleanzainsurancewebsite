@@ -1,6 +1,6 @@
 # Measurement plan — alleanzainsurance.org
 
-Status: **code ready for review, not live.** Whop pixel removed by management decision (§10). GTM container not published, GA4 settings untouched, no custom dimensions, no advertising features. Last updated 28 Oct 2026.
+Status: **live.** GTM `GTM-PP5RBPJH` Version 2 is published; GA4 key events are active; Vercel Web Analytics and Speed Insights are enabled; Search Console is linked to GA4. Whop removed (§10). No custom dimensions, no advertising features. Internal lead ID added, ledger not yet connected (§14). Last updated 29 Oct 2026.
 
 ## 1. Goal
 
@@ -22,9 +22,10 @@ session → generate_lead → working_lead → qualify_lead → quote_start/quot
 | Item | Value | Status |
 |---|---|---|
 | GA4 Measurement ID | `G-GKHH8TDY77` | Configured inside GTM only (not in code) |
-| GTM container | `GTM-PP5RBPJH` (account: Alleanza Insurance Corp) | Loaded by code in production after analytics consent; **not published yet** |
-| Search Console | Domain property `alleanzainsurance.org`; sitemap `https://alleanzainsurance.org/sitemap.xml` accepted | Unchanged |
-| Vercel Web Analytics / Speed Insights | `@vercel/analytics`, `@vercel/speed-insights` | Installed in code; must be **enabled in the Vercel project** to collect |
+| GTM container | `GTM-PP5RBPJH` (account: Alleanza Insurance Corp) | Loaded by code in production after analytics consent; **Version 2 published** |
+| Search Console | Domain property `alleanzainsurance.org`; sitemap `https://alleanzainsurance.org/sitemap.xml` accepted | **Linked to GA4** |
+| Internal lead ID / ledger | `LD-XXXXX-XXXXX`; `LEAD_ID_SECRET`, `LEAD_LEDGER_ENDPOINT`, `LEAD_LEDGER_WEBHOOK_SECRET`, `LEAD_LEDGER_CAMPAIGN_IDS`, `LEAD_LEDGER_SOURCE_IDS` | ID in lead emails; ledger client ready, **endpoint not connected yet** ([lead-ledger.md](lead-ledger.md)) |
+| Vercel Web Analytics / Speed Insights | `@vercel/analytics`, `@vercel/speed-insights` | Installed in code; **enabled** in the Vercel project |
 
 ## 3. Architecture
 
@@ -59,12 +60,14 @@ Exactly one `page_view` per real route, from `trackPageView()`:
 - initial load: one; client-side navigation (Next `<Link>`): one per route; back/forward: one per route change; same-path re-renders and `#hash` links: none.
 - if the visitor accepts analytics mid-page, the current page is counted once at that moment.
 
-**Required GA4/GTM settings (competing automatic page views must be off):**
+**Competing automatic page views are off in production (verified):**
 
 1. GTM Google Tag: `send_page_view` = `false`.
-2. GA4 → Admin → Data streams → web stream → Enhanced measurement → Page views → *Show advanced settings* → **uncheck "Page changes based on browser history events"**.
+2. GA4 → Admin → Data streams → web stream → Enhanced measurement → Page views → *Show advanced settings* → "Page changes based on browser history events" is **off**.
 
-Without step 2, GA4 double-counts every client-side navigation.
+Keep both off: if the GA4 history setting were turned back on, GA4 would double-count every client-side navigation.
+
+Other Enhanced measurement events that would duplicate the site's own events are off: **outbound clicks** (phone/WhatsApp/CTA clicks come from the dataLayer) and **form interactions** (`form_start` / `generate_lead` come from the dataLayer, `generate_lead` only after server success).
 
 ## 5. Event taxonomy
 
@@ -97,7 +100,7 @@ Without step 2, GA4 double-counts every client-side navigation.
 
 Any other key or a value that fails validation is dropped. Values containing `@` or 7+ digits are rejected everywhere.
 
-`source_group` (on `generate_lead`) = coarse channel of the lead's last touch: `direct`, `organic`, `paid`, `social`, `email`, `referral`, `qr`, `agent`, `other`.
+`source_group` (on `generate_lead`) = coarse channel of the lead's last touch: `direct`, `organic`, `paid`, `social`, `email`, `referral`, `qr`, `agent`, `ai_assistant` (medium `ai_assistant`), `other`. It is an existing low-cardinality helper value, not a registered custom dimension and not a business source of truth: GA4's own source / medium / campaign and channel grouping are the acquisition source of truth, so AI traffic is read there (`utm_medium=ai_assistant`, source `chatgpt` etc.). No GTM/GA4 configuration was added or changed for AI.
 
 ### Never sent to GA4, GTM, Vercel or any pixel
 
@@ -126,11 +129,12 @@ To track a new CTA: add `data-cta="<snake_case_name>"` (and `data-product-line` 
 | Micro-conversion | `whatsapp_click`, `phone_click`; later `quote_start`, `quote_complete`, `agent_handoff` |
 | Not key events | `page_view`, `cta_click`, `form_start`, `form_error` |
 
-Mark these in GA4 only after the container is published and data is verified.
+These key events are **active** in GA4.
 
 ## 7. Attribution (first-party)
 
-- Each page load is classified: `utm_*` present → that campaign; external referrer → search engine (`organic`), social network (`social`) or other site (`referral`); otherwise direct/internal.
+- Each page load is classified: `utm_*` present → that campaign; external referrer → AI assistant (`ai_assistant`), search engine (`organic`), social network (`social`) or other site (`referral`); otherwise direct/internal.
+- **AI assistants** are recognized by referrer host and normalized to a stable source: `chatgpt` (chatgpt.com, chat.openai.com only; other openai.com hosts stay a normal referral), `perplexity` (perplexity.ai), `gemini` (gemini.google.com; checked before Google search), `grok` (grok.com), `copilot` (copilot.microsoft.com, copilot.cloud.microsoft), `claude` (claude.ai), with medium `ai_assistant`. ChatGPT's own `utm_source=chatgpt.com` is normalized the same way (medium `ai_assistant` when no `utm_medium` is given). Detection is best effort: many AI apps send no referrer, and those visits stay direct; nothing is guessed. Grok inside x.com cannot be told apart from X and stays `x`/`social`. Only the host is used; prompts, conversations and model responses are never available to the site and never captured.
 - **With analytics consent:** stored in `localStorage["alleanza-attribution"]` — first touch (kept) and last non-direct touch (refreshed), each with source, medium, campaign, content, term, landing page. Expires **90 days** after the first touch. No PII; values with `@` or long digit runs are discarded.
 - **Without analytics consent:** nothing is stored. The lead request still carries this page load's own touch (UTMs / referrer host) in memory only; first touch is reported as unavailable.
 - Withdrawing analytics consent deletes the stored attribution and `_ga` cookies.
@@ -151,13 +155,15 @@ All lowercase, `snake_case`, no spaces, no personal data, no long numbers (they 
 
 | Parameter | Allowed values |
 |---|---|
-| `utm_source` | `google`, `meta`, `instagram`, `youtube`, `email`, `agent`, `partner`, `direct` |
-| `utm_medium` | `organic`, `cpc`, `paid_social`, `social`, `email`, `referral`, `qr`, `agent_link` |
+| `utm_source` | `google`, `meta`, `instagram`, `youtube`, `email`, `agent`, `partner`, `direct`, AI platforms `chatgpt`, `perplexity`, `gemini`, `grok`, `copilot`, `claude` |
+| `utm_medium` | `organic`, `cpc`, `paid_social`, `social`, `email`, `referral`, `qr`, `agent_link`, `ai_assistant` |
 | `utm_campaign` | `<period>_<market>_<line>` e.g. `oe2027_texas_aca`, `oe2027_florida_aca` |
 | `utm_content` | creative/placement, e.g. `reel_family_v1` |
 | `utm_term` | paid keyword theme only, never a person's name |
 
-Agent links: `utm_source=agent&utm_medium=agent_link&utm_campaign=<campaign>`; never put the agent's NPN or phone in a UTM. Do not invent campaign values in production until a campaign is approved.
+Agent links: `utm_source=agent&utm_medium=agent_link&utm_campaign=<campaign>`; never put the agent's NPN or phone in a UTM.
+
+AI links Alleanza controls (in an AI integration, GPT, or listing): `utm_source=<platform>&utm_medium=ai_assistant&utm_campaign=<campaign>`, with `<platform>` one of `chatgpt`, `perplexity`, `gemini`, `grok`, `copilot`, `claude`. Example: `utm_source=chatgpt&utm_medium=ai_assistant&utm_campaign=aca_oe_2027`. Never put prompt text, conversation context or anything about the person in a UTM. Do not invent campaign values in production until a campaign is approved. A campaign used for lead-level business attribution must also be registered in `LEAD_LEDGER_CAMPAIGN_IDS`; otherwise the lead ledger leaves the campaign out (GA4 and the lead email still see it). Likewise, a new partner or referral source value used for lead-level attribution must be registered in `LEAD_LEDGER_SOURCE_IDS` (see [lead-ledger.md](lead-ledger.md#record-schema-schema_version-1)).
 
 ## 9. Consent (Google Consent Mode v2)
 
@@ -214,13 +220,13 @@ They load on every visit, **independent of the analytics choice**. That is justi
 - the URLs they report are reduced to origin + path + `utm_*` (`beforeSend` in `components/analytics/VercelObservability.tsx`);
 - the data stays with Vercel, the site's hosting provider.
 
-If any of those stops being true, move them behind analytics consent. Their scripts are already served on Vercel deployments (verified on the PR preview). **Confirm both are enabled in the Vercel project (Analytics and Speed Insights tabs)** so that data is collected and reported. Locally the scripts are not served, which is expected.
+If any of those stops being true, move them behind analytics consent. Both are **enabled** in the Vercel project (Analytics and Speed Insights tabs). Locally the scripts are not served, which is expected.
 
 ## 12. Search Console ↔ GA4
 
-Link the existing Search Console **Domain** property `alleanzainsurance.org` to the GA4 web stream for `G-GKHH8TDY77` (GA4 Admin → Product links → Search Console links) once the account has the needed permissions on both. Do not create a new Search Console property. No DNS change is required.
+The existing Search Console **Domain** property `alleanzainsurance.org` is **linked** to the GA4 web stream for `G-GKHH8TDY77` (GA4 Admin → Product links → Search Console links). Do not create a new Search Console property.
 
-## 13. GTM configuration to create after merge (then Preview, then publish)
+## 13. GTM configuration (published as Version 2)
 
 **Container settings:** enable *Consent Overview* (Admin → Container settings → Additional settings → Enable consent overview).
 
@@ -247,18 +253,31 @@ Every GA4 Event tag: Measurement ID `G-GKHH8TDY77`, *Additional consent checks �
 
 No advertising tags (Google Ads, Floodlight, Meta, conversion linker) in this phase.
 
-**GA4 settings (outside GTM, at go-live):** turn off history-based page views (§4); keep Google Signals off; data retention per policy. Optional later: register `form_type`, `product_line`, `cta_name`, `cta_location`, `source_group`, `error_category` as event-scoped custom dimensions. All are low-cardinality. Never register page_location variants, IDs or timestamps.
+**GA4 settings (outside GTM):** history-based page views are off (verified, §4); keep Google Signals off; data retention per policy. Optional later: register `form_type`, `product_line`, `cta_name`, `cta_location`, `error_category` as event-scoped custom dimensions (`source_group` is not needed: GA4 source / medium / campaign and channel grouping are the acquisition source of truth). All are low-cardinality. Never register page_location variants, IDs or timestamps.
 
-**Verify in GTM Preview before publishing:** one `page_view` per route, `generate_lead` only after a successful submit, no tag fires before consent, Consent tab shows `ad_*` denied.
+**Verify in GTM Preview before publishing any new version:** one `page_view` per route, `generate_lead` only after a successful submit, no tag fires before consent, Consent tab shows `ad_*` denied.
 
-## 14. Future: offline ACA enrollment measurement
+## 14. Lead lifecycle and offline ACA enrollment
 
-Enrollment happens off-site (HealthSherpa / carrier), so it can only be measured server-side:
+Enrollment happens off-site (HealthSherpa / carrier), so the lead lifecycle is tracked **outside GA4**:
 
-1. Keep a lead reference **in the CRM/agency system only** (never in GA4).
-2. As the agent works the lead, record `working_lead` → `qualify_lead` / `disqualify_lead` → `close_convert_lead` (confirmed enrollment) / `close_unconvert_lead`.
-3. Send these to GA4 via the Measurement Protocol (server) or a GA4 data import, joined on the GA4 `client_id` captured with consent at lead time. This requires a separate privacy review: consent wording for linking, no health or plan details in parameters, and only aggregate value.
-4. Mark `close_convert_lead` as a primary key event at that point.
+1. Every successful insurance lead gets a server-side `lead_id` (`LD-XXXXX-XXXXX`). It appears in
+   the internal lead email and in a PII-free record in the internal lead ledger. See
+   [lead-ledger.md](lead-ledger.md). The `lead_id` and the browser's `submission_id` are never sent to GA4, GTM, the dataLayer or Vercel Analytics.
+2. As the agent works the lead, the ledger records `working_lead` → `qualify_lead` / `disqualify_lead` →
+   `close_convert_lead` (confirmed enrollment) / `close_unconvert_lead`, keyed by `lead_id`.
+3. GA4 stays aggregate. Any later import of lifecycle results into GA4 must be aggregate (counts by
+   date, source/medium, `form_type`, `product_line`), not per lead. No per-lead data is sent to GA4 and no
+   GA4 visitor identifier is stored with a lead. Lifecycle
+   analysis lives in the business ledger and future BigQuery models.
+4. **AI acquisition.** A visitor sent by an AI assistant who then uses the website form is a
+   `web_form` lead; the AI origin is in its attribution (`first_*` / `last_*`, e.g.
+   `last_source=chatgpt`, `last_medium=ai_assistant`). The future Alleanza Health AI / ChatGPT
+   integration (not part of the website) will create leads directly in the canonical ledger with
+   `channel_of_entry = ai_assistant` and controlled fields such as `ai_platform = chatgpt` and
+   `ai_experience = alleanza_health_ai`, with the same `LD-XXXXX-XXXXX` ID and lifecycle. No AI
+   prompt, transcript, model response or health answer ever enters the ledger. See
+   [lead-ledger.md](lead-ledger.md#ai-acquisition).
 
 ## 15. Testing
 

@@ -22,6 +22,7 @@ import { SiteHeader, type NavLink } from "./layout/SiteHeader";
 import { phones } from "@/lib/config/contact";
 import { legalRoutes } from "@/lib/config/routes";
 import { attributionForLead } from "@/lib/analytics";
+import { useSubmissionId } from "@/lib/forms/useSubmissionId";
 import { useLeadFormTracking } from "@/lib/analytics/useLeadFormTracking";
 import { honeypotFieldName } from "@/lib/content/contact";
 import { ease, useReveal } from "@/lib/motion";
@@ -62,6 +63,7 @@ const fieldClass = "mt-2 w-full rounded-xl border border-navy/15 bg-white px-4 p
 function EmployerInquiryForm() {
   const [status, setStatus] = useState<Status>("idle");
   const tracking = useLeadFormTracking("contact");
+  const submission = useSubmissionId();
   const [errors, setErrors] = useState<FormErrors>({});
   const [formError, setFormError] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -118,10 +120,14 @@ function EmployerInquiryForm() {
           source: window.location.pathname,
           [honeypotFieldName]: honeypotValue,
           attribution: attributionForLead(),
+          form_type: "contact",
+          product_line: "employer",
+          submission_id: submission.current(),
         }),
       });
       if (response.ok) {
         tracking.success("employer");
+        submission.reset();
         setStatus("success");
         formRef.current?.reset();
         return;

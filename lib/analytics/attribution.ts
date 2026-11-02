@@ -25,6 +25,32 @@ export type LeadAttribution = {
 type StoredTouch = Touch & { at: number };
 type StoredAttribution = { v: 1; first: StoredTouch; last: StoredTouch };
 
+/**
+ * AI assistants, by referrer host or by the host-style `utm_source` some of them add to links
+ * (ChatGPT adds `utm_source=chatgpt.com`). Checked before search engines so gemini.google.com is
+ * not counted as Google search. Hosts only: no prompt or conversation data is available or kept.
+ * An assistant that sends no referrer (many apps do not) stays direct; nothing is guessed.
+ */
+const aiAssistants: Record<string, string> = {
+  // Not openai.com in general: OpenAI-domain traffic is not necessarily ChatGPT.
+  "chatgpt.com": "chatgpt", "chat.openai.com": "chatgpt",
+  "perplexity.ai": "perplexity",
+  "gemini.google.com": "gemini", "bard.google.com": "gemini",
+  "grok.com": "grok",
+  "copilot.microsoft.com": "copilot", "copilot.cloud.microsoft": "copilot",
+  "claude.ai": "claude",
+};
+export const aiAssistantMedium = "ai_assistant";
+/** Canonical AI platform values (also for future controlled `ai_platform` metadata, plus "other"). */
+export const aiPlatforms = ["chatgpt", "grok", "gemini", "perplexity", "copilot", "claude"] as const;
+
+/** The normalized AI platform for a referrer host or a utm_source value ("ChatGPT", "chatgpt.com"), if any. */
+function aiPlatform(value: string) {
+  const host = value.toLowerCase();
+  if (Object.values(aiAssistants).includes(host)) return host;
+  return known(host, aiAssistants);
+}
+
 const searchEngines: Record<string, string> = { google: "google", bing: "bing", yahoo: "yahoo", duckduckgo: "duckduckgo", ecosia: "ecosia", baidu: "baidu", yandex: "yandex" };
 const socialNetworks: Record<string, string> = { facebook: "facebook", fb: "facebook", instagram: "instagram", linkedin: "linkedin", youtube: "youtube", tiktok: "tiktok", "t.co": "x", "x.com": "x", twitter: "x", whatsapp: "whatsapp" };
 
@@ -46,16 +72,34 @@ export function touchFrom(href: string, referrer: string): Touch | null {
   const utm = (key: string) => safeText(url.searchParams.get(key));
   const source = utm("utm_source");
   if (source) {
-    return { source, medium: utm("utm_medium") ?? "(not set)", campaign: utm("utm_campaign"), content: utm("utm_content"), term: utm("utm_term"), landing_page };
+    // A known AI source is normalized ("chatgpt.com" → "chatgpt"); without a medium it is an AI referral.
+    const ai = aiPlatform(source);
+    const medium = utm("utm_medium") ?? (ai ? aiAssistantMedium : "(not set)");
+    return { source: ai ?? source, medium, campaign: utm("utm_campaign"), content: utm("utm_content"), term: utm("utm_term"), landing_page };
   }
   const host = safeHost(referrer);
   if (!host || host === url.hostname) return null;
+  const ai = known(host, aiAssistants);
+  if (ai) return { source: ai, medium: aiAssistantMedium, landing_page };
   const engine = known(host, searchEngines);
   if (engine) return { source: engine, medium: "organic", landing_page };
   const social = known(host, socialNetworks);
   if (social) return { source: social, medium: "social", landing_page };
   return { source: host, medium: "referral", landing_page };
 }
+
+/**
+ * Controlled vocabularies for the lead ledger (lib/server/lead-ledger.ts): sources the site itself
+ * produces or the UTM convention uses (measurement plan §8), and the allowed mediums. Anything
+ * else is not copied into the ledger.
+ */
+export const controlledSources: ReadonlySet<string> = new Set([
+  "(direct)", ...Object.values(searchEngines), ...Object.values(socialNetworks), ...aiPlatforms,
+  "meta", "email", "agent", "partner", "direct",
+]);
+export const controlledMediums: ReadonlySet<string> = new Set([
+  "(none)", "(not set)", "organic", "cpc", "ppc", "paid_social", "display", "social", "email", "referral", "qr", "agent_link", aiAssistantMedium,
+]);
 
 const directTouch = (landing_page?: string): Touch => ({ source: "(direct)", medium: "(none)", landing_page });
 
@@ -65,6 +109,7 @@ export function sourceGroup(touch?: Touch): string {
   if (medium === "(none)") return "direct";
   if (["cpc", "ppc", "paid_social", "display"].includes(medium)) return "paid";
   if (medium === "agent_link") return "agent";
+  if (medium === aiAssistantMedium) return "ai_assistant";
   if (["organic", "social", "email", "referral", "qr"].includes(medium)) return medium;
   return "other";
 }
