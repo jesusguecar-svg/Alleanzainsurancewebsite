@@ -24,7 +24,7 @@ session → generate_lead → working_lead → qualify_lead → quote_start/quot
 | GA4 Measurement ID | `G-GKHH8TDY77` | Configured inside GTM only (not in code) |
 | GTM container | `GTM-PP5RBPJH` (account: Alleanza Insurance Corp) | Loaded by code in production after analytics consent; **Version 2 published** |
 | Search Console | Domain property `alleanzainsurance.org`; sitemap `https://alleanzainsurance.org/sitemap.xml` accepted | **Linked to GA4** |
-| Internal lead ID / ledger | `LD-XXXXX-XXXXX`; `LEAD_ID_SECRET`, `LEAD_LEDGER_ENDPOINT`, `LEAD_LEDGER_WEBHOOK_SECRET`, `LEAD_LEDGER_CAMPAIGN_IDS`, `LEAD_LEDGER_SOURCE_IDS` | ID in lead emails; ledger client ready, **endpoint not connected yet** ([lead-ledger.md](lead-ledger.md)) |
+| Internal lead ID / ledger | `LD-XXXXX-XXXXX`; `LEAD_ID_SECRET`, `LEAD_LEDGER_ENDPOINT`, `LEAD_LEDGER_WEBHOOK_SECRET`, `LEAD_LEDGER_CAMPAIGN_IDS`, `LEAD_LEDGER_SOURCE_IDS` | ID in lead emails; **connected in production** (Phase 1A passed 2026-11-01) ([lead-ledger.md](lead-ledger.md)) |
 | Vercel Web Analytics / Speed Insights | `@vercel/analytics`, `@vercel/speed-insights` | Installed in code; **enabled** in the Vercel project |
 
 ## 3. Architecture

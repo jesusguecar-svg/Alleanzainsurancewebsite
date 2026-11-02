@@ -169,7 +169,7 @@ export default function PortalHub({ children }: { children?: ReactNode }) {
       <section id="galeria" className="gallery-stage" aria-label="Explora tus opciones con Alleanza Insurance Corp." onWheel={handleWheel}>
         <LiquidHeadline text="PROTECCIÓN" className="gallery-desktop-headline" enabled={compact === false} />
         <p className="mobile-scene-index mobile-gallery-index" aria-hidden="true">03 / 03</p>
-        <p className="mobile-gallery-label">Seis formas de orientarte</p>
+        <p className="mobile-gallery-label">Formas de orientarte</p>
         <div className="gallery-aura" aria-hidden="true" />
         <div className="gallery-orbit-tilt">
           <motion.div ref={orbitRef} className="gallery-orbit" style={{ rotateY: rotation }} onDragStart={(event) => event.preventDefault()} onPointerDown={(event) => { motionControl.current?.stop(); event.currentTarget.setPointerCapture(event.pointerId); const now = performance.now(); drag.current = { startX: event.clientX, startRotation: rotation.get(), lastX: event.clientX, lastTime: now, velocity: 0 }; dragging.current = true; }} onPointerMove={(event) => { if (!dragging.current) return; const now = performance.now(); const elapsed = Math.max(8, now - drag.current.lastTime); drag.current.velocity = (event.clientX - drag.current.lastX) / elapsed; drag.current.lastX = event.clientX; drag.current.lastTime = now; rotation.set(drag.current.startRotation + (event.clientX - drag.current.startX) * .18); }} onPointerUp={() => { if (!dragging.current) return; dragging.current = false; settle(rotation.get() + drag.current.velocity * 90); }} onPointerCancel={() => { dragging.current = false; settle(rotation.get()); }}>

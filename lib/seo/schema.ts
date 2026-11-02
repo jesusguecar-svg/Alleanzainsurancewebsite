@@ -40,7 +40,6 @@ export function organizationSchema() {
       closes,
     })),
     knowsLanguage: ["es", "en"],
-    areaServed: "US",
     sameAs: [instagramProfileUrl],
   };
 }

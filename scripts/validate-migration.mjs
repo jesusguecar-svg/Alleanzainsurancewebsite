@@ -97,7 +97,21 @@ const robots = await (await get("/robots.txt")).text();
 if (EXPECT_INDEXABLE) {
   check(robots.includes(`Sitemap: ${CANONICAL}/sitemap.xml`), "robots.txt points to the canonical sitemap");
   check(!/^Host:/mi.test(robots), "robots.txt has no Host line");
-  check(/Allow: \//.test(robots) && !/Disallow: \/\s*$/m.test(robots), "robots.txt allows crawling");
+  // A crawler obeys the group that names it, so each is checked against its own group.
+  const robotsGroups = robots.split(/\n\s*\n/).map((block) => ({
+    agents: [...block.matchAll(/^User-Agent:\s*(.+)$/gim)].map((m) => m[1].trim().toLowerCase()),
+    allowed: /^Allow: \/\s*$/m.test(block),
+    blocked: /^Disallow: \/\s*$/m.test(block),
+  }));
+  const robotsGroup = (agent) => robotsGroups.filter((group) => group.agents.includes(agent.toLowerCase()));
+  for (const agent of ["*", "Googlebot", "Bingbot", "OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "Google-Extended"]) {
+    const groups = robotsGroup(agent);
+    check(groups.length === 1 && groups[0].allowed && !groups[0].blocked, `robots.txt allows ${agent}`);
+  }
+  for (const agent of ["GPTBot", "ClaudeBot"]) {
+    const groups = robotsGroup(agent);
+    check(groups.length === 1 && groups[0].blocked && !groups[0].allowed, `robots.txt disallows ${agent}`);
+  }
 } else {
   check(/Disallow: \//.test(robots), "robots.txt disallows crawling on a non-production deployment");
 }
@@ -181,6 +195,7 @@ for (const [path, html] of [...htmlCache, ["/property-casualty", noindexPage]]) 
   fullOrganizations.push(...organizations);
   const raw = JSON.stringify(nodes);
   check(!/aggregateRating|"review"|Villard|Globe Life|npn/i.test(raw), `${path}: JSON-LD has no listing, review or NPN data`);
+  check(!raw.includes("areaServed"), `${path}: JSON-LD makes no areaServed claim`);
   const ids = [...raw.matchAll(/"@id":"([^"]+#organization)"/g)].map((m) => m[1]);
   check(ids.every((id) => id === organizationId), `${path}: JSON-LD uses one organization @id`);
   for (const node of nodes.filter((n) => n["@type"] === "Person")) {
@@ -193,6 +208,7 @@ for (const path of ["/health", "/en/health"]) {
 }
 check(fullOrganizations.length === fullOrganizationPages.size && new Set(fullOrganizations.map((node) => JSON.stringify(node))).size === 1, "full agency node is identical on every page that emits it");
 check(jsonLd(htmlCache.get("/") ?? "").some((node) => node["@type"] === "WebSite"), "/: has a WebSite node");
+check(!/(seis|cinco) formas de orientarte/i.test(htmlCache.get("/") ?? ""), "/: no count in the service-category wording");
 const homeDirectory = (htmlCache.get("/") ?? "").split('class="home-directory"')[1]?.split("</section>")[0] ?? "";
 check(homeDirectory.includes('href="/health"') && !homeDirectory.includes('href="/property-casualty"'), "/: home directory lists live lines and not Property & Casualty");
 

@@ -11,7 +11,7 @@ export function HomeDirectory() {
     <section className="home-directory" aria-labelledby="home-directory-title" data-cta-location="home_directory">
       <div className="home-directory-inner">
         <div>
-          <h2 id="home-directory-title">Cinco formas de orientarte</h2>
+          <h2 id="home-directory-title">Formas de orientarte</h2>
           <p className="home-directory-summary">{agencySummary}</p>
           <ul className="home-directory-lines">
             {directoryLines.map((item) => (

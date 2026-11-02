@@ -12,8 +12,8 @@ analytics.
 | Browser / API response | **No**: the response stays `{"ok":true}` |
 | GA4, GTM, dataLayer, Vercel Analytics | **No, never.** The same applies to the browser's `submission_id` |
 
-Status: the client is implemented and tested. The production endpoint is **not connected**, and no
-production environment variables are set.
+Status: connected in production. The Phase 1A website-to-ledger cutover passed on 2026-11-01.
+Configuration and secret values live only in Vercel Production, never in this repository.
 
 ## Lead ID
 
