@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { HealthGuides } from "@/components/guides/HealthGuides";
 import HealthExperience from "@/components/health/HealthExperience";
 import { getGoogleReviews } from "@/lib/google-reviews";
 import { siteUrl } from "@/lib/config/site";
@@ -40,5 +41,5 @@ export default async function Page() {
     "@context": "https://schema.org", "@type": "WebPage", "@id": `${siteUrl}/health#webpage`,
     url: `${siteUrl}/health`, inLanguage: "es", about: organizationRef,
   };
-  return <><JsonLd data={structuredData} /><HealthExperience locale="es" reviews={reviews} reviewsUrl={process.env.GOOGLE_REVIEWS_URL} /></>;
+  return <><JsonLd data={structuredData} /><HealthExperience locale="es" reviews={reviews} reviewsUrl={process.env.GOOGLE_REVIEWS_URL} guides={<HealthGuides locale="es" />} /></>;
 }
