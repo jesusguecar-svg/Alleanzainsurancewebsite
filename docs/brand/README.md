@@ -171,7 +171,7 @@ verified-facts gate in `lib/config/company.ts`.
 | --- | --- |
 | Colour tokens, font family | `tailwind.config.ts` |
 | CSS custom properties, base background | `app/globals.css` |
-| Inter font loading | `app/layout.tsx` |
+| Inter font loading | `components/layout/RootDocument.tsx` |
 | Logo component and rules | `components/Logo.tsx` |
 | Favicon | `app/icon.svg` |
 | Social preview | `app/opengraph-image.tsx` |

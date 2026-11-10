@@ -3,7 +3,7 @@ import { consentStorageKey, consentVersion, gtmContainerId, legacyConsentStorage
 
 /**
  * One optional category: analytics. Google Consent Mode v2 starts everything denied (see the
- * inline script in app/layout.tsx); this module records the visitor's choice and applies it.
+ * inline script in components/layout/RootDocument.tsx); this module records the visitor's choice and applies it.
  * Analytics → analytics_storage granted, GTM (and GA4 inside it) loads, attribution is stored.
  * No advertising or marketing tracker exists in this phase, so ad signals are always denied.
  */

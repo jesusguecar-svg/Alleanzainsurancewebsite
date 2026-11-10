@@ -4,6 +4,9 @@ import legacy from "./lib/config/legacy-redirects.json";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Two root layouts (app/(es), app/(en)) give each language its own <html lang>; an unmatched
+  // URL then renders app/global-not-found.tsx, which brings its own document.
+  experimental: { globalNotFound: true },
   // Render metadata in <head> for every client. By default Next.js streams it into the body
   // on dynamic routes (/health, /en/health) for clients it does not recognize as bots, which
   // crawlers and link-preview scrapers outside its list do not read.

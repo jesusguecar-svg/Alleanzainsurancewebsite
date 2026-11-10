@@ -11,7 +11,7 @@ import { healthEmail, licensingStatement } from "@/lib/content/health";
 import { siteUrl } from "@/lib/config/site";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { organizationRef } from "@/lib/seo/schema";
-import a from "../../../agentes/agents.module.css";
+import a from "@/app/(es)/agentes/agents.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
 
