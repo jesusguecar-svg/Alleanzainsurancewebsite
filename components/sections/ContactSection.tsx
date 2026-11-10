@@ -138,7 +138,7 @@ export function ContactSection({ lines, productLine }: { lines?: readonly Produc
                 {publicContactLines.map((line) => (
                   <li key={line.id}>
                     {line.label}:{" "}
-                    <a href={line.href} {...(line.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="font-semibold underline-offset-4 transition hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">{line.display}</a>
+                    <a href={line.href} {...(line.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="inline-flex min-h-11 items-center font-semibold underline-offset-4 transition hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy">{line.display}</a>
                   </li>
                 ))}
               </ul>
@@ -199,7 +199,7 @@ export function ContactSection({ lines, productLine }: { lines?: readonly Produc
 
                 <div>
                   <div className="flex items-start gap-3">
-                    <input id={fieldId("consent")} name="consent" type="checkbox" required aria-required="true" aria-invalid={!!errors.consent} aria-describedby={errors.consent ? errorId("consent") : undefined} className="mt-1 h-5 w-5 shrink-0 accent-navy" />
+                    <input id={fieldId("consent")} name="consent" type="checkbox" required aria-required="true" aria-invalid={!!errors.consent} aria-describedby={errors.consent ? errorId("consent") : undefined} className="mt-0.5 h-6 w-6 shrink-0 accent-navy" />
                     <label htmlFor={fieldId("consent")} className="text-xs leading-relaxed text-navy/65">{consentText}</label>
                   </div>
                   {errors.consent && <p id={errorId("consent")} className="mt-2 text-xs font-semibold text-navy/70">{errors.consent}</p>}

@@ -183,6 +183,7 @@
 .person a,
 .name {
   display: block;
+  padding-block: 4px;
   overflow: hidden;
   color: #061633;
   font-size: 15px;
@@ -272,8 +273,8 @@
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: 1px solid #e4e7e2;
   border-radius: 50%;
   background: #fff;

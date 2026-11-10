@@ -12,6 +12,7 @@ import { CinematicHealthHero } from "./CinematicHealthHero";
 import { HealthCarrierLogos } from "./HealthCarrierLogos";
 import { HealthCredibility } from "./HealthCredibility";
 import { HealthContact } from "./HealthContact";
+import { OpenEnrollmentNotice } from "./OpenEnrollmentNotice";
 import { CompareSection, ComparisonFactors, CoverageCategories, HealthEducation, HealthFAQ, HealthFinalCTA, HealthTrust, HowAlleanzaWorks, ShoppingComparison, ShoppingPathSelector } from "./HealthPlatformSections";
 import { instagramProfileUrl } from "@/lib/config/site";
 import type { GoogleReviews } from "@/lib/google-reviews";
@@ -53,6 +54,7 @@ export default function HealthExperience({ reviews, reviewsUrl, locale = "es", g
       {menuOpen && <nav id="health-menu" className={s.mobileNav} aria-label={en ? "Mobile navigation" : "Navegación móvil"}>{[...links, ["#contacto", en ? "Talk to an advisor" : "Hablar con un asesor"]].map(([href, label]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}<ArrowUpRight size={17} aria-hidden="true" /></a>)}</nav>}
     </header>
     <main id="contenido">
+      <OpenEnrollmentNotice locale={locale} />
       <CinematicHealthHero locale={locale} onReview={() => document.getElementById("compare")?.scrollIntoView({ behavior: reduced ? "instant" : "smooth" })} onExplore={() => toContact("guidance")} />
       <CompareSection locale={locale} />
       <HealthCarrierLogos locale={locale} />
