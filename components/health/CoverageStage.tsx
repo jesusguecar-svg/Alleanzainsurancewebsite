@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties, type KeyboardEvent } from "react";
-import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { useEffect, useState, type KeyboardEvent } from "react";
+import { Check, ChevronDown } from "lucide-react";
 import { acaAgentCertification, healthServices, healthServicesEn, licensingStatement } from "@/lib/content/health";
-import p from "./platform.module.css";
+import u from "./health.module.css";
 import s from "./coverage-stage.module.css";
 
 type Locale = "es" | "en";
@@ -75,87 +75,68 @@ export function CoverageStage({ locale }: { locale: Locale }) {
   }
 
   return (
-    <section id="coberturas" className={s.stage} aria-labelledby="coverage-types-heading">
-      <div className={s.intro}>
-        <span className={p.eyebrow}>{t("DISTINTAS NECESIDADES. DISTINTOS CAMINOS.", "DIFFERENT NEEDS. DIFFERENT PATHS.")}</span>
-        <h2 id="coverage-types-heading">
-          {t("No todas las necesidades", "Different needs.")}
-          <br />
-          <em>{t("requieren la misma cobertura.", "Different coverage.")}</em>
-        </h2>
-      </div>
-      <div className={s.frame}>
-        <div className={s.photos}>
-          {plates.map((plate, index) => (
-            // Photographic plates. Labels stay in the controls, never baked into the image.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={plate.id}
-              className={s.plate}
-              src={plate.src}
-              alt={index === active ? alts[index] : ""}
-              width={2400}
-              height={1350}
-              data-active={index === active}
-              aria-hidden={index !== active}
-              style={{ "--plate-pos": plate.position } as CSSProperties}
-            />
-          ))}
-          <div className={s.scrim} />
+    <section id="coberturas" className={`${u.sec} ${u.white}`} aria-labelledby="coverage-types-heading">
+      <div className={u.wrap}>
+        <div className={s.head}>
+          <p className={u.eyebrow}>{t("Distintas necesidades, distintos caminos", "Different needs, different paths")}</p>
+          <h2 id="coverage-types-heading" className={u.h2}>
+            {t("No todas las necesidades", "Different needs")}
+            <br />
+            <span className={u.soft}>{t("requieren la misma cobertura", "Different coverage")}</span>
+          </h2>
         </div>
-        <div className={s.controls}>
-          <div className={s.chevrons}>
-            <button type="button" className={s.chevron} aria-label={t("Camino anterior", "Previous path")} onClick={() => choose(active - 1, true)}>
-              <ChevronUp size={18} aria-hidden="true" />
-            </button>
-            <button type="button" className={s.chevron} aria-label={t("Camino siguiente", "Next path")} onClick={() => choose(active + 1, true)}>
-              <ChevronDown size={18} aria-hidden="true" />
-            </button>
-          </div>
-          <div className={s.rail} role="group" aria-label={t("Tipos de cobertura", "Coverage types")}>
+        <div className={s.cov}>
+          <div className={s.list} role="group" aria-label={t("Tipos de cobertura", "Coverage types")}>
             {services.map((service, index) => {
               const open = active === index;
               return (
-                <button
-                  key={service.id}
-                  id={`coverage-${service.id}`}
-                  type="button"
-                  className={open ? s.card : s.pill}
-                  aria-expanded={open}
-                  aria-controls={`coverage-panel-${service.id}`}
-                  onClick={() => choose(index)}
-                  onKeyDown={(event) => onKey(event, index)}
-                >
-                  {open ? (
-                    <span id={`coverage-panel-${service.id}`}>
-                      <strong>{titles[index]}</strong>
-                      <span className={s.blurb}>{descriptions[index]}</span>
-                      <ul>
-                        {service.details.map((detail) => (
-                          <li key={detail}>{detail}</li>
-                        ))}
-                      </ul>
-                      {notes[index] ? <span className={s.note}>{notes[index]}</span> : null}
-                    </span>
-                  ) : (
-                    <>
-                      <span className={s.plus}>
-                        <Plus size={16} aria-hidden="true" />
-                      </span>
+                <div className={s.item} key={service.id}>
+                  <h3>
+                    <button
+                      id={`coverage-${service.id}`}
+                      type="button"
+                      className={s.tab}
+                      aria-expanded={open}
+                      aria-controls={`coverage-panel-${service.id}`}
+                      onClick={() => choose(index)}
+                      onKeyDown={(event) => onKey(event, index)}
+                    >
                       {titles[index]}
-                    </>
-                  )}
-                </button>
+                      <ChevronDown size={18} strokeWidth={1.5} aria-hidden="true" />
+                    </button>
+                  </h3>
+                  <div id={`coverage-panel-${service.id}`} className={s.panel} hidden={!open}>
+                    <p className={u.body}>{descriptions[index]}</p>
+                    <ul className={u.checks}>
+                      {service.details.map((detail) => (
+                        <li key={detail}><Check size={18} strokeWidth={1.5} aria-hidden="true" />{detail}</li>
+                      ))}
+                    </ul>
+                    {notes[index] ? <p className={u.fine}>{notes[index]}</p> : null}
+                  </div>
+                </div>
               );
             })}
           </div>
+          <figure className={s.figure}>
+            {plates.map((plate, index) => (
+              // Photographic plates. Labels stay in the controls, never baked into the image.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={plate.id}
+                src={plate.src}
+                alt={alts[index]}
+                width={2400}
+                height={1350}
+                hidden={index !== active}
+                loading={index === 0 ? "eager" : "lazy"}
+                style={{ objectPosition: plate.position }}
+              />
+            ))}
+          </figure>
+          <p className={u.sr} aria-live="polite">{titles[active]}</p>
         </div>
-        <p className={s.live} aria-live="polite">
-          {titles[active]}
-        </p>
-      </div>
-      <div className={s.legalWrap}>
-        <p className={p.legal}>
+        <p className={`${u.fine} ${s.legal}`}>
           {t(
             "Escenas ilustrativas. La cobertura complementaria no sustituye un seguro médico integral. La disponibilidad de compañías, productos y beneficios puede variar según el estado, la elegibilidad y las condiciones de cada cobertura. Este sitio no pertenece al gobierno federal ni implica su respaldo.",
             "Illustrative scenes. Supplemental coverage does not replace comprehensive health insurance. Company, product, and benefit availability may vary by state, eligibility, and coverage terms. This website is not operated or endorsed by the federal government.",

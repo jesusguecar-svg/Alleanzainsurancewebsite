@@ -1,2 +1,2 @@
-/* The health page sets this heading's type through `.page main h2`; the guide form sits outside <main>'s .page. */
-.form h2{font-family:Georgia,'Times New Roman',serif;font-weight:400;line-height:1.06;letter-spacing:-.055em}
+/* The health form carries its own type and tokens from health.module.css (.page scope). */
+.form{display:block}

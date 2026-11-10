@@ -49,11 +49,12 @@ export function credibilityContent(locale: CredibilityLocale) {
   const en = locale === "en";
   const services = en ? healthServicesEn : healthServices;
   return {
-    headlineLead: en ? "More than finding insurance." : "Más que encontrar un seguro.",
-    headlineEmphasis: en ? "Finding peace of mind." : "Encontrar tranquilidad.",
+    // Headline built only from facts already published on the page (redesign pass, 2026-11).
+    headlineLead: "Cynthia y Guillermo Villard",
+    headlineEmphasis: en ? "have guided families since 2019" : "acompañan a familias desde 2019",
     description: en
-      ? "Since 2019, Cynthia and Guillermo Villard have guided families from Carrollton, Texas, including Texas, Florida, and Utah. Personalized health-insurance guidance, in Spanish and English."
-      : "Desde 2019, Cynthia y Guillermo Villard acompañan a familias desde Carrollton, Texas, también en Florida y Utah. Orientación personalizada de seguro de salud, en español y en inglés.",
+      ? "From Carrollton, Texas, and also in Florida and Utah. Personalized health-insurance guidance, in Spanish and English."
+      : "Desde Carrollton, Texas, y también en Florida y Utah. Orientación personalizada de seguro de salud, en español y en inglés.",
     benefits: benefits[locale],
     facts: [
       {
@@ -65,7 +66,7 @@ export function credibilityContent(locale: CredibilityLocale) {
       {
         id: "categories",
         value: String(services.length),
-        label: en ? "coverage categories" : "categorías de cobertura",
+        label: en ? "Coverage categories" : "Categorías de cobertura",
         note: en ? "In the health guide. Not insurers." : "En la guía. No son aseguradoras.",
         href: "#coberturas",
         linkLabel: en ? `${services.length} coverage categories in the health guide` : `${services.length} categorías de cobertura en la guía de salud`,
@@ -73,13 +74,13 @@ export function credibilityContent(locale: CredibilityLocale) {
       {
         id: "network",
         value: "50",
-        label: en ? "states with licensed-agent service" : "estados con atención de agentes licenciados",
+        label: en ? "States with licensed-agent service" : "Estados con atención de agentes licenciados",
         note: en ? "Product availability varies by state, licensing, and eligibility." : "La disponibilidad de productos depende del estado, las licencias y la elegibilidad.",
       },
       {
         id: "bbb",
         value: "A+",
-        label: en ? "BBB rating" : "calificación BBB",
+        label: en ? "BBB rating" : "Calificación BBB",
         note: en ? "A rating, not accreditation." : "Es una calificación, no una acreditación.",
         href: bbbProfileUrl,
         external: true,

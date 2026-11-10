@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Instagram, Menu, X } from "lucide-react";
+import { ArrowRight, Instagram, Menu, X } from "lucide-react";
 import { Logo } from "../Logo";
 import { LanguageSwitch } from "../LanguageSwitch";
 import { SiteFooter } from "../layout/SiteFooter";
@@ -16,7 +16,7 @@ import { CompareSection, ComparisonFactors, CoverageCategories, HealthEducation,
 import { instagramProfileUrl } from "@/lib/config/site";
 import type { GoogleReviews } from "@/lib/google-reviews";
 import s from "./health.module.css";
-import p from "./platform.module.css";
+import { healthSerif } from "./fonts";
 
 export default function HealthExperience({ reviews, reviewsUrl, locale = "es", guides }: { reviews: GoogleReviews | null; reviewsUrl?: string; locale?: "es" | "en"; guides?: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,7 +24,8 @@ export default function HealthExperience({ reviews, reviewsUrl, locale = "es", g
   const [formState, setFormState] = useState("");
   const reduced = useReducedMotion();
   const en = locale === "en";
-  const links = [["#compare", en ? "Compare options" : "Comparar opciones"], ["#como-funciona", en ? "How it works" : "Cómo funciona"], ["#coberturas", en ? "Coverage types" : "Tipos de cobertura"], ["#presencia", en ? "Where we work" : "Dónde estamos"], ["#aprender", en ? "Learn" : "Aprender"]];
+  // "Compare options" lives in the header button, so it is not repeated as a text link.
+  const links = [["#como-funciona", en ? "How it works" : "Cómo funciona"], ["#coberturas", en ? "Coverage types" : "Tipos de cobertura"], ["#presencia", en ? "Where we work" : "Dónde estamos"], ["#aprender", en ? "Learn" : "Aprender"]];
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -40,17 +41,20 @@ export default function HealthExperience({ reviews, reviewsUrl, locale = "es", g
     section?.querySelector<HTMLInputElement>("input[name=name]")?.focus({ preventScroll: true });
   }
 
-  return <div className={`${s.page} ${p.platform}`} lang={locale}>
+  return <div className={`${s.page} ${healthSerif.variable}`} lang={locale}>
     <a className={s.skipLink} href="#contenido">{en ? "Skip to content" : "Saltar al contenido"}</a>
-    <header className={`${s.header} ${p.header}`} onKeyDown={event => { if (event.key === "Escape") { setMenuOpen(false); document.getElementById("health-menu-toggle")?.focus(); } }}>
-      <a href="/" aria-label={en ? "Alleanza Insurance Corp. — home" : "Alleanza Insurance Corp. — inicio"}><Logo width={174} /></a>
-      <a className={s.headerCategory} href={en ? "/en/health" : "/health"}>{en ? "Health" : "Salud"}</a>
-      <nav className={s.desktopNav} aria-label={en ? "Health navigation" : "Navegación de salud"}>{links.map(([href, label]) => <a key={href} href={href}>{label}</a>)}</nav>
-      <LanguageSwitch locale={locale} spanishHref="/health" englishHref="/en/health" preserveHash className={s.healthLanguage} />
-      <a className={s.headerInstagram} href={instagramProfileUrl} target="_blank" rel="noopener noreferrer" aria-label={en ? "Alleanza on Instagram" : "Alleanza en Instagram"}><Instagram size={18} aria-hidden="true" /></a>
-      <a href="#compare" className={s.headerCta} data-cta="health_header_compare" data-product-line="health">{en ? "Compare options" : "Comparar opciones"}<ArrowUpRight size={15} aria-hidden="true" /></a>
-      <button id="health-menu-toggle" type="button" className={s.menuButton} aria-label={menuOpen ? (en ? "Close menu" : "Cerrar menú") : (en ? "Open menu" : "Abrir menú")} aria-expanded={menuOpen} aria-controls="health-menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button>
-      {menuOpen && <nav id="health-menu" className={s.mobileNav} aria-label={en ? "Mobile navigation" : "Navegación móvil"}>{[...links, ["#contacto", en ? "Talk to an advisor" : "Hablar con un asesor"]].map(([href, label]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}<ArrowUpRight size={17} aria-hidden="true" /></a>)}</nav>}
+    <header className={s.header} onKeyDown={event => { if (event.key === "Escape") { setMenuOpen(false); document.getElementById("health-menu-toggle")?.focus(); } }}>
+      <div className={s.headerIn}>
+        <a className={s.logo} href="/" aria-label={en ? "Alleanza Insurance Corp. — home" : "Alleanza Insurance Corp. — inicio"}><Logo width={174} /></a>
+        <nav className={s.nav} aria-label={en ? "Health navigation" : "Navegación de salud"}>{links.map(([href, label]) => <a key={href} href={href}>{label}</a>)}</nav>
+        <div className={s.headerEnd}>
+          <LanguageSwitch locale={locale} spanishHref="/health" englishHref="/en/health" preserveHash className={s.lang} />
+          <a className={`${s.icoBtn} ${s.headerInstagram}`} href={instagramProfileUrl} target="_blank" rel="noopener noreferrer" aria-label={en ? "Alleanza on Instagram" : "Alleanza en Instagram"}><Instagram size={18} strokeWidth={1.5} aria-hidden="true" /></a>
+          <a href="#compare" className={`${s.btn} ${s.btnP} ${s.btnSm} ${s.headerCta}`} data-cta="health_header_compare" data-product-line="health">{en ? "Compare options" : "Comparar opciones"}</a>
+          <button id="health-menu-toggle" type="button" className={`${s.icoBtn} ${s.menuButton}`} aria-label={menuOpen ? (en ? "Close menu" : "Cerrar menú") : (en ? "Open menu" : "Abrir menú")} aria-expanded={menuOpen} aria-controls="health-menu" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X size={18} strokeWidth={1.5} aria-hidden="true" /> : <Menu size={18} strokeWidth={1.5} aria-hidden="true" />}</button>
+        </div>
+      </div>
+      {menuOpen && <nav id="health-menu" className={s.mobileNav} aria-label={en ? "Mobile navigation" : "Navegación móvil"}>{[["#compare", en ? "Compare options" : "Comparar opciones"], ...links, ["#contacto", en ? "Talk to an advisor" : "Hablar con un asesor"]].map(([href, label]) => <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}<ArrowRight size={18} strokeWidth={1.5} aria-hidden="true" /></a>)}<a href={en ? "/health" : "/en/health"} lang={en ? "es" : "en"} hrefLang={en ? "es" : "en"} onClick={() => setMenuOpen(false)}>{en ? "Español" : "English"}<ArrowRight size={18} strokeWidth={1.5} aria-hidden="true" /></a></nav>}
     </header>
     <main id="contenido">
       <CinematicHealthHero locale={locale} onReview={() => document.getElementById("compare")?.scrollIntoView({ behavior: reduced ? "instant" : "smooth" })} onExplore={() => toContact("guidance")} />
@@ -65,7 +69,7 @@ export default function HealthExperience({ reviews, reviewsUrl, locale = "es", g
       <HealthTrust locale={locale} reviews={reviews} reviewsUrl={reviewsUrl} />
       <ShoppingComparison locale={locale} />
       <HealthFAQ locale={locale} />
-      <div className={p.advisor}><HealthContact locale={locale} selectedState={formState} onState={setFormState} selectedService={formService} onService={setFormService} /></div>
+      <HealthContact locale={locale} selectedState={formState} onState={setFormState} selectedService={formService} onService={setFormService} />
       <HealthEducation locale={locale} />
       {guides}
       <HealthFinalCTA locale={locale} />
