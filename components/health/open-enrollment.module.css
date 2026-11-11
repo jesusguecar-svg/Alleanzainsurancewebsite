@@ -1,0 +1,22 @@
+/* Open Enrollment notice: sits between the header and the hero, in the hero's navy so the two read as one. */
+.notice{--gold:var(--alleanza-cream);position:relative;z-index:5;background:var(--alleanza-navy-deep);color:var(--alleanza-white);border-bottom:1px solid #dceef21f}
+.inner{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"copy actions" "note actions";align-items:center;column-gap:32px;max-width:1420px;margin:0 auto;padding:22px 6%}
+.copy{grid-area:copy;min-width:0;max-width:720px}
+.message{margin:6px 0 0!important;font:400 clamp(20px,1.9vw,28px)/1.25 var(--alleanza-serif);letter-spacing:-.02em;color:var(--alleanza-white);text-wrap:balance}
+.note{grid-area:note;max-width:720px;margin:8px 0 0!important;font-size:12px;line-height:1.6;color:#dceef2c2}
+.actions{grid-area:actions;display:flex;align-items:center;gap:10px}
+.advisor{text-decoration:none;white-space:nowrap}
+.direct{justify-content:center;text-decoration:none;white-space:nowrap;min-height:48px}
+.number{margin-left:2px}
+.notice a:focus-visible{outline:2px solid var(--alleanza-blue-soft);outline-offset:4px}
+@media(max-width:1100px){.number{display:none}}
+/* Tablets and phones: deadline, then the three contact options, then the fine print. */
+@media(max-width:900px){.inner{grid-template-columns:1fr;grid-template-areas:"copy" "actions" "note";row-gap:14px}.note{margin:0!important}}
+@media(max-width:767px){
+  .inner{padding:16px 16px 18px}
+  .message{font-size:20px;line-height:1.25}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .advisor{grid-column:1 / -1;min-height:48px;padding:12px 16px}
+  .direct{padding:10px 12px;gap:8px;font-size:12px}
+}
+@media(max-width:374px){.message{font-size:18px}}

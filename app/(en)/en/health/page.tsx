@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HealthGuides } from "@/components/guides/HealthGuides";
 import HealthExperience from "@/components/health/HealthExperience";
+import { serverOpenEnrollmentPhase } from "@/lib/content/open-enrollment";
 import { getGoogleReviews } from "@/lib/google-reviews";
 import { siteUrl } from "@/lib/config/site";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -26,5 +27,5 @@ export default async function EnglishHealthPage() {
     "@context": "https://schema.org", "@type": "WebPage", "@id": `${siteUrl}/en/health#webpage`,
     url: `${siteUrl}/en/health`, inLanguage: "en", about: organizationRef,
   };
-  return <><JsonLd data={structuredData} /><HealthExperience locale="en" reviews={reviews} reviewsUrl={process.env.GOOGLE_REVIEWS_URL} guides={<HealthGuides locale="en" />} /></>;
+  return <><JsonLd data={structuredData} /><HealthExperience locale="en" openEnrollmentPhase={serverOpenEnrollmentPhase()} reviews={reviews} reviewsUrl={process.env.GOOGLE_REVIEWS_URL} guides={<HealthGuides locale="en" />} /></>;
 }

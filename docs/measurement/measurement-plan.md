@@ -111,7 +111,7 @@ Name, email, phone, SSN/ITIN, date of birth, address, ZIP tied to a person, inco
 | Page | `cta_name` (location) |
 |---|---|
 | Home gallery | `home_health`, `home_life`, `home_employers`, `home_academy`, `home_work` (`home_gallery_card`, `home_gallery_cta`). P&C ("Próximamente") not tracked. Rotating/selecting cards is not tracked. |
-| /health, /en/health | `health_header_compare`, `health_hero_compare`, `health_compare_options`, `health_talk_advisor`, `health_path_explore`, `health_path_advisor`, `health_factor_compare`, `health_compare_advisor` + form, phone, WhatsApp |
+| /health, /en/health | `health_oe_advisor` (Open Enrollment notice above the hero; its phone and WhatsApp links report `cta_location=oe_notice`), `health_header_compare`, `health_hero_compare`, `health_compare_options`, `health_talk_advisor`, `health_path_explore`, `health_path_advisor`, `health_factor_compare`, `health_compare_advisor` + form, phone, WhatsApp |
 | /contacto | form, phone, WhatsApp, `header_cta` |
 | /life | `life_talk_advisor`, `header_cta`, form |
 | /employers | `employers_explore_benefits`, `header_cta`, form (`form_type=contact`, `product_line=employer`) |

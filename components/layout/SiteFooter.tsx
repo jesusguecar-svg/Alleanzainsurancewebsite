@@ -44,7 +44,7 @@ export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
             <ul className="mt-4 flex flex-col gap-1.5 text-xs text-white/55">
               {publicContactLines.map((line) => (
                 <li key={line.id}>
-                  <a href={line.href} {...(line.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="underline-offset-4 transition hover:text-white hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan">
+                  <a href={line.href} {...(line.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="inline-flex min-h-11 items-center underline-offset-4 transition hover:text-white hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan">
                     {line.label}: {line.display}
                   </a>
                 </li>
@@ -59,7 +59,7 @@ export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
                 <li key={route.id}>
                   <a
                     href={route.href}
-                    className="transition hover:text-white"
+                    className="inline-flex min-h-6 items-center transition hover:text-white"
                     {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   >
                     {route.label}{route.external ? " ↗" : ""}
@@ -68,7 +68,7 @@ export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
               ))}
               {companyRoutes.map((route) => (
                 <li key={route.href}>
-                  <a href={route.href} className="transition hover:text-white">
+                  <a href={route.href} className="inline-flex min-h-6 items-center transition hover:text-white">
                     {route.label}
                   </a>
                 </li>
@@ -81,7 +81,7 @@ export function SiteFooter({ editorial = false }: { editorial?: boolean }) {
           <p>© {new Date().getFullYear()} Alleanza Insurance Corp.</p>
           <div className="flex flex-wrap gap-6">
             {legalRoutes.map((route) => (
-              <a key={route.href} href={route.href} className="transition hover:text-white">
+              <a key={route.href} href={route.href} className="inline-flex min-h-6 items-center transition hover:text-white">
                 {route.label}
               </a>
             ))}

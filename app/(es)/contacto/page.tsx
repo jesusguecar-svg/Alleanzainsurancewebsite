@@ -33,7 +33,7 @@ export default function Page() {
         </p>
         <p className="mt-5 flex items-center gap-2 text-sm font-semibold">
           <Mail aria-hidden="true" size={16} />
-          <a href={`mailto:${healthEmail}`} className="underline-offset-4 hover:underline">{healthEmail}</a>
+          <a href={`mailto:${healthEmail}`} className="inline-flex min-h-11 items-center underline-offset-4 hover:underline">{healthEmail}</a>
         </p>
       </section>
       <ContactSection />

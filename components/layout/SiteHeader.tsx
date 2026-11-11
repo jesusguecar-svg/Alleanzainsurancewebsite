@@ -63,7 +63,7 @@ export function SiteHeader({
           aria-expanded={open}
           aria-controls="menu-movil"
           aria-label={locale === "en" ? "Open menu" : "Abrir menú"}
-          className="lg:hidden"
+          className="grid min-h-11 min-w-11 place-items-center lg:hidden"
         >
           <Menu aria-hidden="true" />
         </button>
