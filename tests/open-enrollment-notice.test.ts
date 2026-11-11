@@ -20,8 +20,8 @@ test("each phase states the right deadline and start date in both languages, wit
   assert.match(en.january.message, /by December 15.*January 1/);
   assert.match(es.february.message, /a más tardar el 15 de enero.*1 de febrero/);
   assert.match(en.february.message, /by January 15.*February 1/);
-  for (const copy of [es.january, es.february]) assert.match(copy.note, /CuidadoDeSalud\.gov.*primera prima.*mercado propio/);
-  for (const copy of [en.january, en.february]) assert.match(copy.note, /HealthCare\.gov.*first premium.*own marketplace/);
+  for (const copy of [es.january, es.february]) assert.match(copy.note, /CuidadoDeSalud\.gov.*primera prima.*propio mercado, confirma las fechas/);
+  for (const copy of [en.january, en.february]) assert.match(copy.note, /HealthCare\.gov.*first premium.*own marketplace, confirm the dates/);
 });
 
 test("the notice promises no savings, prices or approval", () => {
