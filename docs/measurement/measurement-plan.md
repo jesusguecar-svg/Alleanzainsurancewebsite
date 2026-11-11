@@ -30,7 +30,7 @@ session → generate_lead → working_lead → qualify_lead → quote_start/quot
 ## 3. Architecture
 
 ```
-app/layout.tsx
+components/layout/RootDocument.tsx  (used by app/(es)/layout.tsx and app/(en)/layout.tsx)
  ├─ <head> inline script: Consent Mode v2 defaults (all denied) — runs before anything else
  ├─ <AnalyticsRuntime googleTags={VERCEL_ENV === "production"}>
  │    ├─ initConsent()        lib/analytics/consent.ts   stored choice → gtag consent update → load GTM

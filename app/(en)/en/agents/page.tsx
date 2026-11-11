@@ -6,7 +6,7 @@ import { Logo } from "@/components/Logo";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { EnglishSiteFooter } from "@/components/layout/EnglishSiteFooter";
 import { agents } from "@/lib/content/agents";
-import a from "../../agentes/agents.module.css";
+import a from "@/app/(es)/agentes/agents.module.css";
 
 export const metadata: Metadata = {
   title: "Insurance Agent Directory | Alleanza Insurance Corp.",
