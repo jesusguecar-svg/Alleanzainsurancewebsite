@@ -164,6 +164,10 @@ const guide: Guide = {
           },
           {
             "type": "paragraph",
+            "text": "La inscripción abierta en HealthCare.gov va del 1 de noviembre de 2026 al 15 de enero de 2027, y hay que elegir plan a más tardar el 15 de diciembre para tener cobertura desde el 1 de enero. [Hoja informativa de CMS 2027](https://www.cms.gov/newsroom/fact-sheets/plan-year-2027-marketplace-plans-prices-fact-sheet-0); [fechas en HealthCare.gov](https://www.healthcare.gov/quick-guide/dates-and-deadlines/)"
+          },
+          {
+            "type": "paragraph",
             "text": "Un agente con licencia de Alleanza puede comparar contigo los planes del condado de Dallas. Alleanza es una agencia privada, no el gobierno. [Habla con un agente](/agentes) · [Seguro médico](/health)"
           },
           {
@@ -229,6 +233,16 @@ const guide: Guide = {
         "label": "HealthCare.gov: lista para la solicitud del Marketplace (PDF, en inglés)",
         "url": "https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf",
         "accessed": "2026-11-13"
+      },
+      {
+        "label": "CMS: hoja informativa de planes y precios del Marketplace 2027 (en inglés)",
+        "url": "https://www.cms.gov/newsroom/fact-sheets/plan-year-2027-marketplace-plans-prices-fact-sheet-0",
+        "accessed": "2026-11-13"
+      },
+      {
+        "label": "HealthCare.gov: fechas y plazos (en inglés)",
+        "url": "https://www.healthcare.gov/quick-guide/dates-and-deadlines/",
+        "accessed": "2026-11-12"
       }
     ]
   },
@@ -389,6 +403,10 @@ const guide: Guide = {
           },
           {
             "type": "paragraph",
+            "text": "Open enrollment on HealthCare.gov runs from November 1, 2026 to January 15, 2027, and you need to pick a plan by December 15 for coverage that starts January 1. [CMS PY2027 fact sheet](https://www.cms.gov/newsroom/fact-sheets/plan-year-2027-marketplace-plans-prices-fact-sheet-0); [HealthCare.gov dates and deadlines](https://www.healthcare.gov/quick-guide/dates-and-deadlines/)"
+          },
+          {
+            "type": "paragraph",
             "text": "A licensed Alleanza agent can compare Dallas County plans with you. Alleanza is a private agency, not the government. [Talk to an agent](/en/agents) · [Health insurance](/en/health)"
           },
           {
@@ -454,6 +472,16 @@ const guide: Guide = {
         "label": "HealthCare.gov: My Marketplace Application Checklist (PDF)",
         "url": "https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf",
         "accessed": "2026-11-13"
+      },
+      {
+        "label": "CMS: Plan Year 2027 Marketplace Plans and Prices Fact Sheet",
+        "url": "https://www.cms.gov/newsroom/fact-sheets/plan-year-2027-marketplace-plans-prices-fact-sheet-0",
+        "accessed": "2026-11-13"
+      },
+      {
+        "label": "HealthCare.gov: Dates and deadlines",
+        "url": "https://www.healthcare.gov/quick-guide/dates-and-deadlines/",
+        "accessed": "2026-11-12"
       }
     ]
   },

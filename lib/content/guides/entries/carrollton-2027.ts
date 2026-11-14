@@ -19,6 +19,10 @@ const guide: Guide = {
         "heading": "Opciones para 2027 por condado",
         "blocks": [
           {
+            "type": "paragraph",
+            "text": "Carrollton cruza tres condados (Dallas, Denton y Collin), y sus partes de Dallas y Collin están en el área de tarifas 8, mientras que la de Denton está en el área 25. [Censo 2020: ciudades por condado](https://www2.census.gov/geo/docs/reference/codes2020/place_by_cou/st48_tx_place_by_county2020.txt); [áreas de tarifas de Texas de CMS](https://www.cms.gov/cciio/programs-and-initiatives/health-insurance-market-reforms/tx-gra)"
+          },
+          {
             "type": "table",
             "table": {
               "caption": "Opciones del Marketplace 2027 según la parte de Carrollton",
@@ -122,6 +126,16 @@ const guide: Guide = {
     ],
     "sources": [
       {
+        "label": "Oficina del Censo: ciudades de Texas por condado, 2020 (en inglés)",
+        "url": "https://www2.census.gov/geo/docs/reference/codes2020/place_by_cou/st48_tx_place_by_county2020.txt",
+        "accessed": "2026-11-13"
+      },
+      {
+        "label": "CMS: áreas geográficas de tarifas de Texas (en inglés)",
+        "url": "https://www.cms.gov/cciio/programs-and-initiatives/health-insurance-market-reforms/tx-gra",
+        "accessed": "2026-11-13"
+      },
+      {
         "label": "CMS: archivos públicos del mercado (datos de 2027, en inglés)",
         "url": "https://www.cms.gov/marketplace/resources/data/public-use-files",
         "accessed": "2026-11-12"
@@ -159,6 +173,10 @@ const guide: Guide = {
       {
         "heading": "2027 options by county",
         "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Carrollton crosses three counties (Dallas, Denton and Collin), and its Dallas and Collin parts are in Rating Area 8 while the Denton part is in Rating Area 25. [Census 2020 place-by-county](https://www2.census.gov/geo/docs/reference/codes2020/place_by_cou/st48_tx_place_by_county2020.txt); [CMS Texas rating areas](https://www.cms.gov/cciio/programs-and-initiatives/health-insurance-market-reforms/tx-gra)"
+          },
           {
             "type": "table",
             "table": {
@@ -262,6 +280,16 @@ const guide: Guide = {
       }
     ],
     "sources": [
+      {
+        "label": "U.S. Census Bureau: 2020 Texas places by county",
+        "url": "https://www2.census.gov/geo/docs/reference/codes2020/place_by_cou/st48_tx_place_by_county2020.txt",
+        "accessed": "2026-11-13"
+      },
+      {
+        "label": "CMS: Texas geographic rating areas",
+        "url": "https://www.cms.gov/cciio/programs-and-initiatives/health-insurance-market-reforms/tx-gra",
+        "accessed": "2026-11-13"
+      },
       {
         "label": "CMS: Exchange Public Use Files (plan year 2027 data)",
         "url": "https://www.cms.gov/marketplace/resources/data/public-use-files",
