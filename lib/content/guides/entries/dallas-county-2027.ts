@@ -84,7 +84,7 @@ const guide: Guide = {
             "type": "list",
             "items": [
               "**Nueva:** Harbor Health aparece en el condado de Dallas en los archivos de 2027. No estaba en los de 2026.",
-              "**Planes reasignados:** el cruce de planes de CMS para 2027 pasa los planes de 2026 de **Cigna Healthcare** y **Baylor Scott & White Health Plan** en el condado a planes de Oscar, Blue Cross and Blue Shield of Texas y Ambetter. CMS define este código como \"cruce a otra aseguradora, determinado por CMS\". [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf)",
+              "**No ofrecen planes del Marketplace aquí en 2027:** Cigna Healthcare y Baylor Scott & White Health Plan no ofrecen planes del Marketplace en el condado de Dallas para 2027. CMS asignó a sus afiliados de 2026 a planes de Oscar, Blue Cross and Blue Shield of Texas y Ambetter. [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf)",
               "**Si tenías uno de esos planes,** no te quedes con la renovación automática. Compara redes y medicamentos antes del 15 de diciembre."
             ]
           }
@@ -309,7 +309,7 @@ const guide: Guide = {
             "type": "list",
             "items": [
               "**New:** Harbor Health appears in Dallas County in the 2027 files. It was not in the 2026 files.",
-              "**Mapped to other insurers:** CMS's 2027 crosswalk maps 2026 Dallas County plans from **Cigna Healthcare** and **Baylor Scott & White Health Plan** to plans from Oscar, Blue Cross and Blue Shield of Texas, and Ambetter. CMS defines this code as a \"crosswalk to a different issuer; crosswalk determined by CMS.\" [Crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf)",
+              "**Not offering Marketplace plans here in 2027:** Cigna Healthcare and Baylor Scott & White Health Plan are not offering Marketplace plans in Dallas County for 2027. CMS has assigned their 2026 members to plans from Oscar, Blue Cross and Blue Shield of Texas, and Ambetter. [Crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf)",
               "**If you had one of those plans,** don't rely on automatic re-enrollment. Compare networks and drug lists before December 15."
             ]
           }

@@ -127,7 +127,7 @@ const guide: Guide = {
         "blocks": [
           {
             "type": "paragraph",
-            "text": "Los archivos de CMS para 2027 muestran 8 marcas de aseguradoras y 137 planes en el condado de Dallas, 7 marcas y 133 planes en Tarrant, 7 y 111 en Collin, y 6 y 121 en Denton. Harbor Health aparece por primera vez en Dallas y Collin. CMS asignó a otras aseguradoras para 2027 los planes de 2026 de Cigna, de Baylor Scott & White Health Plan y, en Collin y Denton, de Molina. Si tenías uno de esos planes, lee tu aviso de renovación y compara antes del 15 de diciembre. Detalles del condado: [condado de Dallas](/health/seguro-medico-condado-dallas-2027). [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "text": "Los archivos de CMS para 2027 muestran 8 marcas de aseguradoras y 137 planes en el condado de Dallas, 7 marcas y 133 planes en Tarrant, 7 y 111 en Collin, y 6 y 121 en Denton. Harbor Health aparece por primera vez en Dallas y Collin. Cigna no ofrece planes del Marketplace en los condados de Dallas, Tarrant ni Collin para 2027. Baylor Scott & White Health Plan no ofrece planes del Marketplace en Dallas ni Collin, y Molina no ofrece planes del Marketplace en Collin ni Denton; Molina sigue ofreciendo planes en Dallas y Tarrant. CMS asignó a los afiliados a planes de otras aseguradoras. Si tenías uno de esos planes, lee tu aviso de renovación y compara antes del 15 de diciembre. Detalles del condado: [condado de Dallas](/health/seguro-medico-condado-dallas-2027). [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           }
         ]
       },
@@ -423,7 +423,7 @@ const guide: Guide = {
         "blocks": [
           {
             "type": "paragraph",
-            "text": "CMS's 2027 plan files list 8 insurance brands and 137 plans in Dallas County, 7 brands and 133 plans in Tarrant, 7 and 111 in Collin, and 6 and 121 in Denton. Harbor Health appears in Dallas and Collin for the first time. 2026 plans from Cigna, Baylor Scott & White Health Plan and, in Collin and Denton, Molina were mapped by CMS to other insurers for 2027. If you had one of those plans, read your renewal notice and compare options before December 15. County details: [Dallas County](/en/health/dallas-county-health-insurance-2027). [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "text": "CMS's 2027 plan files list 8 insurance brands and 137 plans in Dallas County, 7 brands and 133 plans in Tarrant, 7 and 111 in Collin, and 6 and 121 in Denton. Harbor Health appears in Dallas and Collin for the first time. Cigna is not offering Marketplace plans in Dallas, Tarrant or Collin counties for 2027. Baylor Scott & White Health Plan is not offering Marketplace plans in Dallas or Collin counties, and Molina is not offering Marketplace plans in Collin or Denton counties; Molina is still offered in Dallas and Tarrant counties. CMS has assigned affected members to plans from other insurers. If you had one of those plans, read your renewal notice and compare options before December 15. County details: [Dallas County](/en/health/dallas-county-health-insurance-2027). [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           }
         ]
       },

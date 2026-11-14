@@ -62,11 +62,11 @@ const guide: Guide = {
           {
             "type": "list",
             "items": [
-              "**Molina Healthcare**: solo aparece en la parte del condado de Dallas. CMS pasó a otras aseguradoras sus planes de 2026 en Collin y Denton.",
+              "**Molina Healthcare**: solo ofrece planes del Marketplace en la parte del condado de Dallas. No ofrece planes del Marketplace en las partes de Collin ni Denton para 2027.",
               "**Harbor Health**: aparece en las partes de Dallas y Collin, no en Denton. Es nueva para 2027.",
               "**Oscar**: 28 planes HMO y EPO en las partes de Dallas y Denton; 14 planes solo EPO en la parte de Collin.",
               "**Ambetter, Blue Cross and Blue Shield of Texas, UnitedHealthcare, WellPoint e Imperial**: aparecen en las tres partes.",
-              "CMS pasó a otras aseguradoras para 2027 los planes de 2026 de **Cigna** (en los tres condados) y de **Baylor Scott & White** (en Dallas y Collin). [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf)"
+              "**Cigna** no ofrece planes del Marketplace en ninguna parte de Carrollton para 2027, y **Baylor Scott & White Health Plan** no los ofrece en las partes de Dallas ni Collin. CMS asignó a sus afiliados de 2026 a planes de otras aseguradoras. [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf)"
             ]
           },
           {
@@ -203,11 +203,11 @@ const guide: Guide = {
           {
             "type": "list",
             "items": [
-              "**Molina Healthcare**: listed only for the Dallas County part. CMS mapped Molina's 2026 plans in Collin and Denton counties to other insurers.",
+              "**Molina Healthcare**: offers Marketplace plans only in the Dallas County part. It is not offering Marketplace plans in the Collin or Denton County parts for 2027.",
               "**Harbor Health**: listed for the Dallas and Collin County parts, not Denton. It is new for 2027.",
               "**Oscar**: 28 HMO and EPO plans in the Dallas and Denton parts; 14 EPO-only plans in the Collin part.",
               "**Ambetter, Blue Cross and Blue Shield of Texas, UnitedHealthcare, WellPoint and Imperial**: listed in all three parts.",
-              "2026 **Cigna** plans (all three counties) and **Baylor Scott & White** plans (Dallas and Collin) were mapped by CMS to other insurers for 2027. [Crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf)"
+              "**Cigna** is not offering Marketplace plans in any part of Carrollton for 2027, and **Baylor Scott & White Health Plan** is not offering them in the Dallas or Collin County parts. CMS has assigned their 2026 members to plans from other insurers. [Crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf)"
             ]
           },
           {

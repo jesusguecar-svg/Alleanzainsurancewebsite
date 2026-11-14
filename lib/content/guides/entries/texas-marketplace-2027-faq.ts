@@ -156,17 +156,17 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "¿Cigna ofrece planes del Marketplace en Dallas–Fort Worth para 2027?",
-            "answer": "Cigna no aparece en los archivos de CMS para 2027 en los condados de Dallas, Tarrant ni Collin. El cruce de planes de CMS pasa los planes de Cigna de 2026 en esos condados a planes de Oscar, Blue Cross and Blue Shield of Texas o Ambetter, con un código que significa \"cruce a otra aseguradora, determinado por CMS\". Revisa tu aviso de renovación y compara antes del 15 de diciembre. Fuente: [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "answer": "No. Cigna no ofrece planes del Marketplace en los condados de Dallas, Tarrant ni Collin para 2027. CMS asignó a los afiliados de Cigna de 2026 en esos condados a planes de Oscar, Blue Cross and Blue Shield of Texas o Ambetter. Si tenías Cigna, lee tu aviso de renovación y compara redes y medicamentos antes del 15 de diciembre. Fuente: [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "qa",
             "question": "¿Qué pasó con los planes de Baylor Scott & White en DFW?",
-            "answer": "Baylor Scott & White Health Plan no aparece en los archivos de CMS para 2027 en los condados de Dallas ni Collin. CMS pasó sus planes de 2026 en esos condados a planes de Oscar, Blue Cross and Blue Shield of Texas o Ambetter. Si tenías uno de esos planes, revisa los médicos y medicamentos del plan nuevo antes del 15 de diciembre. Fuente: [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "answer": "Baylor Scott & White Health Plan no ofrece planes del Marketplace en los condados de Dallas ni Collin para 2027. CMS asignó a sus afiliados del Marketplace de 2026 a planes de Oscar, Blue Cross and Blue Shield of Texas o Ambetter. Esto se refiere solo a planes del Marketplace. Revisa los médicos y medicamentos del plan nuevo antes del 15 de diciembre. Fuente: [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "qa",
             "question": "¿Molina sigue disponible en DFW para 2027?",
-            "answer": "Depende de tu condado. Los archivos de CMS para 2027 incluyen a Molina en Dallas y Tarrant, con 12 planes en cada uno, pero no en Collin ni en Denton. Ahí, CMS pasa los planes de Molina de 2026 a otras aseguradoras. Molina también aparece en Rockwall, Ellis, Parker, Johnson y Wise. Confírmalo en HealthCare.gov con tu dirección. Fuente: [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "answer": "Depende de tu condado. Molina ofrece planes del Marketplace 2027 en Dallas y Tarrant, con 12 planes en cada uno, y también aparece en Rockwall, Ellis, Parker, Johnson y Wise. Molina no ofrece planes del Marketplace en Collin ni Denton para 2027; CMS asignó a esos afiliados a otras aseguradoras. Confírmalo en HealthCare.gov con tu dirección. Fuente: [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "qa",
@@ -261,7 +261,7 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "¿Cigna se va de Texas en 2027?",
-            "answer": "Cigna no aparece en ninguna parte de los archivos del Marketplace de CMS para Texas en 2027. El cruce de planes de CMS pasa los planes de Cigna de 2026 en Texas a planes de otras aseguradoras, como Blue Cross and Blue Shield of Texas, WellPoint, Oscar, Ambetter y Molina, con un código que significa \"cruce a otra aseguradora, determinado por CMS\". Revisa tu aviso de renovación y compara antes del 15 de diciembre. Fuente: [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "answer": "Cigna no ofrece planes del Marketplace en ninguna parte de Texas para 2027. CMS asignó a los afiliados de Cigna del Marketplace de 2026 en Texas a planes de otras aseguradoras, como Blue Cross and Blue Shield of Texas, WellPoint, Oscar, Ambetter y Molina. Esto aplica solo a planes del Marketplace. Revisa tu aviso de renovación y compara antes del 15 de diciembre. Fuente: [Diccionario de datos de CMS](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "paragraph",
@@ -565,17 +565,17 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "Is Cigna offering Marketplace plans in Dallas–Fort Worth for 2027?",
-            "answer": "Cigna is not listed in CMS's 2027 plan files for Dallas, Tarrant or Collin counties. CMS's crosswalk maps 2026 Cigna plans in those counties to Oscar, Blue Cross and Blue Shield of Texas or Ambetter plans, under a code meaning \"crosswalk to a different issuer; determined by CMS.\" Check your renewal notice and compare before December 15. Source: [CMS crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "answer": "No. Cigna is not offering Marketplace plans in Dallas, Tarrant or Collin counties for 2027. CMS has assigned 2026 Cigna members in those counties to plans from Oscar, Blue Cross and Blue Shield of Texas or Ambetter. If you had Cigna, read your renewal notice and compare networks and drug lists before December 15. Source: [CMS crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "qa",
             "question": "What happened to Baylor Scott & White Marketplace plans in DFW?",
-            "answer": "Baylor Scott & White Health Plan is not listed in CMS's 2027 files for Dallas or Collin counties. Its 2026 plans there are crosswalked by CMS to plans from Oscar, Blue Cross and Blue Shield of Texas or Ambetter. If you had one of these plans, review the replacement plan's doctors and drug list before December 15. Source: [CMS crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "answer": "Baylor Scott & White Health Plan is not offering Marketplace plans in Dallas or Collin counties for 2027. CMS has assigned its 2026 Marketplace members there to plans from Oscar, Blue Cross and Blue Shield of Texas or Ambetter. This is about Marketplace insurance plans only. Review the new plan's doctors and drug list before December 15. Source: [CMS crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "qa",
             "question": "Is Molina still available in DFW for 2027?",
-            "answer": "It depends on your county. CMS's 2027 files list Molina in Dallas and Tarrant counties, with 12 plans each, but not in Collin or Denton. There, CMS crosswalks 2026 Molina plans to other insurers. Molina is also listed in Rockwall, Ellis, Parker, Johnson and Wise counties. Confirm on HealthCare.gov with your address. Source: [CMS Exchange PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "answer": "It depends on your county. Molina offers 2027 Marketplace plans in Dallas and Tarrant counties, with 12 plans each, and is also listed in Rockwall, Ellis, Parker, Johnson and Wise counties. Molina is not offering Marketplace plans in Collin or Denton counties for 2027; CMS has assigned those members to other insurers. Confirm on HealthCare.gov with your address. Source: [CMS Exchange PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "qa",
@@ -670,7 +670,7 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "Is Cigna leaving Texas in 2027?",
-            "answer": "Cigna does not appear anywhere in CMS's 2027 Texas Marketplace plan files. CMS's crosswalk maps Cigna's 2026 Texas Marketplace plans to plans from other insurers, including Blue Cross and Blue Shield of Texas, WellPoint, Oscar, Ambetter and Molina, under a code meaning \"crosswalk to a different issuer; determined by CMS.\" Check your renewal notice and compare plans by December 15. Source: [CMS crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "answer": "Cigna is not offering Marketplace plans anywhere in Texas for 2027. CMS has assigned Cigna's 2026 Texas Marketplace members to plans from other insurers, including Blue Cross and Blue Shield of Texas, WellPoint, Oscar, Ambetter and Molina. This applies to Marketplace plans only. Check your renewal notice and compare plans by December 15. Source: [CMS crosswalk data dictionary](https://www.cms.gov/files/document/plan-id-crosswalk-datadictionary-py27.pdf); [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "paragraph",
