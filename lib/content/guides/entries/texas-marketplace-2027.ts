@@ -81,7 +81,7 @@ const guide: Guide = {
           },
           {
             "type": "paragraph",
-            "text": "**Rango de ingresos.** Según HealthCare.gov, si los ingresos de tu hogar están entre el **100% y el 400% del nivel federal de pobreza**, calificas para el crédito fiscal en todos los estados. Para la cobertura de 2027 se usan las cifras de pobreza de 2026: **$15,960 para una persona y $33,000 para una familia de cuatro**, más $5,680 por cada persona adicional. [Nivel federal de pobreza](https://www.healthcare.gov/glossary/federal-poverty-level-fpl/) Con esa tabla, el 400% sale en unos $63,840 para una persona y $132,000 para una familia de cuatro."
+            "text": "**Rango de ingresos.** Según HealthCare.gov, si los ingresos de tu hogar están entre el **100% y el 400% del nivel federal de pobreza**, calificas para el crédito fiscal en todos los estados. Para la cobertura de 2027 se usan las cifras de pobreza de 2026: **$15,960 para una persona y $33,000 para una familia de cuatro**, más $5,680 por cada persona adicional. [Nivel federal de pobreza](https://www.healthcare.gov/glossary/federal-poverty-level-fpl/)"
           },
           {
             "type": "paragraph",
@@ -377,7 +377,7 @@ const guide: Guide = {
           },
           {
             "type": "paragraph",
-            "text": "**Income range.** HealthCare.gov states that household income between **100% and 400% of the federal poverty level** qualifies for the premium tax credit in all states. For 2027 coverage, savings are measured against the 2026 poverty guidelines: **$15,960 for one person and $33,000 for a family of four**, plus $5,680 for each additional person. [Federal poverty level](https://www.healthcare.gov/glossary/federal-poverty-level-fpl/) By that table, 400% works out to about $63,840 for one person and $132,000 for a family of four."
+            "text": "**Income range.** HealthCare.gov states that household income between **100% and 400% of the federal poverty level** qualifies for the premium tax credit in all states. For 2027 coverage, savings are measured against the 2026 poverty guidelines: **$15,960 for one person and $33,000 for a family of four**, plus $5,680 for each additional person. [Federal poverty level](https://www.healthcare.gov/glossary/federal-poverty-level-fpl/)"
           },
           {
             "type": "paragraph",
