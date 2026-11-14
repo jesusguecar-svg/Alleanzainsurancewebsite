@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { allGuides } from "@/lib/content/guides";
-import { links, parseInline, plainText } from "@/lib/content/guides/inline";
+import { internalPath, isInternalHref, linkableSiteRoutes, links, parseInline, plainText, renderedTokens } from "@/lib/content/guides/inline";
 import type { Guide } from "@/lib/content/guides/types";
-import { forbiddenMarkers, guidePublicationBlockers, inlineStrings, isPublishableGuide, unpublishedTargetErrors, validateGuides } from "@/lib/content/guides/validate";
+import { forbiddenMarkers, guidePathFor, guidePublicationBlockers, hiddenGuidePathsFor, inlineStrings, isPublishableGuide, shownParentOf, shownRelatedOf, validateGuides } from "@/lib/content/guides/validate";
+import { guideBreadcrumbSchema } from "@/lib/seo/guides";
+import { siteUrl } from "@/lib/config/site";
 
 const clone = (guide: Guide): Guide => JSON.parse(JSON.stringify(guide));
 
@@ -75,12 +77,63 @@ test("the validator rejects draft markers, long titles, bad links and bad parent
   assert.ok(validateGuides([...allGuides.filter((g) => g.id !== base.id), badParent]).some((e) => e.includes("parent guide nope does not exist")));
 });
 
-test("a published guide may not link to, or sit under, an unpublished guide", () => {
-  const carrollton = allGuides.find((guide) => guide.id === "carrollton-2027")!;
-  const errors = unpublishedTargetErrors([carrollton], allGuides);
-  assert.ok(errors.some((e) => e.includes("parent texas-marketplace-2027 is not published")));
-  assert.ok(errors.some((e) => e.includes("links to unpublished guide")));
-  assert.deepEqual(unpublishedTargetErrors(allGuides, allGuides), []);
+/** Every non-empty set of approved guides (15 for 4 guides). */
+const approvalSets = (): Guide[][] =>
+  Array.from({ length: 2 ** allGuides.length - 1 }, (_, mask) => allGuides.filter((_, index) => ((mask + 1) >> index) & 1));
+
+test("partial approval: a production build showing only some guides links to no unpublished guide", () => {
+  const routes = new Set<string>(linkableSiteRoutes);
+  for (const shown of approvalSets()) {
+    const set = shown.map((guide) => guide.id).join("+");
+    // What index.ts does at build time: validate everything, then show the approved subset. No throw.
+    assert.deepEqual(validateGuides(allGuides), [], set);
+    const hidden = hiddenGuidePathsFor(shown, allGuides);
+    const shownPaths = new Set(shown.flatMap((guide) => [guidePathFor(guide, "es"), guidePathFor(guide, "en")]));
+    for (const guide of shown) {
+      for (const locale of ["es", "en"] as const) {
+        const where = `${set}: ${guide.id} (${locale})`;
+        for (const text of inlineStrings(guide[locale])) {
+          const tokens = renderedTokens(text, hidden);
+          // The reader still sees every word: an unlinked guide link keeps its label.
+          assert.equal(tokens.map((token) => (token.kind === "link" ? token.label : token.text)).join(""), plainText(text), where);
+          for (const token of tokens) {
+            if (token.kind !== "link" || !isInternalHref(token.href)) continue;
+            const path = internalPath(token.href);
+            assert.ok(routes.has(path) || shownPaths.has(path), `${where} links to ${token.href}, which this build does not serve`);
+          }
+        }
+        // Visible breadcrumb parent and JSON-LD breadcrumb: an unpublished parent is left out.
+        const parent = shownParentOf(guide, shown);
+        if (parent) assert.ok(shown.includes(parent), where);
+        const crumbs = guideBreadcrumbSchema(guide, locale, shown).itemListElement;
+        assert.equal(crumbs.length, parent ? 4 : 3, where);
+        assert.deepEqual(crumbs.map((item) => item.position), crumbs.map((_, index) => index + 1), where);
+        for (const item of crumbs) assert.ok(!hidden.has(item.item.slice(siteUrl.length)), `${where} breadcrumb points at ${item.item}`);
+        for (const other of shownRelatedOf(guide, shown)) assert.ok(shown.includes(other) && other !== guide, where);
+      }
+    }
+  }
+});
+
+test("partial approval: the review's three cases degrade instead of failing", () => {
+  const byId = new Map(allGuides.map((guide) => [guide.id, guide]));
+  const pick = (...ids: string[]) => ids.map((id) => byId.get(id)!);
+  const unlinkedCount = (shown: Guide[]) => {
+    const hidden = hiddenGuidePathsFor(shown, allGuides);
+    return shown.flatMap((guide) => [...inlineStrings(guide.es), ...inlineStrings(guide.en)])
+      .reduce((count, text) => count + links(text).filter((link) => isInternalHref(link.href) && hidden.has(internalPath(link.href))).length, 0);
+  };
+  // Texas only, and Texas + Dallas: links to the left-out guides become plain text.
+  assert.ok(unlinkedCount(pick("texas-marketplace-2027")) > 0);
+  assert.ok(unlinkedCount(pick("texas-marketplace-2027", "dallas-county-2027")) > 0);
+  // Carrollton alone: its Texas parent is dropped from the breadcrumb.
+  const carrollton = byId.get("carrollton-2027")!;
+  const alone = pick("carrollton-2027");
+  assert.equal(shownParentOf(carrollton, alone), undefined);
+  assert.deepEqual(guideBreadcrumbSchema(carrollton, "en", alone).itemListElement.map((item) => item.name), ["Health", "Learn", "Carrollton"]);
+  assert.deepEqual(shownRelatedOf(carrollton, alone), []);
+  // With every guide shown, nothing is unlinked.
+  assert.equal(unlinkedCount([...allGuides]), 0);
 });
 
 test("inline parser: links and bold only", () => {

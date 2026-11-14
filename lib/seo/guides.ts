@@ -44,6 +44,7 @@ export function guideArticleSchema(guide: Guide, locale: GuideLocale) {
     author: { "@type": "Person", name: guide.author },
     publisher: organizationRef,
     dateModified: guide.updatedDate,
+    citation: copy.sources.map((source) => ({ "@type": "CreativeWork", name: source.label, url: source.url })),
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": url,
@@ -53,13 +54,14 @@ export function guideArticleSchema(guide: Guide, locale: GuideLocale) {
   };
 }
 
-export function guideBreadcrumbSchema(guide: Guide, locale: GuideLocale) {
+/** `shown` is the guides this build shows; a parent outside it is left out of the trail. */
+export function guideBreadcrumbSchema(guide: Guide, locale: GuideLocale, shown?: readonly Guide[]) {
   const { health, index } = guideCopy[locale];
   const items: { name: string; url: string }[] = [
     { name: health.label, url: `${siteUrl}${health.href}` },
     { name: index.label, url: `${siteUrl}${guideIndexPath[locale]}` },
   ];
-  const parent = getParentGuide(guide);
+  const parent = getParentGuide(guide, shown);
   if (parent) items.push({ name: breadcrumbLabel(parent, locale), url: `${siteUrl}${guidePath(parent, locale)}` });
   items.push({ name: breadcrumbLabel(guide, locale), url: `${siteUrl}${guidePath(guide, locale)}` });
   return {

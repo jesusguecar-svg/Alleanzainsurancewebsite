@@ -30,6 +30,8 @@ test("structured data is Article and BreadcrumbList only: no FAQPage, Offer or P
       assert.equal(article.publisher["@type"], "InsuranceAgency");
       assert.equal(article.inLanguage, `${locale}-US`);
       assert.equal(article.mainEntityOfPage.reviewedBy.name, guide.reviewer);
+      // Article citation lists the page's Sources, in order.
+      assert.deepEqual(article.citation.map((item) => item.url), guide[locale].sources.map((source) => source.url));
     }
   }
 });

@@ -63,6 +63,16 @@ export function parseInline(text: string): InlineToken[] {
   return tokens;
 }
 
+/**
+ * Tokens as rendered: a link to an internal path in `unlinkedPaths` (a guide this build does not
+ * show) becomes its label as plain text, so a page never links to a 404.
+ */
+export function renderedTokens(text: string, unlinkedPaths: ReadonlySet<string>): InlineToken[] {
+  return parseInline(text).map((token) =>
+    token.kind === "link" && isInternalHref(token.href) && unlinkedPaths.has(internalPath(token.href)) ? { kind: "text", text: token.label } : token,
+  );
+}
+
 /** The text a reader sees, without markers. */
 export function plainText(text: string): string {
   return parseInline(text)

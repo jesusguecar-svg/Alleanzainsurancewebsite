@@ -174,24 +174,24 @@ export function validateGuides(guides: readonly Guide[]): string[] {
 }
 
 /**
- * Links and breadcrumb parents that point at a guide which exists but is not published. Checked on
- * the guides a build actually shows, so production never links to a page that returns 404.
+ * Guides can be approved one at a time. A build that leaves a guide out (production, before its
+ * editorial approval) still builds: the guides it shows render links to the left-out guide as plain
+ * text, drop it from the breadcrumb, and leave it out of "Related guides". These helpers decide that;
+ * ./index.ts applies them to the guides each build shows.
  */
-export function unpublishedTargetErrors(published: readonly Guide[], all: readonly Guide[]): string[] {
-  const publishedIds = new Set(published.map((guide) => guide.id));
-  const hidden = all.filter((guide) => !publishedIds.has(guide.id));
-  const hiddenPaths = new Map(hidden.flatMap((guide) => [[guidePathFor(guide, "es"), guide.id], [guidePathFor(guide, "en"), guide.id]] as const));
-  const errors: string[] = [];
-  for (const guide of published) {
-    if (guide.parentGuideId && !publishedIds.has(guide.parentGuideId)) errors.push(`guide ${guide.id}: parent ${guide.parentGuideId} is not published`);
-    for (const locale of ["es", "en"] as const) {
-      for (const text of inlineStrings(guide[locale])) {
-        for (const { href } of links(text)) {
-          const target = isInternalHref(href) ? hiddenPaths.get(internalPath(href)) : undefined;
-          if (target) errors.push(`guide ${guide.id} (${locale}): links to unpublished guide ${target}`);
-        }
-      }
-    }
-  }
-  return errors;
+
+/** Paths, in both languages, of guides that exist but are not shown. */
+export function hiddenGuidePathsFor(shown: readonly Guide[], all: readonly Guide[]): ReadonlySet<string> {
+  const shownIds = new Set(shown.map((guide) => guide.id));
+  return new Set(all.filter((guide) => !shownIds.has(guide.id)).flatMap((guide) => [guidePathFor(guide, "es"), guidePathFor(guide, "en")]));
+}
+
+/** The breadcrumb parent, or undefined when the guide has none or the parent is not shown. */
+export function shownParentOf(guide: Guide, shown: readonly Guide[]): Guide | undefined {
+  return guide.parentGuideId ? shown.find((other) => other.id === guide.parentGuideId) : undefined;
+}
+
+/** Related guides that are shown, in registry order. */
+export function shownRelatedOf(guide: Guide, shown: readonly Guide[]): Guide[] {
+  return shown.filter((other) => other.id !== guide.id && guide.relatedGuides.includes(other.id));
 }

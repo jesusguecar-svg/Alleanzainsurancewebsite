@@ -4,7 +4,7 @@ import dallasCounty2027 from "./entries/dallas-county-2027";
 import texasMarketplace2027 from "./entries/texas-marketplace-2027";
 import texasMarketplace2027Faq from "./entries/texas-marketplace-2027-faq";
 import type { Guide, GuideLocale } from "./types";
-import { guidePathFor, isPublishableGuide, unpublishedTargetErrors, validateGuides } from "./validate";
+import { guidePathFor, hiddenGuidePathsFor, isPublishableGuide, shownParentOf, validateGuides } from "./validate";
 
 export type { Guide, GuideBlock, GuideCopy, GuideLocale, GuideSection, GuideTable } from "./types";
 
@@ -18,9 +18,11 @@ if (problems.length) throw new Error(`Invalid guide content:\n- ${problems.join(
 /** Previews show every guide. Production shows only publishable ones (see ./validate.ts). */
 export const guides = allGuides.filter((guide) => !isProductionDeploy || isPublishableGuide(guide));
 
-// A published guide must not link to, or sit under, a guide this build leaves out.
-const hiddenTargets = unpublishedTargetErrors(guides, allGuides);
-if (hiddenTargets.length) throw new Error(`Published guides point at unpublished guides:\n- ${hiddenTargets.join("\n- ")}`);
+/**
+ * Paths of guides this build leaves out. Guides may be approved one at a time: links to these render
+ * as plain text (components/guides/InlineText.tsx), so production never links to a 404.
+ */
+export const hiddenGuidePaths = hiddenGuidePathsFor(guides, allGuides);
 
 export function guidePath(guide: Guide, locale: GuideLocale) {
   return guidePathFor(guide, locale);
@@ -32,9 +34,9 @@ export function getGuide(locale: GuideLocale, slug: string) {
   return guides.find((guide) => guide[locale].slug === slug);
 }
 
-/** The guide this one sits under in the breadcrumb, when that guide is shown in this build. */
-export function getParentGuide(guide: Guide) {
-  return guide.parentGuideId ? guides.find((other) => other.id === guide.parentGuideId) : undefined;
+/** The guide this one sits under in the breadcrumb, when that guide is shown in this build; otherwise none. */
+export function getParentGuide(guide: Guide, shown: readonly Guide[] = guides) {
+  return shownParentOf(guide, shown);
 }
 
 export function breadcrumbLabel(guide: Guide, locale: GuideLocale) {
