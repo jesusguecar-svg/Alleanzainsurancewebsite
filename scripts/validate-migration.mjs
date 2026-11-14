@@ -20,6 +20,11 @@
  * Exits non-zero on any failure.
  */
 import { readdirSync, readFileSync } from "node:fs";
+import { register } from "node:module";
+
+// The guide content files import each other without extensions, the way Next bundles them; the
+// test resolve hooks let Node load them directly (the same hooks `npm test` uses).
+register("../tests/resolve-hooks.mjs", import.meta.url);
 
 const BASE = (process.env.BASE_URL || "http://localhost:3100").replace(/\/$/, "");
 const CANONICAL = (process.env.EXPECT_CANONICAL || "https://alleanzainsurance.org").replace(/\/$/, "");
@@ -216,7 +221,7 @@ const homeDirectory = (htmlCache.get("/") ?? "").split('class="home-directory"')
 check(homeDirectory.includes('href="/health"') && !homeDirectory.includes('href="/property-casualty"'), "/: home directory lists live lines and not Property & Casualty");
 
 // ---------------------------------------------------------------- guides
-// Node runs these TypeScript files directly: they import only types.
+// Node runs these TypeScript files directly through the resolve hooks registered above.
 const guidesDir = new URL("../lib/content/guides/", import.meta.url);
 const { validateGuides, isPublishableGuide } = await import(new URL("validate.ts", guidesDir).href);
 const guideRegistry = readFileSync(new URL("index.ts", guidesDir), "utf8");
