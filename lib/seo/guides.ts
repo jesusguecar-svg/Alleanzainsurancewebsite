@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { guideIndexPath, guidePath, type Guide, type GuideLocale } from "@/lib/content/guides";
+import { breadcrumbLabel, getParentGuide, guideIndexPath, guidePath, type Guide, type GuideLocale } from "@/lib/content/guides";
 import { guideCopy } from "@/components/guides/copy";
 import { siteUrl } from "@/lib/config/site";
 import { organizationRef } from "./schema";
@@ -55,11 +55,13 @@ export function guideArticleSchema(guide: Guide, locale: GuideLocale) {
 
 export function guideBreadcrumbSchema(guide: Guide, locale: GuideLocale) {
   const { health, index } = guideCopy[locale];
-  const items = [
+  const items: { name: string; url: string }[] = [
     { name: health.label, url: `${siteUrl}${health.href}` },
     { name: index.label, url: `${siteUrl}${guideIndexPath[locale]}` },
-    { name: guide[locale].h1, url: `${siteUrl}${guidePath(guide, locale)}` },
   ];
+  const parent = getParentGuide(guide);
+  if (parent) items.push({ name: breadcrumbLabel(parent, locale), url: `${siteUrl}${guidePath(parent, locale)}` });
+  items.push({ name: breadcrumbLabel(guide, locale), url: `${siteUrl}${guidePath(guide, locale)}` });
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
