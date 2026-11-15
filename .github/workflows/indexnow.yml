@@ -1,0 +1,59 @@
+# Notifies IndexNow (Bing and other participating engines) of new and changed URLs after each
+# successful Production deployment. See docs/seo/indexnow.md. Needs the INDEXNOW_KEY repository
+# secret; without it the job stops at the first step.
+name: IndexNow
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "Space-separated URLs to submit (empty: compare the sitemap with the last run)"
+        required: false
+        default: ""
+      dry_run:
+        description: "Dry run (list the URLs, send nothing)"
+        type: boolean
+        default: true
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+    steps:
+      - name: Require the key
+        run: test -n "$INDEXNOW_KEY" || { echo "INDEXNOW_KEY secret is not set"; exit 1; }
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Restore the previous sitemap
+        uses: actions/cache/restore@v4
+        with:
+          path: .indexnow/sitemap-prev.xml
+          key: indexnow-sitemap-${{ github.run_id }}
+          restore-keys: indexnow-sitemap-
+      - name: Submit new and changed URLs
+        env:
+          PREVIOUS_SITEMAP: .indexnow/sitemap-prev.xml
+          URLS: ${{ github.event.inputs.urls }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
+        run: node scripts/indexnow-submit.mjs
+      - name: Save this sitemap for the next run
+        if: success() && hashFiles('.indexnow/sitemap-prev.xml') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: .indexnow/sitemap-prev.xml
+          key: indexnow-sitemap-${{ github.run_id }}
