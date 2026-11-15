@@ -23,6 +23,7 @@ if (!["preview", "production"].includes(MODE)) throw new Error(`MODE must be pre
 const guidesDir = new URL("../lib/content/guides/", import.meta.url);
 const v = await import(new URL("validate.ts", guidesDir).href);
 const inline = await import(new URL("inline.ts", guidesDir).href);
+const { centralDateTime } = await import(new URL("dates.ts", guidesDir).href);
 const allGuides = [];
 for (const file of readdirSync(new URL("entries/", guidesDir)).sort()) allGuides.push((await import(new URL(`entries/${file}`, guidesDir).href)).default);
 const shown = MODE === "production" ? allGuides.filter((g) => v.isPublishableGuide(g)) : allGuides;
@@ -46,6 +47,15 @@ const decode = (s) => s.replace(/<!-- -->/g, "").replace(/&amp;/g, "&").replace(
 const attr = (tag, name) => tag.match(new RegExp(`${name}="([^"]*)"`))?.[1];
 const hreflangs = (html) => new Map([...html.matchAll(/<link[^>]+hreflang="[^"]+"[^>]*>/gi)].map((m) => [m[0].match(/hreflang="([^"]*)"/i)[1], m[0].match(/\shref="([^"]*)"/)[1]]));
 const jsonLd = (html) => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap((m) => { const d = JSON.parse(m[1]); return d["@graph"] ?? (Array.isArray(d) ? d : [d]); });
+const ogImage = (html) => html.match(/<meta property="og:image" content="([^"?]*)/)?.[1];
+/** Status, content type and PNG dimensions (from the IHDR chunk). */
+async function image(path) {
+  const r = await fetch(BASE + path);
+  const bytes = new Uint8Array(await r.arrayBuffer());
+  const png = bytes.length > 24 && bytes[0] === 0x89 && bytes[1] === 0x50;
+  const view = new DataView(bytes.buffer);
+  return { status: r.status, type: r.headers.get("content-type")?.split(";")[0], width: png ? view.getUint32(16) : 0, height: png ? view.getUint32(20) : 0 };
+}
 
 const sitemap = (await get("/sitemap.xml")).html;
 const lastmod = (url) => sitemap.split("<url>").find((b) => b.includes(`<loc>${url}</loc>`))?.match(/<lastmod>([^<]+)</)?.[1];
@@ -80,6 +90,18 @@ for (const g of shown) {
     check(!types.some((t) => ["FAQPage", "Offer", "Product", "AggregateRating"].includes(t)), `${where}: no FAQPage/Offer/Product (${types})`);
     const article = nodes.find((n) => n["@type"] === "Article");
     check(JSON.stringify(article?.citation?.map((x) => x.url)) === JSON.stringify(c.sources.map((s) => s.url)), `${where}: Article citation = Sources`);
+    // Rich Results Test: dateModified with timezone, author.url, image (≥ 1200 px wide).
+    check(article?.dateModified === centralDateTime(g.updatedDate), `${where}: Article dateModified ${article?.dateModified} = ${centralDateTime(g.updatedDate)}`);
+    for (const [role, person] of [["author", article?.author], ["reviewer", article?.mainEntityOfPage?.reviewedBy]]) {
+      const profilePath = person?.url?.startsWith(`${CANON}/`) ? person.url.slice(CANON.length) : "";
+      check(profilePath === `${locale === "es" ? "/agentes" : "/en/agents"}/jesus-esteban-guerra` && (await get(profilePath)).status === 200, `${where}: ${role}.url is the agent profile and serves 200 (${person?.url})`);
+    }
+    const imagePath = article?.image?.url?.startsWith(`${CANON}/`) ? article.image.url.slice(CANON.length) : "";
+    const img = imagePath ? await image(imagePath) : {};
+    check(img.status === 200 && img.type === "image/png" && img.width >= 1200 && img.width === article.image.width && img.height === article.image.height, `${where}: Article image serves a ${img.width}x${img.height} ${img.type} (${imagePath})`);
+    const healthOg = ogImage((await get(locale === "es" ? "/health" : "/en/health")).html);
+    check(healthOg === CANON + imagePath, `${where}: Article image is the Salud social card (${healthOg})`);
+    check(ogImage(html) === article?.image?.url, `${where}: og:image = Article image (${ogImage(html)})`);
     const crumbs = nodes.find((n) => n["@type"] === "BreadcrumbList")?.itemListElement ?? [];
     const parentShown = g.parentGuideId && shown.some((o) => o.id === g.parentGuideId);
     check(crumbs.length === (parentShown ? 4 : 3) && crumbs.at(-1)?.item === CANON + path, `${where}: breadcrumb trail (${crumbs.map((x) => x.name).join(" › ")})`);
