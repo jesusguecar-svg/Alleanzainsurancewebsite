@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { acaAgentCertification, healthServices, healthServicesEn, licensingStatement } from "@/lib/content/health";
 import p from "./platform.module.css";
 import s from "./coverage-stage.module.css";
+import Image from "next/image";
 
 type Locale = "es" | "en";
 
@@ -88,9 +89,9 @@ export function CoverageStage({ locale }: { locale: Locale }) {
         <div className={s.photos}>
           {plates.map((plate, index) => (
             // Photographic plates. Labels stay in the controls, never baked into the image.
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               key={plate.id}
+              sizes="(max-width: 900px) 150vw, 100vw"
               className={s.plate}
               src={plate.src}
               alt={index === active ? alts[index] : ""}

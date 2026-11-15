@@ -65,9 +65,12 @@ Do not invent tints. Every colour on the site should resolve to a token above.
 
 ## Typography (pp. 21-25)
 
-**Inter is the only brand typeface**, across every touchpoint. It is committed at
-`public/fonts/Inter-V.ttf` and self-hosted via `next/font/local`, so the site
-never depends on a third-party font CDN. Arial or Helvetica are the only
+**Inter is the only brand typeface**, across every touchpoint. The variable master is
+committed at `public/fonts/Inter-V.ttf`; the site serves a Latin WOFF2 subset of it,
+`public/fonts/Inter-V-latin.woff2` (90 KB instead of 805 KB, both axes and all
+OpenType features kept), self-hosted via `next/font/local`, so the site never
+depends on a third-party font CDN. The regeneration command is in
+`components/layout/RootDocument.tsx`. Arial or Helvetica are the only
 sanctioned substitutes, and only under technical limitation.
 
 There is **no serif in the brand system.** `font-display` maps to Inter.

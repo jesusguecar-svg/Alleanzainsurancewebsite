@@ -5,6 +5,7 @@ import { AnalyticsRuntime } from "@/components/analytics/AnalyticsRuntime";
 import { VercelObservability } from "@/components/analytics/VercelObservability";
 import { HealthTransition } from "@/components/transitions/HealthTransition";
 import { isProductionDeploy, siteUrl } from "@/lib/config/site";
+import { consentBannerHiddenCss, consentBannerNoScriptCss, consentPaintScript } from "@/lib/analytics/consent-paint";
 
 /**
  * The <html> document shared by the Spanish and English root layouts (app/(es)/layout.tsx and
@@ -14,11 +15,17 @@ import { isProductionDeploy, siteUrl } from "@/lib/config/site";
  */
 
 /**
- * Inter is the brand's only typeface (brandbook pp. 21-22). Self-hosted from the
- * committed variable font so the site never depends on a third-party font CDN.
+ * Inter is the brand's only typeface (brandbook pp. 21-22). Self-hosted so the site never depends
+ * on a third-party font CDN. The served file is a WOFF2 subset of the committed variable font
+ * (public/fonts/Inter-V.ttf, 805 KB): Latin, Latin-1, Latin Extended-A, punctuation, arrows and
+ * the symbols the site uses, with both axes (wght, slnt) and every OpenType feature kept (90 KB).
+ * Regenerate with fontTools if the site needs other scripts:
+ *   pyftsubset public/fonts/Inter-V.ttf --flavor=woff2 --layout-features='*' \
+ *     --unicodes="U+0000-017F,U+0192,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2070-209F,U+20AC,U+2122,U+2190-21FF,U+2212,U+2215,U+2260-2265,U+25C9,U+25CF,U+FEFF,U+FFFD" \
+ *     --output-file=public/fonts/Inter-V-latin.woff2
  */
 const inter = localFont({
-  src: "../../public/fonts/Inter-V.ttf",
+  src: "../../public/fonts/Inter-V-latin.woff2",
   variable: "--font-inter",
   weight: "100 900",
   display: "swap",
@@ -67,9 +74,13 @@ gtag("set",{allow_google_signals:false,allow_ad_personalization_signals:false});
 
 export function RootDocument({ locale, children }: { locale: SiteLocale; children: ReactNode }) {
   return (
-    <html lang={locale} className={`${inter.variable} scroll-smooth`}>
+    // suppressHydrationWarning: consentPaintScript may add data-consent-stored to <html> before React hydrates.
+    <html lang={locale} className={`${inter.variable} scroll-smooth`} suppressHydrationWarning>
       <head>
         <script id="consent-defaults" dangerouslySetInnerHTML={{ __html: consentDefaults }} />
+        <script id="consent-paint" dangerouslySetInnerHTML={{ __html: consentPaintScript }} />
+        <style id="consent-paint-css" dangerouslySetInnerHTML={{ __html: consentBannerHiddenCss }} />
+        <noscript><style dangerouslySetInnerHTML={{ __html: consentBannerNoScriptCss }} /></noscript>
       </head>
       <body>
         {children}

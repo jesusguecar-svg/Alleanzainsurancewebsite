@@ -161,7 +161,7 @@ export function LiquidGallerySurface({ src, secondarySrc, kind, position, veloci
     const primaryTexture = createTexture(0);
     const secondaryTexture = createTexture(1);
     let primaryAspect = 1, secondaryAspect = 1, primaryReady = false, secondaryReady = !secondarySrc;
-    let disposed = false, frame = 0, easedVelocity = 0, visible = true;
+    let disposed = false, frame = 0, easedVelocity = 0, visible = false;
     const media: Array<HTMLImageElement | HTMLVideoElement> = [];
 
     const upload = (element: HTMLImageElement | HTMLVideoElement, texture: WebGLTexture | null, unit: number) => {
@@ -181,8 +181,15 @@ export function LiquidGallerySurface({ src, secondarySrc, kind, position, veloci
       element.addEventListener("load", () => { if (disposed) return; upload(element, texture, unit); ready(element.naturalWidth / element.naturalHeight); }, { once: true });
       element.src = url; media.push(element);
     };
-    loadMedia(src, kind === "video" ? "video" : "image", primaryTexture, 0, (aspect) => { primaryAspect = aspect; primaryReady = true; });
-    if (secondarySrc) loadMedia(secondarySrc, "image", secondaryTexture, 1, (aspect) => { secondaryAspect = aspect; secondaryReady = true; });
+    // Media loads the first time the surface is on screen, not at mount: on phones the gallery is
+    // the third screen, and the video is several MB.
+    let mediaRequested = false;
+    const requestMedia = () => {
+      if (mediaRequested) return;
+      mediaRequested = true;
+      loadMedia(src, kind === "video" ? "video" : "image", primaryTexture, 0, (aspect) => { primaryAspect = aspect; primaryReady = true; });
+      if (secondarySrc) loadMedia(secondarySrc, "image", secondaryTexture, 1, (aspect) => { secondaryAspect = aspect; secondaryReady = true; });
+    };
 
     const [focusX, focusY] = parsePosition(position);
     const resize = () => {
@@ -213,6 +220,7 @@ export function LiquidGallerySurface({ src, secondarySrc, kind, position, veloci
     };
     const visibility = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
+      if (visible) requestMedia();
       media.forEach((element) => {
         if (!(element instanceof HTMLVideoElement)) return;
         if (visible) void element.play();
@@ -221,7 +229,6 @@ export function LiquidGallerySurface({ src, secondarySrc, kind, position, veloci
       if (visible && !frame) frame = requestAnimationFrame(render);
     }, { threshold: 0.05 });
     visibility.observe(canvas);
-    frame = requestAnimationFrame(render);
     return () => {
       disposed = true; cancelAnimationFrame(frame); observer.disconnect(); visibility.disconnect();
       media.forEach((element) => { if (element instanceof HTMLVideoElement) { element.pause(); element.removeAttribute("src"); element.load(); } });

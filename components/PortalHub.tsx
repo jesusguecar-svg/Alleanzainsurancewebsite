@@ -1,6 +1,6 @@
 "use client";
 
-import { animate as animateMotion, AnimatePresence, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from "framer-motion";
+import { animate as animateMotion, AnimatePresence, motion, useInView, useMotionValue, useMotionValueEvent, useReducedMotion, useSpring } from "framer-motion";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
@@ -24,10 +24,15 @@ function useReducedMotionAfterMount() {
   return mounted && reduce === true;
 }
 
+/** First frame of each gallery video (800 px WebP), shown until the video plays. */
+const posterOf = (src: string) => src.replace(/\.mp4$/, "-poster.webp");
+
 function GalleryMedia({ item, active, play = true }: { item: GalleryItem; active: boolean; play?: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const reduceMotion = useReducedMotionAfterMount();
-  const shouldPlay = Boolean(play && active && item.kind === "video" && !reduceMotion);
+  // On phones the gallery is the third screen: nothing downloads until it comes near the viewport.
+  const inView = useInView(videoRef, { margin: "200px 0px" });
+  const shouldPlay = Boolean(play && active && inView && item.kind === "video" && !reduceMotion);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -44,7 +49,12 @@ function GalleryMedia({ item, active, play = true }: { item: GalleryItem; active
         muted
         loop
         playsInline
-        preload={shouldPlay ? "auto" : "metadata"}
+        // The poster also waits for the gallery: the intro overlay covers the page until after
+        // hydration, so nothing is visible early, and phones skip ~140 KB at load.
+        poster={inView ? posterOf(item.src) : undefined}
+        // Only the playing video downloads; the others show their poster (preload "metadata"
+        // fetched most of each file anyway, about 8 MB on the home page).
+        preload={shouldPlay ? "auto" : "none"}
         aria-label={active ? `Opciones de ${item.label} presentadas por Alleanza Insurance Corp.` : undefined}
         className="h-full w-full object-cover"
         style={{ objectPosition: item.position ?? "center" }}
@@ -185,7 +195,7 @@ export default function PortalHub({ children }: { children?: ReactNode }) {
 
         <nav className="gallery-edge-nav" aria-label="Cambiar de categoría"><button type="button" onClick={() => move(-1)} aria-label="Categoría anterior"><ArrowLeft size={17} /></button><button type="button" onClick={() => move(1)} aria-label="Categoría siguiente"><ArrowRight size={17} /></button></nav>
         <AnimatePresence mode="wait"><motion.div key={`reflejo-${current.label}`} className="gallery-reflection" initial={{ opacity: 0 }} animate={{ opacity: .58 }} exit={{ opacity: 0 }} transition={{ duration: .5, ease: [.22,1,.36,1] }}><div className="gallery-reflection-media"><GalleryMedia item={current} active play={false} /></div><div className="gallery-reflection-ripples" /></motion.div></AnimatePresence>
-        <Image src="/cinematic/gallery/glass-plinth.png" alt="" aria-hidden="true" width={1800} height={1100} className="gallery-plinth" priority />
+        <Image src="/cinematic/gallery/glass-plinth.png" alt="" aria-hidden="true" width={1800} height={1100} sizes="(max-width: 767px) 132vw, 55vw" className="gallery-plinth" />
         <AnimatePresence mode="wait"><motion.div key={current.label} className="gallery-card-title" initial={{ opacity: 0, y: 18, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -16, filter: "blur(8px)" }} transition={{ duration: .55 }}><span>{current.kicker}</span><strong>{current.label}</strong><p>{current.description}</p><MagneticLink href={current.href} label={current.cta} external={current.external} track={current.track}/></motion.div></AnimatePresence>
 
         <nav className="gallery-options" aria-label="Elegir categoría">{gallery.map((item, index) => <button key={item.label} type="button" aria-label={`Mostrar ${item.label}`} aria-current={index === active ? "true" : undefined} className={index === active ? "is-active" : ""} onClick={() => choose(index)} />)}</nav>

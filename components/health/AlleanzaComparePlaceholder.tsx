@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowRight, ArrowUpRight, BadgePercent, Check, ChevronRight, Eye, Heart, MessageCircle, Plus, ShieldCheck, Sun } from "lucide-react";
 import { healthServices, healthServicesEn, type HealthServiceId } from "@/lib/content/health";
 import c from "./compare.module.css";
+import Image from "next/image";
 
 const options = [
   { id: "aca", es: "Salud ACA", en: "ACA health", icon: Heart },
@@ -57,8 +58,7 @@ export function AlleanzaComparePlaceholder({ locale = "es" }: { locale?: "es" | 
         <p className={c.note}>{en ? "Explore our coverage guide. Personalized online quotes are coming soon." : "Explora nuestra guía de coberturas. Las cotizaciones personalizadas en línea estarán disponibles próximamente."}</p>
       </div>
       <div className={c.visual}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className={c.photo} src="/cinematic/people/salud.jpg" alt={en ? "A mother and daughter sharing a hug" : "Una madre y su hija comparten un abrazo"} width={1536} height={1024} loading="lazy" />
+        <Image className={c.photo} src="/cinematic/people/salud.jpg" alt={en ? "A mother and daughter sharing a hug" : "Una madre y su hija comparten un abrazo"} width={1536} height={1024} sizes="(max-width: 900px) 100vw, 50vw" />
         <div className={c.device}>
           <div className={c.deviceScreen}>
             <div className={c.deviceStatus} aria-hidden="true"><span>9:41</span><span>●●●　◉</span></div>
