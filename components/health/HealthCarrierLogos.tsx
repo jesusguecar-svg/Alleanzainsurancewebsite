@@ -1,5 +1,6 @@
 import { visibleHealthCarrierLogos } from "@/lib/content/health-carriers";
 import c from "./carrier-logos.module.css";
+import Image from "next/image";
 
 export function HealthCarrierLogos({ locale = "es" }: { locale?: "es" | "en" }) {
   const en = locale === "en";
@@ -16,12 +17,10 @@ export function HealthCarrierLogos({ locale = "es" }: { locale?: "es" | "en" }) 
       <div className={c.viewport}>
         <ul className={c.track}>
           {visibleHealthCarrierLogos.map(carrier => <li className={c.item} key={carrier.id}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className={c.logo} src={carrier.src} alt={en ? carrier.altEn : carrier.altEs} width={carrier.width} height={carrier.height} />
+            <Image className={c.logo} src={carrier.src} alt={en ? carrier.altEn : carrier.altEs} width={carrier.width} height={carrier.height} sizes="200px" />
           </li>)}
           {visibleHealthCarrierLogos.map(carrier => <li className={c.item} key={`${carrier.id}-clone`} aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className={c.logo} src={carrier.src} alt="" width={carrier.width} height={carrier.height} />
+            <Image className={c.logo} src={carrier.src} alt="" width={carrier.width} height={carrier.height} sizes="200px" />
           </li>)}
         </ul>
       </div>

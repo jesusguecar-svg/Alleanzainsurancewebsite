@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import p from "./platform.module.css";
 import s from "./factor-carousel.module.css";
+import Image from "next/image";
 
 type Locale = "es" | "en";
 
@@ -90,8 +91,7 @@ export function FactorCarousel({ locale }: { locale: Locale }) {
                 {card.note}
               </p>
               <div className={s.art}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className={s.plate} src={`/health/factors/${card.id}.webp`} alt={card.alt} width={1248} height={832} decoding="async" />
+                <Image className={s.plate} src={`/health/factors/${card.id}.webp`} alt={card.alt} width={1248} height={832} sizes="(max-width: 488px) 82vw, 400px" />
               </div>
               <button
                 type="button"

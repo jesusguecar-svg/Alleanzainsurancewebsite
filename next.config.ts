@@ -4,6 +4,8 @@ import legacy from "./lib/config/legacy-redirects.json";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // next/image serves AVIF where the browser accepts it, WebP otherwise.
+  images: { formats: ["image/avif", "image/webp"] },
   // Two root layouts (app/(es), app/(en)) give each language its own <html lang>; an unmatched
   // URL then renders app/global-not-found.tsx, which brings its own document.
   experimental: { globalNotFound: true },

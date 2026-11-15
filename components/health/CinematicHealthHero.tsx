@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { preload } from "react-dom";
+import Image, { getImageProps } from "next/image";
 import { AnimatePresence, motion, useInView, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { ArrowDown, ArrowUpRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { healthScenes as scenes } from "./health-scene-data";
@@ -8,6 +10,19 @@ import { HealthSceneActions, useSceneAssets } from "./HealthSceneActions";
 import c from "./cinematic-hero.module.css";
 
 const assets = "/cinematic/people/decision-";
+
+/**
+ * The hero background is the page's LCP image. Phones show it object-fit: cover in a portrait box,
+ * only the strip around 51% of its width (cinematic-hero.module.css), so they get that strip cut
+ * from the same file at full resolution (decision-world-portrait.webp, 760 x 941, left edge 472 px)
+ * instead of the 1671 px landscape file. next/image serves both resized, as AVIF or WebP.
+ */
+const heroMobileQuery = "(max-width: 767px)";
+const heroDesktop = getImageProps({ src: `${assets}world.webp`, alt: "", width: 1671, height: 941, sizes: "100vw" }).props;
+// The 760 px crop fills a box about 1.6 times the viewport width (box aspect about 0.5).
+const heroMobile = getImageProps({ src: `${assets}world-portrait.webp`, alt: "", width: 760, height: 941, sizes: "162vw" }).props;
+/** Scene panels drawn inside SVG <image>: the optimizer URL, so they also arrive as AVIF or WebP. */
+const panelsSrc = getImageProps({ src: `${assets}panels.webp`, alt: "", width: 1671, height: 941 }).props.src;
 // Individually frame the original subjects for a portrait, two-sided composition.
 const frames = ["20 565 650 350", "40 385 730 310", "30 180 730 310", "0 0 735 285", "1005 680 666 260", "920 475 740 220", "960 305 710 200", "1040 0 630 270"];
 
@@ -19,6 +34,11 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es", embedd
   const [interacted, setInteracted] = useState(false);
   const [hint, setHint] = useState(true);
   const [portrait, setPortrait] = useState(false);
+  // The scene panels (147 KB) start loading once the LCP background has loaded, not alongside it.
+  const background = useRef<HTMLImageElement>(null);
+  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+  useEffect(() => { if (background.current?.complete) setBackgroundLoaded(true); }, []);
+  const panels = backgroundLoaded ? panelsSrc : undefined;
   const assetsReady = useSceneAssets(inView && active >= 0 && !reduced && !portrait);
   const hitAreas = useRef<SVGPathElement[]>([]);
   const frame = useRef(0);
@@ -87,26 +107,34 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es", embedd
       else if (!portrait && pointerType === "mouse") setActive(-1);
     });
   }
+  if (!embedded) {
+    // Preload only the LCP image, one per device class.
+    preload(heroMobile.src, { as: "image", imageSrcSet: heroMobile.srcSet, imageSizes: heroMobile.sizes, media: heroMobileQuery, fetchPriority: "high" });
+    preload(heroDesktop.src, { as: "image", imageSrcSet: heroDesktop.srcSet, imageSizes: heroDesktop.sizes, media: "(min-width: 768px)", fetchPriority: "high" });
+  }
   return <section className={`${c.hero} ${embedded ? c.embedded : ""}`} aria-labelledby={embedded ? "scenario-title" : "health-title"}>
     <div className={c.stage}>
       <div ref={canvas} className={c.canvas} data-active={current?.id ?? "none"} data-scene-side={sceneSide} data-copy-side={copySide} data-engaged={interacted} data-story-position={storyPosition} onPointerMove={move} onPointerDown={move} onPointerLeave={event => { if (event.pointerType === "mouse" && !(event.currentTarget.contains(document.activeElement))) setActive(-1); }}>
         {/* Background pathway; the subjects below are independently recomposed on mobile. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className={c.background} src={`${assets}world.webp`} alt={locale === "en" ? "An illuminated path between scenes of financial pressure and scenes of protection, care, and family." : "Un camino iluminado entre escenas de presión financiera y escenas de protección, cuidado y familia."} fetchPriority={embedded ? "low" : "high"} loading={embedded ? "lazy" : "eager"} width="1671" height="941" />
+        <picture>
+          <source media="(min-width: 768px)" srcSet={heroDesktop.srcSet} sizes={heroDesktop.sizes} />
+          {/* eslint-disable-next-line @next/next/no-img-element -- art-directed next/image (getImageProps) */}
+          <img ref={background} onLoad={() => setBackgroundLoaded(true)} className={c.background} src={heroMobile.src} srcSet={heroMobile.srcSet} sizes={heroMobile.sizes} alt={locale === "en" ? "An illuminated path between scenes of financial pressure and scenes of protection, care, and family." : "Un camino iluminado entre escenas de presión financiera y escenas de protección, cuidado y familia."} width={1671} height={941} decoding="async" fetchPriority={embedded ? "low" : "high"} loading={embedded ? "lazy" : "eager"} />
+        </picture>
         <div className={c.desktopComposition} aria-hidden="true">
           {scenes.map((item, i) => {
             const selected = active === i;
             const adjacent = active >= 0 && active !== i && Math.abs((active % 4) - (i % 4)) === 1 && (active < 4) === (i < 4);
             const intensity = selected ? 1 : adjacent ? .86 : .76;
             return <motion.div key={item.id} className={c.layer} data-selected={selected} animate={{ scale: selected && !reduced ? 1.045 : adjacent && !reduced ? .985 : 1, z: selected && !reduced ? 44 : 0, filter: `brightness(${selected ? 1.03 : intensity}) saturate(${selected ? 1.03 : adjacent ? .9 : .82})` }} transition={{ duration: .48, ease: [.22, 1, .36, 1] }} style={{ transformOrigin: `${item.x}% ${item.y}%`, zIndex: selected ? 30 : adjacent ? 15 : 10 }}>
-            <svg viewBox="0 0 1671 941"><defs><clipPath id={`health-layer-${item.id}`}><path d={item.path} /></clipPath></defs><g clipPath={`url(#health-layer-${item.id})`}><image href={`${assets}panels.webp`} width="1671" height="941" />{active === i && assetsReady && inView && !reduced && !portrait && <HealthSceneActions key={item.id} id={item.id} locale={locale} />}</g></svg>
+            <svg viewBox="0 0 1671 941"><defs><clipPath id={`health-layer-${item.id}`}><path d={item.path} /></clipPath></defs><g clipPath={`url(#health-layer-${item.id})`}><image href={panels} width="1671" height="941" />{active === i && assetsReady && inView && !reduced && !portrait && <HealthSceneActions key={item.id} id={item.id} locale={locale} />}</g></svg>
           </motion.div>;
           })}
           <svg className={c.hitMap} viewBox="0 0 1671 941">{scenes.map((item, i) => <path key={item.id} ref={element => { if (element) hitAreas.current[i] = element; }} d={item.path} />)}</svg>
         </div>
-        <div className={c.portraitComposition} aria-hidden="true">{scenes.map((item, i) => <svg key={item.id} className={c.portraitLayer} data-selected={active === i} style={{ left: i < 4 ? 0 : "61%", top: `${(embedded ? 36 : 30) + (3 - i % 4) * 11}%` }} viewBox={frames[i]} preserveAspectRatio="xMidYMid slice"><defs><clipPath id={`portrait-${item.id}`}><path d={item.path} /></clipPath></defs><image href={`${assets}panels.webp`} width="1671" height="941" clipPath={`url(#portrait-${item.id})`} /></svg>)}</div>
+        <div className={c.portraitComposition} aria-hidden="true">{scenes.map((item, i) => <svg key={item.id} className={c.portraitLayer} data-selected={active === i} style={{ left: i < 4 ? 0 : "61%", top: `${(embedded ? 36 : 30) + (3 - i % 4) * 11}%` }} viewBox={frames[i]} preserveAspectRatio="xMidYMid slice"><defs><clipPath id={`portrait-${item.id}`}><path d={item.path} /></clipPath></defs><image href={panels} width="1671" height="941" clipPath={`url(#portrait-${item.id})`} /></svg>)}</div>
         <div className={c.grade} aria-hidden="true" />
-        <motion.div className={c.handPosition} style={{ x: reduced ? targetX : springX, y: reduced ? targetY : springY }} aria-hidden="true">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={`${assets}hand.webp`} alt="" width="400" height="550" /></motion.div>
+        <motion.div className={c.handPosition} style={{ x: reduced ? targetX : springX, y: reduced ? targetY : springY }} aria-hidden="true"><Image src={`${assets}hand.webp`} alt="" width={700} height={1050} sizes="(max-width: 767px) 92px, 250px" /></motion.div>
         <div className={c.intro} data-hidden={active >= 0}><span className={c.eyebrow}>{locale === "en" ? "YOUR HEALTH. YOUR FAMILY. YOUR DECISION." : "TU SALUD. TU FAMILIA. TU DECISIÓN."}</span>{embedded ? <h2 id="scenario-title">{locale === "en" ? "You decide" : "Tú decides"}<span>.</span></h2> : <h1 id="health-title">{locale === "en" ? "You decide" : "Tú decides"}<span>.</span></h1>}<p>{locale === "en" ? <>Not everything is in your hands.<br />How you prepare is.</> : <>No todo está en tus manos.<br />Cómo prepararte, sí.</>}</p></div>
         <div className={c.sceneLabels} aria-hidden="true"><span>{locale === "en" ? "Without protection" : "Sin protección"}</span><span>{locale === "en" ? "With support" : "Con respaldo"}</span></div>
         <div className={c.storyShade} aria-hidden="true" />

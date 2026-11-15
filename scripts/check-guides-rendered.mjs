@@ -5,6 +5,7 @@
  *   BASE=http://localhost:3100 MODE=preview    node scripts/check-guides-rendered.mjs   # every guide served, noindex
  *   BASE=http://localhost:3100 MODE=production node scripts/check-guides-rendered.mjs   # only approved guides, indexable
  *   BASE=https://alleanzainsurance.org MODE=production node scripts/check-guides-rendered.mjs
+ *   Protected Vercel preview: also set VALIDATE_COOKIE (the cookie a share link sets).
  *
  * MODE=production expects exactly the guides isPublishableGuide() accepts (lib/content/guides/validate.ts):
  * those return 200, are indexable and in the sitemap; the others return 404 and are not linked.
@@ -17,6 +18,9 @@ import { readdirSync } from "node:fs";
 register("../tests/resolve-hooks.mjs", import.meta.url);
 
 const BASE = (process.env.BASE || "http://localhost:3100").replace(/\/$/, "");
+// Protected preview: the cookie a Vercel share link sets, as for validate-migration.mjs.
+const COOKIE = process.env.VALIDATE_COOKIE;
+const withCookie = (init = {}) => (COOKIE ? { ...init, headers: { cookie: COOKIE, ...init.headers } } : init);
 const CANON = (process.env.EXPECT_CANONICAL || "https://alleanzainsurance.org").replace(/\/$/, "");
 const MODE = process.env.MODE || "preview";
 if (!["preview", "production"].includes(MODE)) throw new Error(`MODE must be preview or production (got ${MODE})`);
@@ -37,7 +41,7 @@ const check = (ok, msg) => { if (ok) pass++; else { fail++; console.log(`FAIL  $
 const cache = new Map();
 async function get(path) {
   if (cache.has(path)) return cache.get(path);
-  const r = await fetch(BASE + path, { redirect: "manual" });
+  const r = await fetch(BASE + path, withCookie({ redirect: "manual" }));
   const out = { status: r.status, html: await r.text(), robotsHeader: r.headers.get("x-robots-tag") ?? "" };
   cache.set(path, out);
   return out;
@@ -123,7 +127,7 @@ for (const path of ["/health", "/en/health"]) {
   check(hiddenPaths.every((h) => !linksTo(html, h)), `${path}: guides block lists no unpublished guide`);
 }
 for (const path of internal) {
-  const r = await fetch(BASE + path, { redirect: "follow" });
+  const r = await fetch(BASE + path, withCookie({ redirect: "follow" }));
   check(r.status === 200, `internal link ${path}: 200 (got ${r.status})`);
 }
 console.log(`§4.3 [${MODE}; shown: ${shown.map((g) => g.id).join(", ") || "none"}]: ${pass} passed, ${fail} failed; ${internal.size} internal links crawled`);

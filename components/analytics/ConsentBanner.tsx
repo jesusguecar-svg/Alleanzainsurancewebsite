@@ -4,24 +4,32 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { trackPageView } from "@/lib/analytics";
 import { consentChoice, openPreferencesEvent, saveConsent } from "@/lib/analytics/consent";
+import { consentStoredDataKey } from "@/lib/analytics/consent-paint";
 
 /**
  * Asks once whether analytics may run. Necessary storage (this choice, form protection) needs no
  * consent; nothing optional loads before the visitor accepts. The privacy policy's
  * "Cambiar mis preferencias de medición" button reopens it.
+ *
+ * The banner is in the server HTML, so a first-time visitor sees it at first paint instead of
+ * after hydration (it was the home page's LCP element, painted about 4 s late on a phone). For a
+ * visitor who has already chosen, the inline script in RootDocument marks <html> before first
+ * paint and CSS hides the banner (consentBannerHiddenCss); after hydration it is removed.
  */
 export function ConsentBanner({ ready }: { ready: boolean }) {
   const pathname = usePathname();
   const english = pathname.startsWith("/employers") || pathname.startsWith("/en/");
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [reopened, setReopened] = useState(false);
 
   useEffect(() => {
-    if (ready && !consentChoice()) setOpen(true);
+    if (ready && consentChoice()) setOpen(false);
   }, [ready]);
 
   useEffect(() => {
     const reopen = () => {
+      // Lift the before-paint hiding for a visitor who had already chosen.
+      delete document.documentElement.dataset[consentStoredDataKey];
       setReopened(true);
       setOpen(true);
     };
@@ -39,7 +47,8 @@ export function ConsentBanner({ ready }: { ready: boolean }) {
 
   if (!open) return null;
 
-  const accepted = consentChoice()?.analytics === true;
+  // null on the server and before the stored choice is read: the status line only shows when reopened.
+  const accepted = reopened && consentChoice()?.analytics === true;
   const t = english
     ? {
         intro: "We use only the storage the site needs to work, such as remembering this choice. With your permission we also use analytics (Google Analytics) to understand, in aggregate, how the site is used. It never receives your form answers. See our ",
@@ -59,7 +68,7 @@ export function ConsentBanner({ ready }: { ready: boolean }) {
   const button = "rounded-full px-5 py-2.5 text-xs font-semibold";
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[120] px-4 pb-4" role="dialog" aria-live="polite" aria-label={english ? "Measurement preferences" : "Preferencias de medición"}>
+    <div data-consent-banner="" className="fixed inset-x-0 bottom-0 z-[120] px-4 pb-4" role="dialog" aria-live="polite" aria-label={english ? "Measurement preferences" : "Preferencias de medición"}>
       <div className="mx-auto flex max-w-4xl flex-col gap-4 rounded-2xl border border-navy/10 bg-white/95 p-5 shadow-[0_18px_50px_-28px_rgba(6,20,49,.55)] backdrop-blur md:flex-row md:items-center md:justify-between">
         <div className="text-sm leading-relaxed text-navy/70">
           <p>
