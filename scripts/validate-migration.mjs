@@ -285,7 +285,9 @@ for (const guide of publicGuides) {
     check(!nodes.some((node) => node["@type"] === "FAQPage"), `${path}: no FAQPage`);
     // Guides may be approved one at a time: no link or breadcrumb to a guide this build does not serve.
     const hiddenPaths = allGuides.filter((other) => !publicGuides.includes(other)).flatMap((other) => Object.values(guidePathsOf(other)));
-    check(hiddenPaths.every((hidden) => !html.includes(`href="${hidden}`)), `${path}: no link to an unpublished guide`);
+    // Exact path match: "/en/health/texas-marketplace-2027" is a prefix of ".../texas-marketplace-2027-faq".
+    const linksTo = (target) => new RegExp(`href="${target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["?#]`).test(html);
+    check(hiddenPaths.every((hidden) => !linksTo(hidden)), `${path}: no link to an unpublished guide`);
     check(crumbs.every((crumb) => !hiddenPaths.includes(crumb.item.slice(CANONICAL.length))), `${path}: BreadcrumbList has no unpublished guide`);
     const newTabHint = locale === "es" ? "(se abre en una pestaña nueva)" : "(opens in a new tab)";
     // Inside the article (the shared header and contact components are outside this check).
