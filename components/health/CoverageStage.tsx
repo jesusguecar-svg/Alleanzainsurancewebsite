@@ -91,7 +91,7 @@ export function CoverageStage({ locale }: { locale: Locale }) {
             // Photographic plates. Labels stay in the controls, never baked into the image.
             <Image
               key={plate.id}
-              sizes="(max-width: 900px) 150vw, 100vw"
+              sizes="100vw"
               className={s.plate}
               src={plate.src}
               alt={index === active ? alts[index] : ""}
