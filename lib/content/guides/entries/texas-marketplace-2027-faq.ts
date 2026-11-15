@@ -2,18 +2,18 @@ import type { Guide } from "../types";
 
 /**
  * Source draft: alleanza-content-drafts/faq-bank.md (2026-11-13). Facts and sources are logged in that
- * folder's CLAIMS.csv. editorialApprovedDate is intentionally unset: this guide is preview-only until
- * Jesús approves it and Charlie opens a release window.
+ * folder's CLAIMS.csv. Editorially approved by Jesús Esteban Guerra on 2026-11-14 (immigration-status
+ * savings rules removed at his request; readers are pointed to the official immigrant pages).
  */
 const guide: Guide = {
   "id": "texas-marketplace-2027-faq",
   "es": {
     "slug": "preguntas-marketplace-texas-2027",
     "title": "Preguntas sobre la aseguranza Obamacare 2027 en Texas",
-    "description": "Respuestas con fuentes a 43 preguntas sobre la aseguranza Obamacare 2027 en Texas y Dallas–Fort Worth: fechas, ayuda, inmigrantes y aseguradoras.",
+    "description": "Respuestas con fuentes a 41 preguntas sobre la aseguranza Obamacare 2027 en Texas y Dallas–Fort Worth: fechas, ayuda, elegibilidad y aseguradoras.",
     "h1": "Aseguranza Obamacare 2027 en Texas y DFW: preguntas frecuentes",
     "breadcrumbLabel": "Preguntas frecuentes",
-    "summary": "Estas son respuestas con fuentes a 43 preguntas comunes sobre la aseguranza del Marketplace (Obamacare) 2027 en Texas y Dallas–Fort Worth. Cubren fechas de inscripción, elegibilidad, ayuda económica, aseguradoras locales, cómo aplicar y protecciones en Texas.",
+    "summary": "Estas son respuestas con fuentes a 41 preguntas comunes sobre la aseguranza del Marketplace (Obamacare) 2027 en Texas y Dallas–Fort Worth. Cubren fechas de inscripción, elegibilidad, ayuda económica, aseguradoras locales, cómo aplicar y protecciones en Texas.",
     "sections": [
       {
         "heading": "Fechas de inscripción",
@@ -51,22 +51,12 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "¿Quién puede comprar aseguranza médica en el Marketplace (Obamacare)?",
-            "answer": "Por lo general, tienes que vivir en Estados Unidos, ser ciudadano, nacional estadounidense o inmigrante con presencia legal, y no estar encarcelado. Quien tiene Medicare normalmente no puede usar el Marketplace para cobertura médica. La elegibilidad se revisa por persona, así que las familias con situaciones mixtas deben incluir a todos en la solicitud. Fuente: [Elegibilidad en HealthCare.gov](https://www.healthcare.gov/quick-guide/eligibility/)"
+            "answer": "Por lo general, tienes que vivir en Estados Unidos, cumplir los requisitos de ciudadanía o estatus migratorio, y no estar encarcelado. Quien tiene Medicare normalmente no puede usar el Marketplace para cobertura médica. La elegibilidad se revisa por persona, así que las familias con situaciones mixtas deben incluir a todos en la solicitud. La elegibilidad para recibir ayuda depende del estatus migratorio, y las reglas cambiaron para 2027. Consulta la página oficial de CuidadoDeSalud.gov para inmigrantes: [CuidadoDeSalud.gov: Inmigrantes](https://www.cuidadodesalud.gov/es/immigrants/). Fuente: [Elegibilidad en HealthCare.gov](https://www.healthcare.gov/quick-guide/eligibility/)"
           },
           {
             "type": "qa",
-            "question": "¿Las personas indocumentadas pueden tener un plan del Marketplace?",
-            "answer": "No. Las personas indocumentadas no pueden obtener cobertura del Marketplace. Sin embargo, sí pueden presentar la solicitud para familiares que califiquen, como hijos que son ciudadanos. La solicitud pregunta por todos en el hogar, pero solo pide información migratoria de las personas que están solicitando cobertura. Fuente: [Cobertura para inmigrantes](https://www.healthcare.gov/immigrants/coverage/); [Lista de HealthCare.gov](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
-          },
-          {
-            "type": "qa",
-            "question": "¿Qué inmigrantes pueden recibir ayuda del Marketplace en 2027?",
-            "answer": "Desde el 1 de enero de 2027, por un cambio en la ley federal, solo pueden recibir ayuda del Marketplace los residentes permanentes (con green card), las personas cubanas o haitianas con estatus de entrante y los migrantes del Pacto de Libre Asociación (COFA). Esto incluye el crédito fiscal y la reducción de costos compartidos. Otros inmigrantes con presencia legal pueden comprar planes, pero sin ayuda. Fuente: [Inmigrantes con presencia legal](https://www.healthcare.gov/immigrants/lawfully-present-immigrants/)"
-          },
-          {
-            "type": "qa",
-            "question": "Tengo TPS o asilo. ¿Puedo comprar un plan del Marketplace en 2027?",
-            "answer": "Sí, todavía podrías comprar cobertura del Marketplace, porque estatus humanitarios como TPS, refugio o asilo cuentan como presencia legal. Pero desde el 1 de enero de 2027 esos estatus ya no califican para recibir ayuda del Marketplace; solo califican quienes tienen green card, las personas cubanas o haitianas con estatus de entrante y los migrantes COFA. Revisa con cuidado tu aviso de elegibilidad. Fuente: [Inmigrantes con presencia legal](https://www.healthcare.gov/immigrants/lawfully-present-immigrants/)"
+            "question": "¿El estatus migratorio afecta la ayuda del Marketplace en 2027?",
+            "answer": "La elegibilidad para recibir ayuda depende del estatus migratorio, y las reglas cambiaron para 2027. Consulta la página oficial de CuidadoDeSalud.gov para inmigrantes: [CuidadoDeSalud.gov: Inmigrantes](https://www.cuidadodesalud.gov/es/immigrants/)"
           },
           {
             "type": "qa",
@@ -196,12 +186,12 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "¿Qué documentos necesito para aplicar al Marketplace?",
-            "answer": "La lista de HealthCare.gov pide datos de todos en tu hogar, domicilio y dirección postal, y números de Seguro Social. También pide los datos de documentos migratorios de quienes no son ciudadanos, cómo declaras impuestos, tus ingresos actuales y tu mejor cálculo de ingresos para 2027. Por último, pide tu seguro actual con números de póliza y cualquier oferta de seguro del trabajo o aviso de HRA. Fuente: [Lista de HealthCare.gov](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
+            "answer": "La lista de HealthCare.gov pide datos de todos en tu hogar, domicilio y dirección postal, y números de Seguro Social. También pide cómo declaras impuestos, tus ingresos actuales y tu mejor cálculo de ingresos para 2027. Por último, pide tu seguro actual con números de póliza y cualquier oferta de seguro del trabajo o aviso de HRA. Fuente: [Lista de HealthCare.gov](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
           },
           {
             "type": "qa",
             "question": "¿Necesito el Seguro Social de quienes no van a aplicar?",
-            "answer": "La solicitud pide el número de Seguro Social de cada persona del hogar, incluso de quienes no buscan cobertura. El Marketplace lo verifica con el Seguro Social después de que das permiso. Si no lo pones, quizá te pidan más información después. La información migratoria solo se pide a quienes necesitan cobertura. Fuente: [Lista de HealthCare.gov](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
+            "answer": "La solicitud pide el número de Seguro Social de cada persona del hogar, incluso de quienes no buscan cobertura. El Marketplace lo verifica con el Seguro Social después de que das permiso. Si no lo pones, quizá te pidan más información después. Fuente: [Lista de HealthCare.gov](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
           },
           {
             "type": "qa",
@@ -251,12 +241,12 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "¿Obamacare sigue disponible en Texas para 2027?",
-            "answer": "Sí. Los planes del Marketplace de la Ley de Cuidado de Salud a Bajo Precio, conocidos como Obamacare, están disponibles en Texas para 2027 a través de HealthCare.gov. La inscripción abierta va del 1 de noviembre de 2026 al 15 de enero de 2027. Los archivos de CMS para 2027 muestran planes en todos los condados de DFW revisados, incluidos 137 en el condado de Dallas. Fuente: [Hoja informativa de CMS 2027](https://www.cms.gov/newsroom/fact-sheets/plan-year-2027-marketplace-plans-prices-fact-sheet-0); [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
+            "answer": "Sí. Los planes del Marketplace de la Ley de Cuidado de Salud a Bajo Precio, conocidos como Obamacare, están disponibles en Texas para 2027 a través de HealthCare.gov. La inscripción abierta va del 1 de noviembre de 2026 al 15 de enero de 2027. Los archivos de CMS para 2027 muestran planes en todos los condados de DFW revisados, incluidos 137 en el condado de Dallas. La ayuda depende de los ingresos. La elegibilidad para recibir ayuda depende del estatus migratorio, y las reglas cambiaron para 2027. Consulta la página oficial de CuidadoDeSalud.gov para inmigrantes: [CuidadoDeSalud.gov: Inmigrantes](https://www.cuidadodesalud.gov/es/immigrants/). Fuente: [Hoja informativa de CMS 2027](https://www.cms.gov/newsroom/fact-sheets/plan-year-2027-marketplace-plans-prices-fact-sheet-0); [Archivos de CMS](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "qa",
             "question": "¿Qué es la aseguranza de Obamacare?",
-            "answer": "\"Aseguranza de Obamacare\" es la forma en que mucha gente llama al seguro médico que se compra en el Marketplace de la Ley de Cuidado de Salud a Bajo Precio. En Texas son planes privados que se venden por HealthCare.gov. Todos cubren 10 beneficios esenciales de salud, como servicios preventivos. Según tus ingresos y tu estatus migratorio, podrías recibir un crédito fiscal que baja tu pago mensual. Fuente: [HealthCare.gov: qué cubren los planes](https://www.healthcare.gov/coverage/what-marketplace-plans-cover/); [HealthCare.gov: ACA](https://www.healthcare.gov/glossary/affordable-care-act/)"
+            "answer": "\"Aseguranza de Obamacare\" es la forma en que mucha gente llama al seguro médico que se compra en el Marketplace de la Ley de Cuidado de Salud a Bajo Precio. En Texas son planes privados que se venden por HealthCare.gov. Todos cubren 10 beneficios esenciales de salud, como servicios preventivos. Según tus ingresos, podrías recibir un crédito fiscal que baja tu pago mensual. La elegibilidad para recibir ayuda depende del estatus migratorio, y las reglas cambiaron para 2027. Consulta la página oficial de CuidadoDeSalud.gov para inmigrantes: [CuidadoDeSalud.gov: Inmigrantes](https://www.cuidadodesalud.gov/es/immigrants/). Fuente: [HealthCare.gov: qué cubren los planes](https://www.healthcare.gov/coverage/what-marketplace-plans-cover/); [HealthCare.gov: ACA](https://www.healthcare.gov/glossary/affordable-care-act/)"
           },
           {
             "type": "qa",
@@ -318,16 +308,6 @@ const guide: Guide = {
         "label": "HealthCare.gov: quién puede usar el Marketplace (en inglés)",
         "url": "https://www.healthcare.gov/quick-guide/eligibility/",
         "accessed": "2026-11-12"
-      },
-      {
-        "label": "HealthCare.gov: cobertura para inmigrantes (en inglés)",
-        "url": "https://www.healthcare.gov/immigrants/coverage/",
-        "accessed": "2026-11-13"
-      },
-      {
-        "label": "HealthCare.gov: cobertura para inmigrantes con presencia legal (en inglés)",
-        "url": "https://www.healthcare.gov/immigrants/lawfully-present-immigrants/",
-        "accessed": "2026-11-13"
       },
       {
         "label": "Departamento de Seguros de Texas: cómo encontrar un plan médico ahora (en inglés)",
@@ -413,16 +393,21 @@ const guide: Guide = {
         "label": "HealthCare.gov: Ley de Cuidado de Salud a Bajo Precio (en inglés)",
         "url": "https://www.healthcare.gov/glossary/affordable-care-act/",
         "accessed": "2026-11-13"
+      },
+      {
+        "label": "CuidadoDeSalud.gov: Inmigrantes",
+        "url": "https://www.cuidadodesalud.gov/es/immigrants/",
+        "accessed": "2026-11-14"
       }
     ]
   },
   "en": {
     "slug": "texas-marketplace-2027-faq",
     "title": "Texas Obamacare 2027 FAQ: Dates, Savings, DFW Plans",
-    "description": "Sourced answers to 43 questions about 2027 Obamacare (Marketplace) coverage in Texas and Dallas–Fort Worth: deadlines, tax credits, immigrants, insurers.",
+    "description": "Sourced answers to 41 questions about 2027 Obamacare (Marketplace) coverage in Texas and Dallas–Fort Worth: deadlines, tax credits, eligibility, insurers.",
     "h1": "Texas and DFW Marketplace (Obamacare) health insurance 2027: frequently asked questions",
     "breadcrumbLabel": "FAQ",
-    "summary": "These are sourced answers to 43 common questions about 2027 Marketplace (Obamacare) coverage in Texas and Dallas–Fort Worth. They cover enrollment dates, eligibility, savings, local insurers, applying and Texas consumer protections.",
+    "summary": "These are sourced answers to 41 common questions about 2027 Marketplace (Obamacare) coverage in Texas and Dallas–Fort Worth. They cover enrollment dates, eligibility, savings, local insurers, applying and Texas consumer protections.",
     "sections": [
       {
         "heading": "Enrollment dates",
@@ -460,22 +445,12 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "Who can buy Obamacare (Marketplace) health insurance?",
-            "answer": "Generally, you must live in the United States, be a U.S. citizen, U.S. national or lawfully present immigrant, and not be incarcerated. People with Medicare generally can't use the Marketplace for medical coverage. Each household member's eligibility is checked separately, so families with mixed circumstances should list everyone on the application. Source: [HealthCare.gov eligibility](https://www.healthcare.gov/quick-guide/eligibility/)"
+            "answer": "Generally, you must live in the United States, meet the citizenship or immigration-status requirements, and not be incarcerated. People with Medicare generally can't use the Marketplace for medical coverage. Each household member's eligibility is checked separately, so families with mixed circumstances should list everyone on the application. Savings eligibility depends on immigration status, and the rules changed for 2027. See HealthCare.gov's official page for immigrants: [HealthCare.gov: Immigrants](https://www.healthcare.gov/immigrants/). Source: [HealthCare.gov eligibility](https://www.healthcare.gov/quick-guide/eligibility/)"
           },
           {
             "type": "qa",
-            "question": "Can undocumented immigrants get Marketplace coverage?",
-            "answer": "No. Undocumented immigrants can't get health coverage through the Marketplace. However, they can apply on behalf of family members who are eligible, such as U.S.-citizen children. The application asks about everyone in the household, but immigration information is requested only for people who are applying for coverage. Source: [HealthCare.gov immigrant coverage](https://www.healthcare.gov/immigrants/coverage/); [HealthCare.gov checklist](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
-          },
-          {
-            "type": "qa",
-            "question": "Which immigrants can get Marketplace savings in 2027?",
-            "answer": "Starting January 1, 2027, because of a federal law change, only lawful permanent residents (green card holders), Cuban or Haitian entrants, and Compact of Free Association migrants can qualify for Marketplace savings. That covers both premium tax credits and cost-sharing reductions. Other lawfully present immigrants may still buy Marketplace plans, but without income-based savings. Source: [HealthCare.gov lawfully present immigrants](https://www.healthcare.gov/immigrants/lawfully-present-immigrants/)"
-          },
-          {
-            "type": "qa",
-            "question": "I have TPS or asylum. Can I still buy a Marketplace plan in 2027?",
-            "answer": "Yes, you may still be eligible to buy Marketplace coverage, because humanitarian statuses such as Temporary Protected Status, refugee and asylee status count as lawfully present. Starting January 1, 2027, however, those statuses no longer qualify for Marketplace savings. Only green card holders, Cuban or Haitian entrants and COFA migrants do. Review your eligibility notice carefully. Source: [HealthCare.gov lawfully present immigrants](https://www.healthcare.gov/immigrants/lawfully-present-immigrants/)"
+            "question": "Does immigration status affect Marketplace savings in 2027?",
+            "answer": "Savings eligibility depends on immigration status, and the rules changed for 2027. See HealthCare.gov's official page for immigrants: [HealthCare.gov: Immigrants](https://www.healthcare.gov/immigrants/)"
           },
           {
             "type": "qa",
@@ -605,12 +580,12 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "What documents do I need to apply for Marketplace coverage?",
-            "answer": "HealthCare.gov's checklist asks for information on everyone in your household, home and mailing addresses, and Social Security numbers. It also asks for immigration document details for non-citizen applicants, tax filing status, current income, and your best estimate of 2027 household income. Finally, it asks for current coverage and policy numbers, and any job-based coverage or HRA notice. Source: [HealthCare.gov application checklist](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
+            "answer": "HealthCare.gov's checklist asks for information on everyone in your household, home and mailing addresses, and Social Security numbers. It also asks for tax filing status, current income, and your best estimate of 2027 household income. Finally, it asks for current coverage and policy numbers, and any job-based coverage or HRA notice. Source: [HealthCare.gov application checklist](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
           },
           {
             "type": "qa",
             "question": "Do I need Social Security numbers for people who aren't applying?",
-            "answer": "The Marketplace application asks for each household member's Social Security number, even those not applying for coverage. The Marketplace confirms them with Social Security after you give permission. If you don't enter an SSN, you may need to provide more information later. Immigration information is requested only for applicants who need coverage. Source: [HealthCare.gov application checklist](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
+            "answer": "The Marketplace application asks for each household member's Social Security number, even those not applying for coverage. The Marketplace confirms them with Social Security after you give permission. If you don't enter an SSN, you may need to provide more information later. Source: [HealthCare.gov application checklist](https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf)"
           },
           {
             "type": "qa",
@@ -660,12 +635,12 @@ const guide: Guide = {
           {
             "type": "qa",
             "question": "Is Obamacare still available in Texas for 2027?",
-            "answer": "Yes. Affordable Care Act Marketplace plans, often called Obamacare, are available to Texans for 2027 through HealthCare.gov. Open enrollment runs November 1, 2026 to January 15, 2027. CMS's 2027 files list on-exchange plans in every DFW county reviewed, including 137 plans in Dallas County. Savings depend on income, and 2027 rules limit savings for some immigrants. Source: [CMS PY2027 fact sheet](https://www.cms.gov/newsroom/fact-sheets/plan-year-2027-marketplace-plans-prices-fact-sheet-0); [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files); [HealthCare.gov](https://www.healthcare.gov/immigrants/lawfully-present-immigrants/)"
+            "answer": "Yes. Affordable Care Act Marketplace plans, often called Obamacare, are available to Texans for 2027 through HealthCare.gov. Open enrollment runs November 1, 2026 to January 15, 2027. CMS's 2027 files list on-exchange plans in every DFW county reviewed, including 137 plans in Dallas County. Savings depend on income. Savings eligibility depends on immigration status, and the rules changed for 2027. See HealthCare.gov's official page for immigrants: [HealthCare.gov: Immigrants](https://www.healthcare.gov/immigrants/). Source: [CMS PY2027 fact sheet](https://www.cms.gov/newsroom/fact-sheets/plan-year-2027-marketplace-plans-prices-fact-sheet-0); [CMS PUFs](https://www.cms.gov/marketplace/resources/data/public-use-files)"
           },
           {
             "type": "qa",
             "question": "What does \"aseguranza de Obamacare\" mean?",
-            "answer": "\"Aseguranza de Obamacare\" is a common Spanish way to say health insurance bought through the Affordable Care Act Marketplace. In Texas, these are private plans sold through HealthCare.gov. Every Marketplace plan covers 10 essential health benefits, including preventive and wellness services. Depending on income and immigration status, you may qualify for a premium tax credit that lowers your monthly cost. Source: [HealthCare.gov: what Marketplace plans cover](https://www.healthcare.gov/coverage/what-marketplace-plans-cover/); [HealthCare.gov: Affordable Care Act](https://www.healthcare.gov/glossary/affordable-care-act/)"
+            "answer": "\"Aseguranza de Obamacare\" is a common Spanish way to say health insurance bought through the Affordable Care Act Marketplace. In Texas, these are private plans sold through HealthCare.gov. Every Marketplace plan covers 10 essential health benefits, including preventive and wellness services. Depending on income, you may qualify for a premium tax credit that lowers your monthly cost. Savings eligibility depends on immigration status, and the rules changed for 2027. See HealthCare.gov's official page for immigrants: [HealthCare.gov: Immigrants](https://www.healthcare.gov/immigrants/). Source: [HealthCare.gov: what Marketplace plans cover](https://www.healthcare.gov/coverage/what-marketplace-plans-cover/); [HealthCare.gov: Affordable Care Act](https://www.healthcare.gov/glossary/affordable-care-act/)"
           },
           {
             "type": "qa",
@@ -727,16 +702,6 @@ const guide: Guide = {
         "label": "HealthCare.gov: Who can use the Marketplace",
         "url": "https://www.healthcare.gov/quick-guide/eligibility/",
         "accessed": "2026-11-12"
-      },
-      {
-        "label": "HealthCare.gov: Health coverage for immigrants",
-        "url": "https://www.healthcare.gov/immigrants/coverage/",
-        "accessed": "2026-11-13"
-      },
-      {
-        "label": "HealthCare.gov: Coverage for lawfully present immigrants",
-        "url": "https://www.healthcare.gov/immigrants/lawfully-present-immigrants/",
-        "accessed": "2026-11-13"
       },
       {
         "label": "Texas Department of Insurance: How to find a new health plan now",
@@ -822,13 +787,19 @@ const guide: Guide = {
         "label": "HealthCare.gov: Affordable Care Act",
         "url": "https://www.healthcare.gov/glossary/affordable-care-act/",
         "accessed": "2026-11-13"
+      },
+      {
+        "label": "HealthCare.gov: Immigrants",
+        "url": "https://www.healthcare.gov/immigrants/",
+        "accessed": "2026-11-14"
       }
     ]
   },
   "author": "Jesús Esteban Guerra",
   "reviewer": "Jesús Esteban Guerra",
   "reviewedDate": "2026-11-13",
-  "updatedDate": "2026-11-13",
+  "updatedDate": "2026-11-14",
+  "editorialApprovedDate": "2026-11-14",
   "relatedGuides": [
     "texas-marketplace-2027",
     "dallas-county-2027",

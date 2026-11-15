@@ -44,13 +44,29 @@ test("each guide has matching EN/ES structure and an official source", () => {
   }
 });
 
-test("release guard: no guide is approved, so production shows none of them", () => {
-  // Remove this test, or update it, in the change that records Jesús's editorial approval.
+test("release: the four guides were approved together on 2026-11-14 and are publishable", () => {
+  // Approved by Jesús Esteban Guerra as reviewer, excluding immigration content (see the next test).
   for (const guide of allGuides) {
-    assert.equal(guide.editorialApprovedDate, undefined, `${guide.id} must stay preview-only until the release window`);
-    assert.equal(isPublishableGuide(guide), false);
+    assert.equal(guide.editorialApprovedDate, "2026-11-14", guide.id);
+    assert.equal(isPublishableGuide(guide), true, guide.id);
   }
   assert.deepEqual([...guidePublicationBlockers], []);
+});
+
+test("no immigration-status interpretation: only the neutral pointer to the official immigrant pages", () => {
+  // Approval excluded immigration content. Guides may say savings depend on immigration status and link
+  // the official page; they must not say which statuses qualify.
+  const interpretation = /\bLPRs?\b|green card|\bCOFA\b|Compact of Free Association|Pacto de Libre Asociación|cuban|haitian|cubanas?|haitianas?|undocumented|indocumentad|lawfully present|presencia legal|\bTPS\b|asyl|asilad|\basilo\b|refugee|refugiad|residentes? permanentes?/i;
+  const pointer = { en: "https://www.healthcare.gov/immigrants/", es: "https://www.cuidadodesalud.gov/es/immigrants/" } as const;
+  for (const guide of allGuides) {
+    for (const locale of ["es", "en"] as const) {
+      const serialized = JSON.stringify(guide[locale]);
+      assert.doesNotMatch(serialized, interpretation, `${guide.id} (${locale})`);
+      for (const old of ["/immigrants/coverage/", "/immigrants/lawfully-present-immigrants/"]) assert.ok(!serialized.includes(old), `${guide.id} (${locale}) ${old}`);
+      // Any mention of immigration comes with the official page in the right language.
+      if (/immigra|migratori/i.test(serialized)) assert.ok(serialized.includes(pointer[locale]), `${guide.id} (${locale}) mentions immigration without the official page`);
+    }
+  }
 });
 
 test("the validator rejects draft markers, long titles, bad links and bad parents", () => {

@@ -2,18 +2,18 @@ import type { Guide } from "../types";
 
 /**
  * Source draft: alleanza-content-drafts/texas-marketplace-2027.md (2026-11-13). Facts and sources are logged in that
- * folder's CLAIMS.csv. editorialApprovedDate is intentionally unset: this guide is preview-only until
- * Jesús approves it and Charlie opens a release window.
+ * folder's CLAIMS.csv. Editorially approved by Jesús Esteban Guerra on 2026-11-14 (immigration-status
+ * savings rules removed at his request; readers are pointed to the official immigrant pages).
  */
 const guide: Guide = {
   "id": "texas-marketplace-2027",
   "es": {
     "slug": "marketplace-texas-2027",
     "title": "Seguro médico Obamacare en Texas 2027: guía del Marketplace",
-    "description": "Inscripción 2027 en el Marketplace (Obamacare) de Texas: fechas, quién recibe ayuda, nueva regla para inmigrantes, precios y qué llevar al aplicar.",
+    "description": "Inscripción 2027 en el Marketplace (Obamacare) de Texas: fechas, quién recibe ayuda, precios y qué llevar al aplicar.",
     "h1": "Aseguranza médica del Marketplace (Obamacare) en Texas para 2027",
     "breadcrumbLabel": "Marketplace de Texas 2027",
-    "summary": "En Texas, los planes del Marketplace (Obamacare) se compran en HealthCare.gov, y la inscripción abierta para la cobertura de 2027 va del 1 de noviembre de 2026 al 15 de enero de 2027. Elige un plan a más tardar el 15 de diciembre de 2026 para tener cobertura desde el 1 de enero de 2027. La ayuda depende de los ingresos del hogar y, desde 2027, solo ciertos estatus migratorios califican para recibirla.",
+    "summary": "En Texas, los planes del Marketplace (Obamacare) se compran en HealthCare.gov, y la inscripción abierta para la cobertura de 2027 va del 1 de noviembre de 2026 al 15 de enero de 2027. Elige un plan a más tardar el 15 de diciembre de 2026 para tener cobertura desde el 1 de enero de 2027. La ayuda depende de los ingresos del hogar y del estatus migratorio, y las reglas cambiaron para 2027.",
     "sections": [
       {
         "heading": "Sobre el Marketplace de Texas",
@@ -47,28 +47,7 @@ const guide: Guide = {
         "blocks": [
           {
             "type": "paragraph",
-            "text": "Por lo general, tienes que vivir en EE. UU., ser ciudadano, nacional o inmigrante con presencia legal, y no estar encarcelado. Si tienes Medicare, normalmente no puedes inscribirte. [Elegibilidad](https://www.healthcare.gov/quick-guide/eligibility/) Las personas indocumentadas no pueden comprar un plan del Marketplace, pero sí pueden solicitarlo para familiares que califiquen. [Cobertura para inmigrantes](https://www.healthcare.gov/immigrants/coverage/)"
-          }
-        ]
-      },
-      {
-        "heading": "Lo nuevo en 2027: quién recibe ayuda si no eres ciudadano",
-        "blocks": [
-          {
-            "type": "paragraph",
-            "text": "Por un cambio en la ley federal, **a partir del 1 de enero de 2027** solo estos estatus migratorios pueden recibir ayuda del Marketplace (crédito fiscal para la prima y reducción de costos compartidos):"
-          },
-          {
-            "type": "list",
-            "items": [
-              "Residentes permanentes (con green card)",
-              "Personas cubanas o haitianas con estatus de entrante",
-              "Migrantes del Pacto de Libre Asociación (COFA)"
-            ]
-          },
-          {
-            "type": "paragraph",
-            "text": "Las personas con otros estatus de presencia legal todavía pueden comprar un plan del Marketplace, pero sin ayuda según ingresos. Por ejemplo: TPS, refugiados, asilados o personas con visa vigente. [HealthCare.gov: inmigrantes con presencia legal](https://www.healthcare.gov/immigrants/lawfully-present-immigrants/) Si esto afecta a alguien en tu familia, revisa las reglas oficiales antes de renovar."
+            "text": "Por lo general, tienes que vivir en EE. UU., cumplir los requisitos de ciudadanía o estatus migratorio, y no estar encarcelado. Si tienes Medicare, normalmente no puedes inscribirte. [Elegibilidad](https://www.healthcare.gov/quick-guide/eligibility/) La elegibilidad para recibir ayuda depende del estatus migratorio, y las reglas cambiaron para 2027. Consulta la página oficial de CuidadoDeSalud.gov para inmigrantes: [CuidadoDeSalud.gov: Inmigrantes](https://www.cuidadodesalud.gov/es/immigrants/)"
           }
         ]
       },
@@ -144,7 +123,6 @@ const guide: Guide = {
               "Datos de todos en tu hogar, incluso de quienes no van a aplicar (declarantes y dependientes)",
               "Domicilio y dirección postal",
               "Números de Seguro Social",
-              "Datos de los documentos migratorios, si alguien que aplica no es ciudadano",
               "Cómo declaras impuestos",
               "Ingresos de todos en el hogar, incluidos trabajo por cuenta propia, propinas, desempleo y Seguro Social",
               "Tu mejor cálculo de los ingresos del hogar para 2027",
@@ -232,16 +210,6 @@ const guide: Guide = {
         "accessed": "2026-11-12"
       },
       {
-        "label": "HealthCare.gov: cobertura para inmigrantes (en inglés)",
-        "url": "https://www.healthcare.gov/immigrants/coverage/",
-        "accessed": "2026-11-13"
-      },
-      {
-        "label": "HealthCare.gov: cobertura para inmigrantes con presencia legal (en inglés)",
-        "url": "https://www.healthcare.gov/immigrants/lawfully-present-immigrants/",
-        "accessed": "2026-11-13"
-      },
-      {
         "label": "HealthCare.gov: crédito fiscal para la prima (en inglés)",
         "url": "https://www.healthcare.gov/lower-costs/save-on-monthly-premiums/",
         "accessed": "2026-11-13"
@@ -300,16 +268,21 @@ const guide: Guide = {
         "label": "HealthCare.gov: lista para la solicitud del Marketplace (PDF, en inglés)",
         "url": "https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf",
         "accessed": "2026-11-13"
+      },
+      {
+        "label": "CuidadoDeSalud.gov: Inmigrantes",
+        "url": "https://www.cuidadodesalud.gov/es/immigrants/",
+        "accessed": "2026-11-14"
       }
     ]
   },
   "en": {
     "slug": "texas-marketplace-2027",
     "title": "Texas Marketplace (Obamacare) 2027 Guide",
-    "description": "2027 Marketplace enrollment in Texas: dates, who qualifies for savings, the new immigrant rule, Texas silver pricing and what to bring to apply.",
+    "description": "2027 Marketplace enrollment in Texas: dates, who qualifies for savings, Texas silver pricing and what to bring to apply.",
     "h1": "Texas Marketplace (Obamacare) health insurance for 2027",
     "breadcrumbLabel": "Texas Marketplace 2027",
-    "summary": "Texans buy Marketplace (Obamacare) plans on HealthCare.gov, and open enrollment for 2027 coverage runs from November 1, 2026 through January 15, 2027. Choose a plan by December 15, 2026 for coverage that starts January 1, 2027. Savings depend on household income, and starting in 2027 only certain immigration statuses qualify for them.",
+    "summary": "Texans buy Marketplace (Obamacare) plans on HealthCare.gov, and open enrollment for 2027 coverage runs from November 1, 2026 through January 15, 2027. Choose a plan by December 15, 2026 for coverage that starts January 1, 2027. Savings depend on household income and immigration status, and the rules changed for 2027.",
     "sections": [
       {
         "heading": "About the Texas Marketplace",
@@ -343,28 +316,7 @@ const guide: Guide = {
         "blocks": [
           {
             "type": "paragraph",
-            "text": "You generally must live in the U.S., be a citizen, national or lawfully present immigrant, and not be incarcerated. Having Medicare generally rules out Marketplace enrollment. [Eligibility](https://www.healthcare.gov/quick-guide/eligibility/) Undocumented immigrants can't buy Marketplace coverage, but they can apply for family members who qualify. [Immigrant coverage](https://www.healthcare.gov/immigrants/coverage/)"
-          }
-        ]
-      },
-      {
-        "heading": "New for 2027: who can get savings if you are not a citizen",
-        "blocks": [
-          {
-            "type": "paragraph",
-            "text": "Because of a federal law change, **starting January 1, 2027** only these immigration statuses can qualify for Marketplace savings (the premium tax credit and cost-sharing reductions):"
-          },
-          {
-            "type": "list",
-            "items": [
-              "Lawful permanent residents (green card holders)",
-              "Cuban or Haitian entrants",
-              "Compact of Free Association (COFA) migrants"
-            ]
-          },
-          {
-            "type": "paragraph",
-            "text": "People with other lawfully present statuses can still buy a Marketplace plan, but without income-based savings. Examples include Temporary Protected Status, refugees and asylees, and valid visas. [HealthCare.gov: lawfully present immigrants](https://www.healthcare.gov/immigrants/lawfully-present-immigrants/) If this affects someone in your household, review the official rules before you renew."
+            "text": "You generally must live in the U.S., meet the citizenship or immigration-status requirements, and not be incarcerated. Having Medicare generally rules out Marketplace enrollment. [Eligibility](https://www.healthcare.gov/quick-guide/eligibility/) Savings eligibility depends on immigration status, and the rules changed for 2027. See HealthCare.gov's official page for immigrants: [HealthCare.gov: Immigrants](https://www.healthcare.gov/immigrants/)"
           }
         ]
       },
@@ -440,7 +392,6 @@ const guide: Guide = {
               "Every household member, including people not applying (tax filers and dependents)",
               "Home and mailing addresses",
               "Social Security numbers",
-              "Immigration document information, for applicants who aren't citizens",
               "How you file taxes",
               "Income for everyone in the household, including self-employment, tips, unemployment and Social Security",
               "Your best estimate of 2027 household income",
@@ -528,16 +479,6 @@ const guide: Guide = {
         "accessed": "2026-11-12"
       },
       {
-        "label": "HealthCare.gov: Health coverage for immigrants",
-        "url": "https://www.healthcare.gov/immigrants/coverage/",
-        "accessed": "2026-11-13"
-      },
-      {
-        "label": "HealthCare.gov: Coverage for lawfully present immigrants",
-        "url": "https://www.healthcare.gov/immigrants/lawfully-present-immigrants/",
-        "accessed": "2026-11-13"
-      },
-      {
         "label": "HealthCare.gov: Premium tax credit",
         "url": "https://www.healthcare.gov/lower-costs/save-on-monthly-premiums/",
         "accessed": "2026-11-13"
@@ -596,13 +537,19 @@ const guide: Guide = {
         "label": "HealthCare.gov: My Marketplace Application Checklist (PDF)",
         "url": "https://www.healthcare.gov/downloads/apply-for-or-renew-coverage.pdf",
         "accessed": "2026-11-13"
+      },
+      {
+        "label": "HealthCare.gov: Immigrants",
+        "url": "https://www.healthcare.gov/immigrants/",
+        "accessed": "2026-11-14"
       }
     ]
   },
   "author": "Jesús Esteban Guerra",
   "reviewer": "Jesús Esteban Guerra",
   "reviewedDate": "2026-11-13",
-  "updatedDate": "2026-11-13",
+  "updatedDate": "2026-11-14",
+  "editorialApprovedDate": "2026-11-14",
   "relatedGuides": [
     "dallas-county-2027",
     "texas-marketplace-2027-faq",

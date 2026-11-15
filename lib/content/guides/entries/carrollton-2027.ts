@@ -2,8 +2,7 @@ import type { Guide } from "../types";
 
 /**
  * Source draft: alleanza-content-drafts/city-carrollton-2027.md (2026-11-13). Facts and sources are logged in that
- * folder's CLAIMS.csv. editorialApprovedDate is intentionally unset: this guide is preview-only until
- * Jesús approves it and Charlie opens a release window.
+ * folder's CLAIMS.csv. Editorially approved by Jesús Esteban Guerra on 2026-11-14.
  */
 const guide: Guide = {
   "id": "carrollton-2027",
@@ -321,6 +320,7 @@ const guide: Guide = {
   "reviewer": "Jesús Esteban Guerra",
   "reviewedDate": "2026-11-13",
   "updatedDate": "2026-11-13",
+  "editorialApprovedDate": "2026-11-14",
   "relatedGuides": [
     "texas-marketplace-2027",
     "dallas-county-2027",
