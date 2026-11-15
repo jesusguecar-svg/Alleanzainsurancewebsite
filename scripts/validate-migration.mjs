@@ -20,6 +20,11 @@
  * Exits non-zero on any failure.
  */
 import { readdirSync, readFileSync } from "node:fs";
+import { register } from "node:module";
+
+// The guide content files import each other without extensions, the way Next bundles them; the
+// test resolve hooks let Node load them directly (the same hooks `npm test` uses).
+register("../tests/resolve-hooks.mjs", import.meta.url);
 
 const BASE = (process.env.BASE_URL || "http://localhost:3100").replace(/\/$/, "");
 const CANONICAL = (process.env.EXPECT_CANONICAL || "https://alleanzainsurance.org").replace(/\/$/, "");
@@ -160,7 +165,8 @@ for (const path of pages) {
   for (const block of html.matchAll(/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)) {
     let data;
     try { data = JSON.parse(block[1]); } catch { fail(`${path}: JSON-LD parses`); continue; }
-    const urls = JSON.stringify(data).match(/https?:\/\/[^"]+/g) || [];
+    // A guide Article's `citation` lists its external Sources; those URLs are checked with the guides below.
+    const urls = JSON.stringify(data, (key, value) => (key === "citation" ? undefined : value)).match(/https?:\/\/[^"]+/g) || [];
     const own = urls.filter((u) => !/schema\.org|google\.com|nipr\.com|bbb\.org|instagram\.com|healthcare\.gov/.test(u));
     check(own.every((u) => u.startsWith(CANONICAL)), `${path}: JSON-LD URLs on canonical host (${own.length})`);
   }
@@ -216,7 +222,7 @@ const homeDirectory = (htmlCache.get("/") ?? "").split('class="home-directory"')
 check(homeDirectory.includes('href="/health"') && !homeDirectory.includes('href="/property-casualty"'), "/: home directory lists live lines and not Property & Casualty");
 
 // ---------------------------------------------------------------- guides
-// Node runs these TypeScript files directly: they import only types.
+// Node runs these TypeScript files directly through the resolve hooks registered above.
 const guidesDir = new URL("../lib/content/guides/", import.meta.url);
 const { validateGuides, isPublishableGuide } = await import(new URL("validate.ts", guidesDir).href);
 const guideRegistry = readFileSync(new URL("index.ts", guidesDir), "utf8");
@@ -272,10 +278,21 @@ for (const guide of publicGuides) {
     const article = nodes.find((node) => node["@type"] === "Article");
     check(article?.publisher?.["@id"] === organizationId, `${path}: Article JSON-LD publisher references the organization`);
     check(article?.author?.name === guide.author && article?.mainEntityOfPage?.reviewedBy?.name === guide.reviewer, `${path}: Article JSON-LD author and reviewer`);
+    check(JSON.stringify(article?.citation?.map((item) => item.url)) === JSON.stringify(content.sources.map((source) => source.url)), `${path}: Article JSON-LD citation lists the Sources`);
     check(article?.dateModified === guide.updatedDate && article?.inLanguage === `${locale}-US`, `${path}: Article JSON-LD dateModified and inLanguage`);
     const crumbs = nodes.find((node) => node["@type"] === "BreadcrumbList")?.itemListElement ?? [];
     check(crumbs.at(-1)?.item === CANONICAL + path, `${path}: BreadcrumbList ends on the guide`);
     check(!nodes.some((node) => node["@type"] === "FAQPage"), `${path}: no FAQPage`);
+    // Guides may be approved one at a time: no link or breadcrumb to a guide this build does not serve.
+    const hiddenPaths = allGuides.filter((other) => !publicGuides.includes(other)).flatMap((other) => Object.values(guidePathsOf(other)));
+    // Exact path match: "/en/health/texas-marketplace-2027" is a prefix of ".../texas-marketplace-2027-faq".
+    const linksTo = (target) => new RegExp(`href="${target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["?#]`).test(html);
+    check(hiddenPaths.every((hidden) => !linksTo(hidden)), `${path}: no link to an unpublished guide`);
+    check(crumbs.every((crumb) => !hiddenPaths.includes(crumb.item.slice(CANONICAL.length))), `${path}: BreadcrumbList has no unpublished guide`);
+    const newTabHint = locale === "es" ? "(se abre en una pestaña nueva)" : "(opens in a new tab)";
+    // Inside the article (the shared header and contact components are outside this check).
+    const blankLinks = (html.match(/<article[^>]*data-cta-location="guide"[\s\S]*?<\/article>/)?.[0] ?? "").match(/<a [^>]*target="_blank"[^>]*>[\s\S]*?<\/a>/g) ?? [];
+    check(blankLinks.length > 0 && blankLinks.every((link) => link.includes(newTabHint)), `${path}: new-tab links say so to screen readers (${blankLinks.length})`);
     check(!html.split('id="contacto"')[0].includes('href="/contacto"'), `${path}: no link to /contacto before the guide's form`);
     check(html.includes('id="contacto"') && html.includes('name="consent"') && /href="#contacto"[^>]*data-cta="guide_agent"/.test(html), `${path}: CTA goes to the health contact form`);
     check((htmlCache.get(labels.index) ?? "").includes(`href="${path}"`), `${labels.index}: lists ${path}`);

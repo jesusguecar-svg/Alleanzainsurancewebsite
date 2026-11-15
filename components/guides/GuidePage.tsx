@@ -1,17 +1,65 @@
 import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { formatGuideDate, guideIndexPath, guidePath, guides, type Guide, type GuideLocale } from "@/lib/content/guides";
+import { breadcrumbLabel, formatGuideDate, getParentGuide, guideIndexPath, guidePath, guides, type Guide, type GuideBlock, type GuideLocale } from "@/lib/content/guides";
+import { shownRelatedOf } from "@/lib/content/guides/validate";
 import { guideArticleSchema, guideBreadcrumbSchema } from "@/lib/seo/guides";
 import { guideCopy } from "./copy";
 import { GuideContactForm } from "./GuideContactForm";
 import { GuideShell } from "./GuideShell";
+import { ExternalLink, InlineText } from "./InlineText";
 
 const heading = "mt-12 font-display text-2xl font-semibold tracking-tight";
+const body = "leading-relaxed text-navy/80";
+
+function Block({ block, locale }: { block: GuideBlock; locale: GuideLocale }) {
+  switch (block.type) {
+    case "paragraph":
+      return <p className={`mt-4 ${body}`}><InlineText locale={locale} text={block.text} /></p>;
+    case "list": {
+      const items = block.items.map((item, index) => <li key={index}><InlineText locale={locale} text={item} /></li>);
+      return block.ordered
+        ? <ol className={`mt-4 list-decimal space-y-2 pl-6 ${body}`}>{items}</ol>
+        : <ul className={`mt-4 list-disc space-y-2 pl-6 ${body}`}>{items}</ul>;
+    }
+    case "table": {
+      const { caption, columns, rows } = block.table;
+      return (
+        <div className="mt-5 overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm md:text-base">
+            <caption className="mb-2 text-left text-sm font-semibold text-navy/75"><InlineText locale={locale} text={caption} /></caption>
+            <thead>
+              <tr className="border-b-2 border-navy/25">
+                {columns.map((column, index) => <th key={index} scope="col" className="py-2 pr-4 align-bottom font-semibold"><InlineText locale={locale} text={column} /></th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, rowIndex) => (
+                <tr key={rowIndex} className="border-b border-navy/15">
+                  {row.map((cell, cellIndex) => cellIndex === 0
+                    ? <th key={cellIndex} scope="row" className="py-3 pr-4 align-top font-semibold"><InlineText locale={locale} text={cell} /></th>
+                    : <td key={cellIndex} className="py-3 pr-4 align-top text-navy/75"><InlineText locale={locale} text={cell} /></td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+    case "qa":
+      return (
+        <>
+          <h3 className="mt-8 font-display text-lg font-semibold tracking-tight"><InlineText locale={locale} text={block.question} /></h3>
+          <p className={`mt-2 ${body}`}><InlineText locale={locale} text={block.answer} /></p>
+        </>
+      );
+  }
+}
 
 export function GuidePage({ guide, locale }: { guide: Guide; locale: GuideLocale }) {
   const copy = guideCopy[locale];
   const content = guide[locale];
-  const related = guides.filter((other) => guide.relatedGuides.includes(other.id));
+  const related = shownRelatedOf(guide, guides);
+  const parent = getParentGuide(guide);
   const ctaProps = { "data-cta": "guide_agent", "data-product-line": "health" };
 
   return (
@@ -28,7 +76,8 @@ export function GuidePage({ guide, locale }: { guide: Guide; locale: GuideLocale
           <ol className="flex flex-wrap gap-x-2 gap-y-1">
             <li><a className="hover:underline" href={copy.health.href}>{copy.health.label}</a> <span aria-hidden="true">/</span></li>
             <li><a className="hover:underline" href={guideIndexPath[locale]}>{copy.index.label}</a> <span aria-hidden="true">/</span></li>
-            <li aria-current="page">{content.h1}</li>
+            {parent && <li><a className="hover:underline" href={guidePath(parent, locale)}>{breadcrumbLabel(parent, locale)}</a> <span aria-hidden="true">/</span></li>}
+            <li aria-current="page">{breadcrumbLabel(guide, locale)}</li>
           </ol>
         </nav>
         <h1 className="mt-6 font-display text-4xl font-bold tracking-tight md:text-5xl">{content.h1}</h1>
@@ -52,7 +101,7 @@ export function GuidePage({ guide, locale }: { guide: Guide; locale: GuideLocale
         {content.sections.map((section) => (
           <section key={section.heading}>
             <h2 className={heading}>{section.heading}</h2>
-            {section.paragraphs.map((paragraph) => <p key={paragraph} className="mt-4 leading-relaxed text-navy/80">{paragraph}</p>)}
+            {section.blocks.map((block, index) => <Block key={index} block={block} locale={locale} />)}
           </section>
         ))}
 
@@ -60,7 +109,7 @@ export function GuidePage({ guide, locale }: { guide: Guide; locale: GuideLocale
         <ol className="mt-5 list-decimal space-y-2 pl-5 text-sm text-navy/75">
           {content.sources.map((source) => (
             <li key={source.url}>
-              <a className="font-semibold underline underline-offset-4" href={source.url} target="_blank" rel="noopener noreferrer">{source.label}</a>. {copy.accessed} <time dateTime={source.accessed}>{formatGuideDate(source.accessed, locale)}</time>.
+              <ExternalLink href={source.url} locale={locale}>{source.label}</ExternalLink>. {copy.accessed} <time dateTime={source.accessed}>{formatGuideDate(source.accessed, locale)}</time>.
             </li>
           ))}
         </ol>
