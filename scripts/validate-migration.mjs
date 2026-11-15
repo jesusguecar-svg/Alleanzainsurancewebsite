@@ -225,6 +225,9 @@ check(homeDirectory.includes('href="/health"') && !homeDirectory.includes('href=
 // Node runs these TypeScript files directly through the resolve hooks registered above.
 const guidesDir = new URL("../lib/content/guides/", import.meta.url);
 const { validateGuides, isPublishableGuide } = await import(new URL("validate.ts", guidesDir).href);
+const { centralDateTime } = await import(new URL("dates.ts", guidesDir).href);
+// Agent profile slugs are the name without accents: "Jesús Esteban Guerra" → jesus-esteban-guerra.
+const agentSlug = (name) => name.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().trim().replace(/\s+/g, "-");
 const guideRegistry = readFileSync(new URL("index.ts", guidesDir), "utf8");
 const allGuides = [];
 for (const file of readdirSync(new URL("entries/", guidesDir))) {
@@ -279,7 +282,10 @@ for (const guide of publicGuides) {
     check(article?.publisher?.["@id"] === organizationId, `${path}: Article JSON-LD publisher references the organization`);
     check(article?.author?.name === guide.author && article?.mainEntityOfPage?.reviewedBy?.name === guide.reviewer, `${path}: Article JSON-LD author and reviewer`);
     check(JSON.stringify(article?.citation?.map((item) => item.url)) === JSON.stringify(content.sources.map((source) => source.url)), `${path}: Article JSON-LD citation lists the Sources`);
-    check(article?.dateModified === guide.updatedDate && article?.inLanguage === `${locale}-US`, `${path}: Article JSON-LD dateModified and inLanguage`);
+    check(article?.dateModified === centralDateTime(guide.updatedDate) && article?.inLanguage === `${locale}-US`, `${path}: Article JSON-LD dateModified (${article?.dateModified}) and inLanguage`);
+    const profile = `${CANONICAL}${locale === "es" ? "/agentes" : "/en/agents"}/${agentSlug(guide.author)}`;
+    check(article?.author?.url === profile && article?.mainEntityOfPage?.reviewedBy?.url === profile, `${path}: Article JSON-LD author and reviewer link to the agent profile`);
+    check(typeof article?.image?.url === "string" && article.image.url.startsWith(`${CANONICAL}/`) && article.image.width >= 1200, `${path}: Article JSON-LD image (${article?.image?.url})`);
     const crumbs = nodes.find((node) => node["@type"] === "BreadcrumbList")?.itemListElement ?? [];
     check(crumbs.at(-1)?.item === CANONICAL + path, `${path}: BreadcrumbList ends on the guide`);
     check(!nodes.some((node) => node["@type"] === "FAQPage"), `${path}: no FAQPage`);
@@ -325,12 +331,16 @@ check((missingHtml.match(/<h1[\s>]/g)?.length ?? 0) === 1, "404 page: exactly on
 
 // The address and hours may be written only in lib/config/contact.ts.
 const napLiteral = /Midcourt|75006|\b\d{1,2}:00\b|Lunes a viernes|Monday.Friday/;
+// Turns guide days into ISO datetimes ("T00:00:00-06:00"): clock times there are not office hours.
+const addressLiteral = /Midcourt|75006/;
+const clockTimeFiles = ["lib/content/guides/dates.ts"];
 const sourceFiles = (dir) => readdirSync(new URL(`../${dir}/`, import.meta.url), { recursive: true, withFileTypes: true })
   .filter((entry) => entry.isFile() && /\.tsx?$/.test(entry.name))
   .map((entry) => `${entry.parentPath ?? entry.path}/${entry.name}`);
 for (const file of ["app", "components", "lib"].flatMap(sourceFiles)) {
   if (file.endsWith("lib/config/contact.ts")) continue;
-  check(!napLiteral.test(readFileSync(file, "utf8")), `${file}: address and hours come from contact.ts`);
+  const pattern = clockTimeFiles.some((allowed) => file.endsWith(allowed)) ? addressLiteral : napLiteral;
+  check(!pattern.test(readFileSync(file, "utf8")), `${file}: address and hours come from contact.ts`);
 }
 
 for (const [link, from] of internalLinks) {

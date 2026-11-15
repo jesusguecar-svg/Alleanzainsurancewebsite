@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { allGuides, guidePath } from "@/lib/content/guides";
-import { guideArticleSchema, guideBreadcrumbSchema, guideMetadata } from "@/lib/seo/guides";
+import { centralDateTime } from "@/lib/content/guides/dates";
+import { siteUrl } from "@/lib/config/site";
+import { guideArticleSchema, guideBreadcrumbSchema, guideImage, guideMetadata } from "@/lib/seo/guides";
 
 // In tests (not a production deploy) every guide is shown, so parents and paths resolve.
 
@@ -45,4 +47,36 @@ test("breadcrumbs: Health › Learn › (parent) › guide, using breadcrumb lab
   const crumbs = guideBreadcrumbSchema(byId.get("texas-marketplace-2027-faq")!, "es").itemListElement;
   assert.ok(crumbs.at(-1)!.item.endsWith(guidePath(byId.get("texas-marketplace-2027-faq")!, "es")));
   assert.deepEqual(crumbs.map((item) => item.position), [1, 2, 3, 4]);
+});
+
+test("dates: a guide day is local midnight in Central time, with the daylight-saving offset", () => {
+  assert.equal(centralDateTime("2026-11-14"), "2026-11-14T00:00:00-06:00");
+  assert.equal(centralDateTime("2026-07-01"), "2026-07-01T00:00:00-05:00");
+  // 2026 changes: 8 March (spring forward at 02:00) and 1 November (fall back at 02:00).
+  assert.equal(centralDateTime("2026-03-07"), "2026-03-07T00:00:00-06:00");
+  assert.equal(centralDateTime("2026-03-08"), "2026-03-08T00:00:00-06:00");
+  assert.equal(centralDateTime("2026-03-09"), "2026-03-09T00:00:00-05:00");
+  assert.equal(centralDateTime("2026-11-01"), "2026-11-01T00:00:00-05:00");
+  assert.equal(centralDateTime("2026-11-02"), "2026-11-02T00:00:00-06:00");
+  assert.throws(() => centralDateTime("2026-11-14T00:00:00Z"));
+});
+
+test("Article: full datetime with offset, author and reviewer link to the agent profile, image set", () => {
+  for (const guide of allGuides) {
+    for (const locale of ["es", "en"] as const) {
+      const article = guideArticleSchema(guide, locale);
+      assert.match(article.dateModified, /^\d{4}-\d{2}-\d{2}T00:00:00-0[56]:00$/);
+      // Same day as the sitemap lastmod (updatedDate).
+      assert.ok(article.dateModified.startsWith(`${guide.updatedDate}T`), guide.id);
+      assert.ok(!("datePublished" in article));
+      const profile = `${siteUrl}${locale === "es" ? "/agentes" : "/en/agents"}/jesus-esteban-guerra`;
+      assert.equal(article.author.url, profile);
+      assert.equal(article.mainEntityOfPage.reviewedBy.url, profile);
+      assert.equal(article.image.url, guideImage[locale].url);
+      assert.ok(article.image.width >= 1200);
+      const og = guideMetadata(guide, locale).openGraph as { modifiedTime?: string; images?: { url: string }[] };
+      assert.equal(og.modifiedTime, article.dateModified);
+      assert.equal(og.images?.[0]?.url, article.image.url);
+    }
+  }
 });
