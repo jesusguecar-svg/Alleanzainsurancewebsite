@@ -11,6 +11,7 @@ import { HealthJourneyFilm } from "./HealthJourneyFilm";
 import { ReviewCarousel } from "./ReviewCarousel";
 import f from "./faq.module.css";
 import p from "./platform.module.css";
+import { responsiveImg } from "@/lib/responsive-image";
 
 type LocaleProps = { locale: "es" | "en" };
 const words = (locale: "es" | "en") => (es: string, en: string) => locale === "en" ? en : es;
@@ -33,7 +34,7 @@ export function HealthHero({ locale }: LocaleProps) {
       <div className={p.heroOrbit} aria-hidden="true" />
       {/* Existing Health imagery and brand artwork; no new stock imagery. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={p.heroPhoto} src="/cinematic/people/salud.jpg" alt={t("Una madre y su hija comparten un abrazo", "A mother and daughter sharing a hug")} width={1536} height={1024} fetchPriority="high" />
+      <img className={p.heroPhoto} {...responsiveImg({ src: "/cinematic/people/salud.jpg", width: 1536, height: 1024, alt: t("Una madre y su hija comparten un abrazo", "A mother and daughter sharing a hug"), sizes: "(max-width: 767px) 100vw, 50vw", priority: true })} />
       <div className={p.visualCaption}><span>{t("TU VIDA ES EL PUNTO DE PARTIDA", "YOUR LIFE IS THE STARTING POINT")}</span><p>{t("Primero tú.", "You come first.")}<br /><em>{t("Después, el plan.", "Then, the plan.")}</em></p></div>
       <div className={p.heroNote}><span className={p.noteIcon}><SlidersHorizontal size={23} strokeWidth={1.4} /></span><div><strong>{t("Más que un precio", "More than a price")}</strong><span>{t("Tu médico. Tu presupuesto. Tu vida.", "Your doctor. Your budget. Your life.")}</span></div></div>
     </div>
@@ -59,7 +60,7 @@ export function ShoppingPathSelector({ locale }: LocaleProps) {
     { icon: Compass, title: t("Quiero explorar mis opciones", "I want to explore my options"), text: t("Empieza por tu cuenta y revisa los tipos de cobertura que podrían tener sentido para ti.", "Start on your own and review coverage types that may make sense for you."), cta: t("Explorar cobertura", "Explore coverage"), href: "#compare", label: t("POR TU CUENTA", "ON YOUR OWN"), image: "/health/paths/explore.jpg", alt: t("Persona revisando opciones en su teléfono", "Person reviewing options on a phone") },
     { icon: MessageCircle, title: t("Prefiero hablar con alguien", "I’d rather talk to someone"), text: t("Un asesor autorizado de Alleanza puede ayudarte a revisar tu situación y explicarte tus opciones.", "A licensed Alleanza advisor can help review your situation and explain your options."), cta: t("Hablar con un asesor", "Talk to an advisor"), href: "#contacto", label: t("CON ORIENTACIÓN", "WITH GUIDANCE"), image: "/health/paths/guidance.jpg", alt: t("Conversación tranquila con un asesor", "A calm conversation with an advisor") },
   ];
-  return <section className={p.section} aria-labelledby="paths-heading"><div className={p.centerIntro}><span className={p.eyebrow}>{t("A TU RITMO", "AT YOUR PACE")}</span><h2 id="paths-heading">{t("Tú decides ", "You decide ")}<em>{t("cómo empezar.", "how to start.")}</em></h2></div><div className={p.pathGrid}>{paths.map(({ icon: Icon, title, text, cta, href, label, image, alt }) => <article className={p.pathCard} key={href}><div><Icon size={29} strokeWidth={1.3} aria-hidden="true" /><span className={p.eyebrow}>{label}</span></div><h3>{title}</h3><p>{text}</p><a className={p.secondary} href={href} data-cta={href === "#contacto" ? "health_path_advisor" : "health_path_explore"} data-product-line="health">{cta}<ArrowRight size={18} aria-hidden="true" /></a>{/* eslint-disable-next-line @next/next/no-img-element */}<img className={p.pathImage} src={image} alt={alt} width={1248} height={832} /></article>)}</div></section>;
+  return <section className={p.section} aria-labelledby="paths-heading"><div className={p.centerIntro}><span className={p.eyebrow}>{t("A TU RITMO", "AT YOUR PACE")}</span><h2 id="paths-heading">{t("Tú decides ", "You decide ")}<em>{t("cómo empezar.", "how to start.")}</em></h2></div><div className={p.pathGrid}>{paths.map(({ icon: Icon, title, text, cta, href, label, image, alt }) => <article className={p.pathCard} key={href}><div><Icon size={29} strokeWidth={1.3} aria-hidden="true" /><span className={p.eyebrow}>{label}</span></div><h3>{title}</h3><p>{text}</p><a className={p.secondary} href={href} data-cta={href === "#contacto" ? "health_path_advisor" : "health_path_explore"} data-product-line="health">{cta}<ArrowRight size={18} aria-hidden="true" /></a>{/* eslint-disable-next-line @next/next/no-img-element */}<img className={p.pathImage} {...responsiveImg({ src: image, width: 1248, height: 832, alt, sizes: "(max-width: 767px) 100vw, 45vw" })} /></article>)}</div></section>;
 }
 
 export function HowAlleanzaWorks({ locale }: LocaleProps) {

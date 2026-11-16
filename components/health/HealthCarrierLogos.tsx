@@ -17,11 +17,11 @@ export function HealthCarrierLogos({ locale = "es" }: { locale?: "es" | "en" }) 
         <ul className={c.track}>
           {visibleHealthCarrierLogos.map(carrier => <li className={c.item} key={carrier.id}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className={c.logo} src={carrier.src} alt={en ? carrier.altEn : carrier.altEs} width={carrier.width} height={carrier.height} />
+            <img className={c.logo} src={carrier.src} alt={en ? carrier.altEn : carrier.altEs} width={carrier.width} height={carrier.height} loading="lazy" decoding="async" />
           </li>)}
           {visibleHealthCarrierLogos.map(carrier => <li className={c.item} key={`${carrier.id}-clone`} aria-hidden="true">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className={c.logo} src={carrier.src} alt="" width={carrier.width} height={carrier.height} />
+            <img className={c.logo} src={carrier.src} alt="" width={carrier.width} height={carrier.height} loading="lazy" decoding="async" />
           </li>)}
         </ul>
       </div>
