@@ -20,6 +20,12 @@ const searchCrawlers = [
 const trainingCrawlers = ["GPTBot", "ClaudeBot"];
 
 /**
+ * Not for crawlers: form endpoints and the old WordPress admin paths (those answer 403). A crawler
+ * obeys only the group that names it, so every allowing group repeats this list.
+ */
+const privatePaths = ["/api/", "/wp-admin/", "/wp-login.php"];
+
+/**
  * Preview, development, and local production builds must not be indexed.
  * HTML also carries noindex unless VERCEL_ENV is production (see app/layout.tsx).
  */
@@ -30,10 +36,10 @@ export default function robots(): MetadataRoute.Robots {
 
   return {
     rules: [
-      { userAgent: searchCrawlers, allow: "/" },
-      { userAgent: "Google-Extended", allow: "/" },
+      { userAgent: searchCrawlers, allow: "/", disallow: privatePaths },
+      { userAgent: "Google-Extended", allow: "/", disallow: privatePaths },
       { userAgent: trainingCrawlers, disallow: "/" },
-      { userAgent: "*", allow: "/" },
+      { userAgent: "*", allow: "/", disallow: privatePaths },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
   };

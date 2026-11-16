@@ -116,6 +116,10 @@ if (EXPECT_INDEXABLE) {
     const groups = robotsGroup(agent);
     check(groups.length === 1 && groups[0].allowed && !groups[0].blocked, `robots.txt allows ${agent}`);
   }
+  for (const agent of ["*", "Googlebot", "Bingbot", "OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "Google-Extended"]) {
+    const block = robots.split(/\n\s*\n/).find((b) => [...b.matchAll(/^User-Agent:\s*(.+)$/gim)].some((m) => m[1].trim().toLowerCase() === agent.toLowerCase())) ?? "";
+    check(["/api/", "/wp-admin/", "/wp-login.php"].every((path) => block.includes(`Disallow: ${path}`)), `robots.txt keeps ${agent} out of the private paths`);
+  }
   for (const agent of ["GPTBot", "ClaudeBot"]) {
     const groups = robotsGroup(agent);
     check(groups.length === 1 && groups[0].blocked && !groups[0].allowed, `robots.txt disallows ${agent}`);
