@@ -58,6 +58,12 @@ export type Guide = {
   reviewedDate: string;
   /** YYYY-MM-DD. Becomes the sitemap lastmod and the Article dateModified. */
   updatedDate: string;
+  /**
+   * Full timestamp of the same update, with the Central-time offset (2026-11-14T18:07:00-06:00).
+   * Its date must equal updatedDate. Becomes the Article dateModified and og:modified_time.
+   * Required once the guide has editorial approval.
+   */
+  updatedAt?: string;
   /** YYYY-MM-DD, set only after editorial approval. Without it the guide stays out of production. */
   editorialApprovedDate?: string;
   /** Ids of other guides. May be empty. */

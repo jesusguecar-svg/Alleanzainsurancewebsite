@@ -2,9 +2,33 @@ import type { Metadata } from "next";
 import { breadcrumbLabel, getParentGuide, guideIndexPath, guidePath, type Guide, type GuideLocale } from "@/lib/content/guides";
 import { guideCopy } from "@/components/guides/copy";
 import { siteUrl } from "@/lib/config/site";
-import { organizationRef } from "./schema";
+import { agents } from "@/lib/content/agents";
+import { organizationRef, publisherRef } from "./schema";
 
 const inLanguage = { es: "es-US", en: "en-US" } as const;
+
+/** 1200 × 630 card for each guide, served by app/og/guides/[file]/route.tsx. */
+export const guideImageSize = { width: 1200, height: 630 } as const;
+export const guideImageFile = (guide: Pick<Guide, "id">, locale: GuideLocale) => `${guide.id}-${locale}.png`;
+export const guideImagePath = (guide: Pick<Guide, "id">, locale: GuideLocale) => `/og/guides/${guideImageFile(guide, locale)}`;
+
+const plainName = (name: string) => name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+
+/** The author's agent profile, matched by name (accents ignored), in the guide's language. */
+export function guideAuthorUrl(guide: Pick<Guide, "author">, locale: GuideLocale) {
+  const agent = agents.find((candidate) => plainName(candidate.fullName) === plainName(guide.author));
+  if (!agent) return undefined;
+  return `${siteUrl}${locale === "es" ? "/agentes" : "/en/agents"}/${agent.slug}`;
+}
+
+/** Article dateModified: updatedAt, or the start of updatedDate in Central time when a draft has no timestamp. */
+export function guideModifiedAt(guide: Pick<Guide, "updatedDate" | "updatedAt">) {
+  if (guide.updatedAt) return guide.updatedAt;
+  const offset = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", timeZoneName: "longOffset" })
+    .formatToParts(new Date(`${guide.updatedDate}T12:00:00Z`))
+    .find((part) => part.type === "timeZoneName")!.value.replace("GMT", "");
+  return `${guide.updatedDate}T00:00:00${offset || "+00:00"}`;
+}
 
 export function guideMetadata(guide: Guide, locale: GuideLocale): Metadata {
   const copy = guide[locale];
@@ -13,7 +37,16 @@ export function guideMetadata(guide: Guide, locale: GuideLocale): Metadata {
     title: copy.title,
     description: copy.description,
     alternates: { canonical: path, languages: { "es-US": guidePath(guide, "es"), "en-US": guidePath(guide, "en"), "x-default": guidePath(guide, "es") } },
-    openGraph: { type: "article", locale: locale === "es" ? "es_US" : "en_US", url: path, siteName: organizationRef.name, title: copy.title, description: copy.description, modifiedTime: guide.updatedDate },
+    openGraph: {
+      type: "article",
+      locale: locale === "es" ? "es_US" : "en_US",
+      url: path,
+      siteName: organizationRef.name,
+      title: copy.title,
+      description: copy.description,
+      modifiedTime: guideModifiedAt(guide),
+      images: [{ url: guideImagePath(guide, locale), ...guideImageSize, alt: copy.h1 }],
+    },
   };
 }
 
@@ -41,9 +74,10 @@ export function guideArticleSchema(guide: Guide, locale: GuideLocale) {
     headline: copy.h1,
     description: copy.description,
     inLanguage: inLanguage[locale],
-    author: { "@type": "Person", name: guide.author },
-    publisher: organizationRef,
-    dateModified: guide.updatedDate,
+    image: { "@type": "ImageObject", url: `${siteUrl}${guideImagePath(guide, locale)}`, ...guideImageSize },
+    author: { "@type": "Person", name: guide.author, url: guideAuthorUrl(guide, locale) },
+    publisher: publisherRef,
+    dateModified: guideModifiedAt(guide),
     citation: copy.sources.map((source) => ({ "@type": "CreativeWork", name: source.label, url: source.url })),
     mainEntityOfPage: {
       "@type": "WebPage",

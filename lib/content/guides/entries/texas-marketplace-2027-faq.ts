@@ -799,6 +799,7 @@ const guide: Guide = {
   "reviewer": "Jesús Esteban Guerra",
   "reviewedDate": "2026-11-13",
   "updatedDate": "2026-11-14",
+  "updatedAt": "2026-11-14T18:07:00-06:00",
   "editorialApprovedDate": "2026-11-14",
   "relatedGuides": [
     "texas-marketplace-2027",

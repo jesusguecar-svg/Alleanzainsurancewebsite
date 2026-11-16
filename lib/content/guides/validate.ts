@@ -33,6 +33,13 @@ export function isPublishableGuide(guide: Guide, blockers: readonly string[] = g
   return !isPlaceholderGuide(guide) && Boolean(guide.editorialApprovedDate) && blockers.length === 0;
 }
 
+/** ISO 8601 date-time with an explicit UTC offset, not in the future. */
+function isPastTimestamp(value: unknown) {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/.test(value)) return false;
+  const time = new Date(value).getTime();
+  return !Number.isNaN(time) && time <= Date.now();
+}
+
 const hasText = (value: unknown) => typeof value === "string" && value.trim().length > 0;
 
 export function guidePathFor(guide: Pick<Guide, "es" | "en">, locale: GuideLocale) {
@@ -154,6 +161,10 @@ export function validateGuides(guides: readonly Guide[]): string[] {
     if (/\bNPN\b/i.test(JSON.stringify(guide))) errors.push(`${label}: NPNs are not published`);
     if (!isPastDate(guide.reviewedDate)) errors.push(`${label}: reviewedDate must be YYYY-MM-DD, not in the future`);
     if (!isPastDate(guide.updatedDate)) errors.push(`${label}: updatedDate must be YYYY-MM-DD, not in the future`);
+    if (guide.updatedAt !== undefined) {
+      if (!isPastTimestamp(guide.updatedAt)) errors.push(`${label}: updatedAt must be YYYY-MM-DDTHH:MM:SS±HH:MM, not in the future`);
+      else if (!guide.updatedAt.startsWith(`${guide.updatedDate}T`)) errors.push(`${label}: updatedAt must fall on updatedDate (${guide.updatedDate})`);
+    } else if (guide.editorialApprovedDate !== undefined) errors.push(`${label}: updatedAt is required once the guide is approved`);
     if (guide.editorialApprovedDate !== undefined && !isPastDate(guide.editorialApprovedDate)) errors.push(`${label}: editorialApprovedDate must be YYYY-MM-DD, not in the future`);
     if (!Array.isArray(guide.relatedGuides)) errors.push(`${label}: relatedGuides is required (it may be empty)`);
     for (const id of guide.relatedGuides ?? []) {
