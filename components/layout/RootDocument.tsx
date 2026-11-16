@@ -17,8 +17,11 @@ import { isProductionDeploy, siteUrl } from "@/lib/config/site";
  * Inter is the brand's only typeface (brandbook pp. 21-22). Self-hosted from the
  * committed variable font so the site never depends on a third-party font CDN.
  */
+// Inter-V-latin.woff2 is Inter-V.ttf subset to Latin, Latin-1, Latin Extended-A, punctuation and
+// every other character the site's copy uses, with the slant axis pinned upright (the site never
+// set it): 67 KB instead of the 805 KB TTF. Rebuild it from Inter-V.ttf when the copy adds a script.
 const inter = localFont({
-  src: "../../public/fonts/Inter-V.ttf",
+  src: "../../public/fonts/Inter-V-latin.woff2",
   variable: "--font-inter",
   weight: "100 900",
   display: "swap",
