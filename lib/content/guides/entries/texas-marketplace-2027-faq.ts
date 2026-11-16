@@ -797,7 +797,7 @@ const guide: Guide = {
   },
   "author": "Jesús Esteban Guerra",
   "reviewer": "Jesús Esteban Guerra",
-  "reviewedDate": "2026-11-13",
+  "reviewedDate": "2026-11-14",
   "updatedDate": "2026-11-14",
   "editorialApprovedDate": "2026-11-14",
   "relatedGuides": [
