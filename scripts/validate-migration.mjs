@@ -239,8 +239,8 @@ const guidePathsOf = (guide) => ({ es: `/health/${guide.es.slug}`, en: `/en/heal
 const publicGuides = allGuides.filter((guide) => !EXPECT_INDEXABLE || isPublishableGuide(guide));
 const lastmodOf = (path) => sitemap.split("<url>").find((block) => block.includes(`<loc>${CANONICAL}${path}</loc>`))?.match(/<lastmod>([^<]+)</)?.[1] ?? "";
 const guideLabels = {
-  es: { line: "Revisado por", agent: "agente con licencia", disclaimer: "Información educativa general", notice: "no pertenece al gobierno federal", index: "/aprende", health: "/health" },
-  en: { line: "Reviewed by", agent: "licensed agent", disclaimer: "General educational information", notice: "not operated or endorsed by the federal government", index: "/en/learn", health: "/en/health" },
+  es: { line: "Revisado por", agent: "agente con licencia", disclaimer: "Información educativa general", notice: "no pertenece al gobierno federal", privateAgency: "Alleanza es una agencia privada, no una oficina del gobierno", index: "/aprende", health: "/health" },
+  en: { line: "Reviewed by", agent: "licensed agent", disclaimer: "General educational information", notice: "not operated or endorsed by the federal government", privateAgency: "Alleanza is a private agency, not a government agency", index: "/en/learn", health: "/en/health" },
 };
 
 for (const guide of allGuides.filter((candidate) => !publicGuides.includes(candidate))) {
@@ -294,12 +294,19 @@ for (const guide of publicGuides) {
     const blankLinks = (html.match(/<article[^>]*data-cta-location="guide"[\s\S]*?<\/article>/)?.[0] ?? "").match(/<a [^>]*target="_blank"[^>]*>[\s\S]*?<\/a>/g) ?? [];
     check(blankLinks.length > 0 && blankLinks.every((link) => link.includes(newTabHint)), `${path}: new-tab links say so to screen readers (${blankLinks.length})`);
     check(!html.split('id="contacto"')[0].includes('href="/contacto"'), `${path}: no link to /contacto before the guide's form`);
+    // The lead inbox is the form's recipient, not a public contact detail.
+    check(!html.includes("info@alleanzainsurance.org"), `${path}: contact block does not display the lead inbox email`);
     check(html.includes('id="contacto"') && html.includes('name="consent"') && /href="#contacto"[^>]*data-cta="guide_agent"/.test(html), `${path}: CTA goes to the health contact form`);
     check((htmlCache.get(labels.index) ?? "").includes(`href="${path}"`), `${labels.index}: lists ${path}`);
     check((htmlCache.get(labels.health) ?? "").includes(`href="${path}"`), `${labels.health}: Guides block lists ${path}`);
   }
 }
-for (const index of publicGuides.length ? ["/aprende", "/en/learn"] : []) {
+for (const locale of publicGuides.length ? ["es", "en"] : []) {
+  const labels = guideLabels[locale];
+  const index = labels.index;
+  const visible = (htmlCache.get(index) ?? (await (await get(index)).text())).replace(/<!-- -->/g, "");
+  check(visible.includes(labels.privateAgency) && visible.includes(labels.disclaimer) && visible.includes(labels.notice), `${index}: private-agency disclaimer and government notice`);
+  check(!(htmlCache.get(labels.health) ?? "").includes("info@alleanzainsurance.org"), `${labels.health}: contact block does not display the lead inbox email`);
   check(locs.includes(CANONICAL + index), `${index}: in the sitemap`);
   check(/^\d{4}-/.test(lastmodOf(index)), `${index}: has a lastmod`);
 }

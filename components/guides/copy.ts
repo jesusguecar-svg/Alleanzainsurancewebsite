@@ -22,6 +22,8 @@ export const guideCopy = {
     accessed: "Consultado el",
     related: "Guías relacionadas",
     newTab: "(se abre en una pestaña nueva)",
+    // Same sentence as the Texas guide and Texas FAQ; shown on the guide index.
+    privateAgency: "Alleanza es una agencia privada, no una oficina del gobierno.",
     disclaimer: "Información educativa general. Consulta las condiciones de cada plan.",
     notGovernment: "Este sitio no pertenece al gobierno federal ni implica su respaldo.",
     cta: "Habla con un agente con licencia",
@@ -47,6 +49,8 @@ export const guideCopy = {
     accessed: "Accessed",
     related: "Related guides",
     newTab: "(opens in a new tab)",
+    // Same sentence as the Texas guide and Texas FAQ; shown on the guide index.
+    privateAgency: "Alleanza is a private agency, not a government agency.",
     disclaimer: "General educational information. Review each plan’s terms.",
     notGovernment: "This website is not operated or endorsed by the federal government.",
     cta: "Talk to a licensed agent",

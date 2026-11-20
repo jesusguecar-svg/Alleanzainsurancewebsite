@@ -22,6 +22,11 @@ export function GuidesIndex({ locale }: { locale: GuideLocale }) {
           </li>
         ))}
       </ul>
+      <div className="mt-12 space-y-2 border-t border-navy/15 pt-6 text-xs leading-relaxed text-navy/65">
+        <p>{copy.privateAgency}</p>
+        <p>{copy.disclaimer}</p>
+        <p>{copy.notGovernment}</p>
+      </div>
     </GuideShell>
   );
 }
