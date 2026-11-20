@@ -496,7 +496,8 @@ const guide: Guide = {
     "carrollton-2027",
     "tarrant-county-2027",
     "collin-county-2027",
-    "denton-county-2027"
+    "denton-county-2027",
+    "dallas-2027"
   ],
   "parentGuideId": "texas-marketplace-2027"
 };
