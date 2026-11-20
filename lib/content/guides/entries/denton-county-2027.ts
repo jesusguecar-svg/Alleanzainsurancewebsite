@@ -432,7 +432,9 @@ const guide: Guide = {
     "dallas-county-2027",
     "carrollton-2027",
     "tarrant-county-2027",
-    "collin-county-2027"
+    "collin-county-2027",
+    "dallas-2027",
+    "fort-worth-2027"
   ],
   "parentGuideId": "texas-marketplace-2027"
 };
