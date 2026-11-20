@@ -241,3 +241,6 @@ body { margin: 0; color: var(--navy); background: #FFFFFF; overflow-x: hidden; f
 .home-directory-lines li:last-child:nth-child(3n+2){grid-column:auto;}
 .home-directory-details{grid-template-columns:minmax(0,1fr);}
 }
+
+/* Consent banner from the server HTML: hidden before hydration for visitors who already chose (see RootDocument). */
+html[data-consent-chosen] [data-consent-banner="pending"] { display: none; }

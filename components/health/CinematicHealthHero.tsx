@@ -23,6 +23,9 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es", embedd
   const [hint, setHint] = useState(true);
   const [portrait, setPortrait] = useState(false);
   const assetsReady = useSceneAssets(inView && active >= 0 && !reduced && !portrait);
+  // The scene panels are not in the server HTML: they load once the page has painted and loaded, so
+  // they never compete with the hero image (the LCP element) and simply appear a moment later.
+  const [panelsReady, setPanelsReady] = useState(false);
   const hitAreas = useRef<SVGPathElement[]>([]);
   const frame = useRef(0);
   const bounds = useRef<DOMRect | null>(null);
@@ -42,6 +45,13 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es", embedd
     window.addEventListener("scroll", clearBounds, { passive: true });
     window.addEventListener("resize", clearBounds);
     return () => { media.removeEventListener("change", sync); window.removeEventListener("scroll", clearBounds); window.removeEventListener("resize", clearBounds); cancelAnimationFrame(frame.current); };
+  }, []);
+  useEffect(() => {
+    let frameId = 0;
+    const show = () => { frameId = requestAnimationFrame(() => setPanelsReady(true)); };
+    if (document.readyState === "complete") show();
+    else window.addEventListener("load", show, { once: true });
+    return () => { window.removeEventListener("load", show); cancelAnimationFrame(frameId); };
   }, []);
   useEffect(() => {
     if (!inView) return;
@@ -102,12 +112,12 @@ export function CinematicHealthHero({ onReview, onExplore, locale = "es", embedd
             const adjacent = active >= 0 && active !== i && Math.abs((active % 4) - (i % 4)) === 1 && (active < 4) === (i < 4);
             const intensity = selected ? 1 : adjacent ? .86 : .76;
             return <motion.div key={item.id} className={c.layer} data-selected={selected} animate={{ scale: selected && !reduced ? 1.045 : adjacent && !reduced ? .985 : 1, z: selected && !reduced ? 44 : 0, filter: `brightness(${selected ? 1.03 : intensity}) saturate(${selected ? 1.03 : adjacent ? .9 : .82})` }} transition={{ duration: .48, ease: [.22, 1, .36, 1] }} style={{ transformOrigin: `${item.x}% ${item.y}%`, zIndex: selected ? 30 : adjacent ? 15 : 10 }}>
-            <svg viewBox="0 0 1671 941"><defs><clipPath id={`health-layer-${item.id}`}><path d={item.path} /></clipPath></defs><g clipPath={`url(#health-layer-${item.id})`}><image href={panelsHref} width="1671" height="941" />{active === i && assetsReady && inView && !reduced && !portrait && <HealthSceneActions key={item.id} id={item.id} locale={locale} />}</g></svg>
+            <svg viewBox="0 0 1671 941"><defs><clipPath id={`health-layer-${item.id}`}><path d={item.path} /></clipPath></defs><g clipPath={`url(#health-layer-${item.id})`}>{panelsReady && <image className={c.panel} href={panelsHref} width="1671" height="941" />}{active === i && assetsReady && inView && !reduced && !portrait && <HealthSceneActions key={item.id} id={item.id} locale={locale} />}</g></svg>
           </motion.div>;
           })}
           <svg className={c.hitMap} viewBox="0 0 1671 941">{scenes.map((item, i) => <path key={item.id} ref={element => { if (element) hitAreas.current[i] = element; }} d={item.path} />)}</svg>
         </div>
-        <div className={c.portraitComposition} aria-hidden="true">{scenes.map((item, i) => <svg key={item.id} className={c.portraitLayer} data-selected={active === i} style={{ left: i < 4 ? 0 : "61%", top: `${(embedded ? 36 : 30) + (3 - i % 4) * 11}%` }} viewBox={frames[i]} preserveAspectRatio="xMidYMid slice"><defs><clipPath id={`portrait-${item.id}`}><path d={item.path} /></clipPath></defs><image href={panelsHref} width="1671" height="941" clipPath={`url(#portrait-${item.id})`} /></svg>)}</div>
+        <div className={c.portraitComposition} aria-hidden="true">{scenes.map((item, i) => <svg key={item.id} className={c.portraitLayer} data-selected={active === i} style={{ left: i < 4 ? 0 : "61%", top: `${(embedded ? 36 : 30) + (3 - i % 4) * 11}%` }} viewBox={frames[i]} preserveAspectRatio="xMidYMid slice"><defs><clipPath id={`portrait-${item.id}`}><path d={item.path} /></clipPath></defs>{panelsReady && <image className={c.panel} href={panelsHref} width="1671" height="941" clipPath={`url(#portrait-${item.id})`} />}</svg>)}</div>
         <div className={c.grade} aria-hidden="true" />
         <motion.div className={c.handPosition} style={{ x: reduced ? targetX : springX, y: reduced ? targetY : springY }} aria-hidden="true">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={`${assets}hand.webp`} alt="" width="400" height="550" loading="lazy" decoding="async" /></motion.div>
         <div className={c.intro} data-hidden={active >= 0}><span className={c.eyebrow}>{locale === "en" ? "YOUR HEALTH. YOUR FAMILY. YOUR DECISION." : "TU SALUD. TU FAMILIA. TU DECISIÓN."}</span>{embedded ? <h2 id="scenario-title">{locale === "en" ? "You decide" : "Tú decides"}<span>.</span></h2> : <h1 id="health-title">{locale === "en" ? "You decide" : "Tú decides"}<span>.</span></h1>}<p>{locale === "en" ? <>Not everything is in your hands.<br />How you prepare is.</> : <>No todo está en tus manos.<br />Cómo prepararte, sí.</>}</p></div>

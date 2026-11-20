@@ -320,6 +320,15 @@ for (const [path, html] of htmlCache) {
   }
 }
 
+// The consent banner is in the server HTML (it used to wait for JavaScript), with the same text,
+// hidden before first paint only for visitors who already chose, and never shown without JavaScript.
+for (const [path, accept, reject] of [["/", "Aceptar analítica", "Rechazar analítica"], ["/health", "Aceptar analítica", "Rechazar analítica"], ["/en/health", "Accept analytics", "Decline analytics"]]) {
+  const html = htmlCache.get(path) ?? (await (await get(path)).text());
+  check(/data-consent-banner="pending"/.test(html) && html.includes(accept) && html.includes(reject), `${path}: consent banner is in the server HTML`);
+  check(html.includes('id="consent-state"') && html.includes("data-consent-chosen") && /<noscript><style>\[data-consent-banner\]\{display:none\}<\/style><\/noscript>/.test(html), `${path}: consent banner hides for a stored choice and without JavaScript`);
+  check(html.indexOf('id="consent-defaults"') < html.indexOf('id="consent-state"') && html.indexOf('id="consent-state"') < html.indexOf("<body"), `${path}: consent scripts run in <head>, defaults first`);
+}
+
 const missing = await get("/ruta-que-no-existe-validacion");
 const missingHtml = await missing.text();
 check(missing.status === 404, `unknown route returns 404 (got ${missing.status})`);
