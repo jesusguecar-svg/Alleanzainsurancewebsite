@@ -6,6 +6,8 @@ import dallasCounty2027 from "./entries/dallas-county-2027";
 import dentonCounty2027 from "./entries/denton-county-2027";
 import tarrantCounty2027 from "./entries/tarrant-county-2027";
 import fortWorth2027 from "./entries/fort-worth-2027";
+import frisco2027 from "./entries/frisco-2027";
+import grandPrairie2027 from "./entries/grand-prairie-2027";
 import texasMarketplace2027 from "./entries/texas-marketplace-2027";
 import texasMarketplace2027Faq from "./entries/texas-marketplace-2027-faq";
 import type { Guide, GuideLocale } from "./types";
@@ -25,6 +27,8 @@ export const allGuides: readonly Guide[] = [
   dentonCounty2027,
   dallas2027,
   fortWorth2027,
+  grandPrairie2027,
+  frisco2027,
 ];
 
 // Importing this module during `next build` is what makes a bad guide fail the build.

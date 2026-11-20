@@ -434,7 +434,8 @@ const guide: Guide = {
     "tarrant-county-2027",
     "collin-county-2027",
     "dallas-2027",
-    "fort-worth-2027"
+    "fort-worth-2027",
+    "frisco-2027"
   ],
   "parentGuideId": "texas-marketplace-2027"
 };

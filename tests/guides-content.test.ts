@@ -11,7 +11,7 @@ const clone = (guide: Guide): Guide => JSON.parse(JSON.stringify(guide));
 
 test("the registered guides pass validation", () => {
   assert.deepEqual(validateGuides(allGuides), []);
-  assert.equal(allGuides.length, 9);
+  assert.equal(allGuides.length, 11);
 });
 
 test("no draft markers, titles ≤60, descriptions ≤155, summaries of 2–3 plain sentences", () => {
@@ -45,7 +45,7 @@ test("each guide has matching EN/ES structure and an official source", () => {
 });
 
 const approvedGuideIds = ["texas-marketplace-2027", "dallas-county-2027", "texas-marketplace-2027-faq", "carrollton-2027"];
-const previewGuideIds = ["tarrant-county-2027", "collin-county-2027", "denton-county-2027", "dallas-2027", "fort-worth-2027"];
+const previewGuideIds = ["tarrant-county-2027", "collin-county-2027", "denton-county-2027", "dallas-2027", "fort-worth-2027", "grand-prairie-2027", "frisco-2027"];
 
 test("release: the four guides were approved together on 2026-11-14 and are publishable", () => {
   // Approved by Jesús Esteban Guerra as reviewer, excluding immigration content (see the next test).

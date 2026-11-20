@@ -430,7 +430,8 @@ const guide: Guide = {
     "dallas-county-2027",
     "collin-county-2027",
     "denton-county-2027",
-    "fort-worth-2027"
+    "fort-worth-2027",
+    "grand-prairie-2027"
   ],
   "parentGuideId": "texas-marketplace-2027"
 };
