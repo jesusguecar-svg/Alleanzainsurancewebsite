@@ -804,7 +804,8 @@ const guide: Guide = {
   "relatedGuides": [
     "texas-marketplace-2027",
     "dallas-county-2027",
-    "carrollton-2027"
+    "carrollton-2027",
+    "december-15-deadline-2027"
   ],
   "parentGuideId": "texas-marketplace-2027"
 };

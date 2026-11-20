@@ -53,7 +53,7 @@ test("related guides and parents form the planned structure", () => {
   const byId = new Map(allGuides.map((guide) => [guide.id, guide]));
   assert.equal(byId.get("texas-marketplace-2027")?.parentGuideId, undefined);
   for (const id of ["dallas-county-2027", "texas-marketplace-2027-faq", "carrollton-2027"]) assert.equal(byId.get(id)?.parentGuideId, "texas-marketplace-2027", id);
-  for (const id of ["tarrant-county-2027", "collin-county-2027", "denton-county-2027", "dallas-2027", "fort-worth-2027", "grand-prairie-2027", "frisco-2027"]) assert.equal(byId.get(id)?.parentGuideId, "texas-marketplace-2027", id);
+  for (const id of ["tarrant-county-2027", "collin-county-2027", "denton-county-2027", "dallas-2027", "fort-worth-2027", "grand-prairie-2027", "frisco-2027", "december-15-deadline-2027"]) assert.equal(byId.get(id)?.parentGuideId, "texas-marketplace-2027", id);
   // The four approved guides relate to one another; every relation goes both ways; every guide relates to the Texas guide.
   for (const id of ["texas-marketplace-2027", "dallas-county-2027", "texas-marketplace-2027-faq", "carrollton-2027"]) {
     for (const other of ["texas-marketplace-2027", "dallas-county-2027", "texas-marketplace-2027-faq", "carrollton-2027"]) if (other !== id) assert.ok(byId.get(id)!.relatedGuides.includes(other), `${id} → ${other}`);

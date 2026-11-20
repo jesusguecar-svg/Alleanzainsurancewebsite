@@ -2,6 +2,7 @@ import { isProductionDeploy } from "@/lib/config/site";
 import carrollton2027 from "./entries/carrollton-2027";
 import collinCounty2027 from "./entries/collin-county-2027";
 import dallas2027 from "./entries/dallas-2027";
+import december15Deadline2027 from "./entries/december-15-deadline-2027";
 import dallasCounty2027 from "./entries/dallas-county-2027";
 import dentonCounty2027 from "./entries/denton-county-2027";
 import tarrantCounty2027 from "./entries/tarrant-county-2027";
@@ -29,6 +30,7 @@ export const allGuides: readonly Guide[] = [
   fortWorth2027,
   grandPrairie2027,
   frisco2027,
+  december15Deadline2027,
 ];
 
 // Importing this module during `next build` is what makes a bad guide fail the build.

@@ -11,7 +11,7 @@ const clone = (guide: Guide): Guide => JSON.parse(JSON.stringify(guide));
 
 test("the registered guides pass validation", () => {
   assert.deepEqual(validateGuides(allGuides), []);
-  assert.equal(allGuides.length, 11);
+  assert.equal(allGuides.length, 12);
 });
 
 test("no draft markers, titles ≤60, descriptions ≤155, summaries of 2–3 plain sentences", () => {
@@ -45,7 +45,7 @@ test("each guide has matching EN/ES structure and an official source", () => {
 });
 
 const approvedGuideIds = ["texas-marketplace-2027", "dallas-county-2027", "texas-marketplace-2027-faq", "carrollton-2027"];
-const previewGuideIds = ["tarrant-county-2027", "collin-county-2027", "denton-county-2027", "dallas-2027", "fort-worth-2027", "grand-prairie-2027", "frisco-2027"];
+const previewGuideIds = ["tarrant-county-2027", "collin-county-2027", "denton-county-2027", "dallas-2027", "fort-worth-2027", "grand-prairie-2027", "frisco-2027", "december-15-deadline-2027"];
 
 test("release: the four guides were approved together on 2026-11-14 and are publishable", () => {
   // Approved by Jesús Esteban Guerra as reviewer, excluding immigration content (see the next test).
@@ -72,7 +72,7 @@ test("preview only: guides awaiting review have no review or approval date and s
   assert.equal(isPublishableGuide({ ...clone(base), reviewedDate: "2026-11-14" }), false);
 });
 
-test("county and city guides name no insurer and quote no price, and say Alleanza is not the government", () => {
+test("new guides name no insurer and quote no price, and say Alleanza is not the government", () => {
   const insurer = /Oscar|Ambetter|Blue Cross|BCBS|WellPoint|UnitedHealthcare|Molina|Imperial|Harbor Health|Cigna|Baylor Scott|Aetna|Superior HealthPlan/i;
   for (const id of previewGuideIds) {
     const guide = allGuides.find((candidate) => candidate.id === id)!;
@@ -194,4 +194,19 @@ test("inline parser: links and bold only", () => {
     { kind: "text", text: "." },
   ]);
   assert.equal(plainText("See [HealthCare.gov](https://www.healthcare.gov/) **now**"), "See HealthCare.gov now");
+});
+
+test("December 15 guide: only the approved Texas guide's dates and sources", () => {
+  const texas = allGuides.find((guide) => guide.id === "texas-marketplace-2027")!;
+  const deadline = allGuides.find((guide) => guide.id === "december-15-deadline-2027")!;
+  for (const locale of ["es", "en"] as const) {
+    const texasSources = new Set(texas[locale].sources.map((source) => `${source.url} ${source.accessed}`));
+    for (const source of deadline[locale].sources) assert.ok(texasSources.has(`${source.url} ${source.accessed}`), `${locale} ${source.url}`);
+    // The Dec 16 – Jan 15 and Jan 15 date lines are the Texas guide's own lines.
+    const texasItems = new Set(inlineStrings(texas[locale]));
+    const dateLines = inlineStrings(deadline[locale]).filter((text) => /^\*\*(Del 16|December 16|15 de enero|January 15)/.test(text));
+    assert.equal(dateLines.length, 2, locale);
+    for (const line of dateLines) assert.ok(texasItems.has(line), `${locale}: ${line}`);
+    assert.doesNotMatch(JSON.stringify(deadline[locale]), /ahorr|savings|calific[a-z]* para (el )?crédito|qualify for (savings|a premium tax credit)|garantiz|guarantee/i, locale);
+  }
 });
