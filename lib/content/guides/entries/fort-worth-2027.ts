@@ -160,7 +160,7 @@ const guide: Guide = {
       },
       {
         "label": "Para cobertura desde el 1 de enero",
-        "value": "15 de diciembre de 2026, con la primera prima pagada"
+        "value": "Elige un plan a más tardar el 15 de diciembre de 2026 y paga la primera prima antes de la fecha que fije tu aseguradora"
       }
     ],
     "sources": [
@@ -173,6 +173,11 @@ const guide: Guide = {
         "label": "CMS: áreas geográficas de tarifas de Texas (en inglés)",
         "url": "https://www.cms.gov/cciio/programs-and-initiatives/health-insurance-market-reforms/tx-gra",
         "accessed": "2026-11-13"
+      },
+      {
+        "label": "Departamento de Seguros de Texas: áreas de tarifas, 28 TAC §3.504 (en inglés)",
+        "url": "https://texas-sos.appianportalsgov.com/rules-and-meetings?$locale=en_US&interface=VIEW_TAC_SUMMARY&recordId=209262",
+        "accessed": "2026-11-19"
       },
       {
         "label": "Condado de Tarrant: acerca del condado (en inglés)",
@@ -371,7 +376,7 @@ const guide: Guide = {
       },
       {
         "label": "For coverage starting January 1",
-        "value": "December 15, 2026, with the first premium paid"
+        "value": "Choose a plan by December 15, 2026, and pay the first premium by your insurer’s deadline"
       }
     ],
     "sources": [
@@ -384,6 +389,11 @@ const guide: Guide = {
         "label": "CMS: Texas geographic rating areas",
         "url": "https://www.cms.gov/cciio/programs-and-initiatives/health-insurance-market-reforms/tx-gra",
         "accessed": "2026-11-13"
+      },
+      {
+        "label": "Texas Department of Insurance: rating areas, 28 TAC §3.504",
+        "url": "https://texas-sos.appianportalsgov.com/rules-and-meetings?$locale=en_US&interface=VIEW_TAC_SUMMARY&recordId=209262",
+        "accessed": "2026-11-19"
       },
       {
         "label": "Tarrant County: About Tarrant",
@@ -435,7 +445,7 @@ const guide: Guide = {
   "author": "Jesús Esteban Guerra",
   "reviewer": "Jesús Esteban Guerra",
   "updatedDate": "2026-11-19",
-  "updatedAt": "2026-11-19T23:15:00-06:00",
+  "updatedAt": "2026-11-19T23:40:00-06:00",
   "relatedGuides": [
     "texas-marketplace-2027",
     "tarrant-county-2027",
