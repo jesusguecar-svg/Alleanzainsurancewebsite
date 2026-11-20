@@ -11,7 +11,7 @@ const clone = (guide: Guide): Guide => JSON.parse(JSON.stringify(guide));
 
 test("the registered guides pass validation", () => {
   assert.deepEqual(validateGuides(allGuides), []);
-  assert.equal(allGuides.length, 4);
+  assert.equal(allGuides.length, 7);
 });
 
 test("no draft markers, titles ≤60, descriptions ≤155, summaries of 2–3 plain sentences", () => {
@@ -44,13 +44,46 @@ test("each guide has matching EN/ES structure and an official source", () => {
   }
 });
 
+const approvedGuideIds = ["texas-marketplace-2027", "dallas-county-2027", "texas-marketplace-2027-faq", "carrollton-2027"];
+const previewGuideIds = ["tarrant-county-2027", "collin-county-2027", "denton-county-2027"];
+
 test("release: the four guides were approved together on 2026-11-14 and are publishable", () => {
   // Approved by Jesús Esteban Guerra as reviewer, excluding immigration content (see the next test).
-  for (const guide of allGuides) {
+  for (const id of approvedGuideIds) {
+    const guide = allGuides.find((candidate) => candidate.id === id)!;
     assert.equal(guide.editorialApprovedDate, "2026-11-14", guide.id);
     assert.equal(isPublishableGuide(guide), true, guide.id);
   }
   assert.deepEqual([...guidePublicationBlockers], []);
+});
+
+test("preview only: guides awaiting review have no review or approval date and stay out of production", () => {
+  assert.deepEqual(allGuides.map((guide) => guide.id).sort(), [...approvedGuideIds, ...previewGuideIds].sort());
+  for (const id of previewGuideIds) {
+    const guide = allGuides.find((candidate) => candidate.id === id)!;
+    assert.equal(guide.reviewedDate, undefined, id);
+    assert.equal(guide.editorialApprovedDate, undefined, id);
+    assert.equal(isPublishableGuide(guide), false, id);
+  }
+  // Approval without a review date is rejected; a review date alone does not publish.
+  const base = allGuides.find((guide) => guide.id === previewGuideIds[0])!;
+  const approvedOnly = { ...clone(base), editorialApprovedDate: "2026-11-14" };
+  assert.ok(validateGuides([approvedOnly]).some((error) => error.includes("reviewedDate is required once the guide is approved")));
+  assert.equal(isPublishableGuide({ ...clone(base), reviewedDate: "2026-11-14" }), false);
+});
+
+test("county guides name no insurer and quote no price, and say Alleanza is not the government", () => {
+  const insurer = /Oscar|Ambetter|Blue Cross|BCBS|WellPoint|UnitedHealthcare|Molina|Imperial|Harbor Health|Cigna|Baylor Scott|Aetna|Superior HealthPlan/i;
+  for (const id of previewGuideIds) {
+    const guide = allGuides.find((candidate) => candidate.id === id)!;
+    for (const locale of ["es", "en"] as const) {
+      const serialized = JSON.stringify(guide[locale]);
+      assert.doesNotMatch(serialized, insurer, `${id} (${locale})`);
+      assert.doesNotMatch(serialized, /\$\s?\d/, `${id} (${locale}) price`);
+      assert.doesNotMatch(serialized, /aseguranza|immigra|migratori|757[-.\s)]*5553|info@/i, `${id} (${locale})`);
+      assert.match(serialized, locale === "es" ? /Alleanza es una agencia privada, no el gobierno/ : /Alleanza is a private agency, not the government/, `${id} (${locale})`);
+    }
+  }
 });
 
 test("no immigration-status interpretation: only the neutral pointer to the official immigrant pages", () => {
@@ -77,7 +110,7 @@ test("the validator rejects draft markers, long titles, bad links and bad parent
     return validateGuides([...allGuides.filter((g) => g.id !== base.id), guide]);
   };
   assert.ok(withText("Check this [VERIFY: carrier].").some((e) => e.includes('"[VERIFY"')));
-  assert.ok(withText("See [Tarrant](/en/health/tarrant-county-health-insurance-2027).").some((e) => e.includes("does not match a site route or guide")));
+  assert.ok(withText("See [Nowhere](/en/health/no-such-county-health-insurance-2027).").some((e) => e.includes("does not match a site route or guide")));
   assert.ok(withText("See [us](/contacto).").some((e) => e.includes("/contacto")));
   assert.ok(withText("See [x](http://www.healthcare.gov/).").some((e) => e.includes("must use https")));
   assert.ok(withText("See [x](https://example.com/).").some((e) => e.includes("allowlist")));

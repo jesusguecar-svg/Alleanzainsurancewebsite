@@ -82,8 +82,7 @@ export function guideArticleSchema(guide: Guide, locale: GuideLocale) {
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": url,
-      reviewedBy: { "@type": "Person", name: guide.reviewer },
-      lastReviewed: guide.reviewedDate,
+      ...(guide.reviewedDate ? { reviewedBy: { "@type": "Person", name: guide.reviewer }, lastReviewed: guide.reviewedDate } : {}),
     },
   };
 }

@@ -239,8 +239,8 @@ const guidePathsOf = (guide) => ({ es: `/health/${guide.es.slug}`, en: `/en/heal
 const publicGuides = allGuides.filter((guide) => !EXPECT_INDEXABLE || isPublishableGuide(guide));
 const lastmodOf = (path) => sitemap.split("<url>").find((block) => block.includes(`<loc>${CANONICAL}${path}</loc>`))?.match(/<lastmod>([^<]+)</)?.[1] ?? "";
 const guideLabels = {
-  es: { line: "Revisado por", agent: "agente con licencia", disclaimer: "Información educativa general", notice: "no pertenece al gobierno federal", index: "/aprende", health: "/health" },
-  en: { line: "Reviewed by", agent: "licensed agent", disclaimer: "General educational information", notice: "not operated or endorsed by the federal government", index: "/en/learn", health: "/en/health" },
+  es: { line: "Revisado por", pending: "Revisión pendiente de", agent: "agente con licencia", disclaimer: "Información educativa general", notice: "no pertenece al gobierno federal", index: "/aprende", health: "/health" },
+  en: { line: "Reviewed by", pending: "Review pending by", agent: "licensed agent", disclaimer: "General educational information", notice: "not operated or endorsed by the federal government", index: "/en/learn", health: "/en/health" },
 };
 
 for (const guide of allGuides.filter((candidate) => !publicGuides.includes(candidate))) {
@@ -271,13 +271,17 @@ for (const guide of publicGuides) {
     check(own.get("es-US") === CANONICAL + paths.es && own.get("en-US") === CANONICAL + paths.en && own.get("x-default") === CANONICAL + paths.es, `${path}: hreflang pair`);
     check((html.match(/<h1[\s>]/g)?.length ?? 0) === 1, `${path}: exactly one <h1>`);
     const visible = html.replace(/<!-- -->/g, "");
-    check(visible.includes(`${labels.line} ${guide.reviewer}, ${labels.agent}`), `${path}: visible reviewer line`);
+    // Before the reviewer approves (no reviewedDate), a preview says the review is pending instead.
+    check(visible.includes(`${guide.reviewedDate ? labels.line : labels.pending} ${guide.reviewer}, ${labels.agent}`), `${path}: visible reviewer line`);
     check(visible.includes(labels.disclaimer) && visible.includes(labels.notice), `${path}: disclaimer and government notice`);
     check(content.sources.every((source) => html.includes(source.url)), `${path}: sources listed`);
     const nodes = jsonLd(html);
     const article = nodes.find((node) => node["@type"] === "Article");
     check(article?.publisher?.["@id"] === organizationId, `${path}: Article JSON-LD publisher references the organization`);
-    check(article?.author?.name === guide.author && article?.mainEntityOfPage?.reviewedBy?.name === guide.reviewer, `${path}: Article JSON-LD author and reviewer`);
+    const reviewOk = guide.reviewedDate
+      ? article?.mainEntityOfPage?.reviewedBy?.name === guide.reviewer && article?.mainEntityOfPage?.lastReviewed === guide.reviewedDate
+      : article?.mainEntityOfPage?.reviewedBy === undefined && article?.mainEntityOfPage?.lastReviewed === undefined;
+    check(article?.author?.name === guide.author && reviewOk, `${path}: Article JSON-LD author and reviewer`);
     check(JSON.stringify(article?.citation?.map((item) => item.url)) === JSON.stringify(content.sources.map((source) => source.url)), `${path}: Article JSON-LD citation lists the Sources`);
     check(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/.test(article?.dateModified ?? "") && article.dateModified.startsWith(`${guide.updatedDate}T`) && article?.inLanguage === `${locale}-US`, `${path}: Article JSON-LD dateModified (full timestamp with offset, on updatedDate) and inLanguage`);
     check(article?.publisher?.["@type"] === "Organization" && !nodes.some((node) => JSON.stringify(node).includes('"InsuranceAgency"')), `${path}: no InsuranceAgency node (read by Google as a local business with missing fields)`);

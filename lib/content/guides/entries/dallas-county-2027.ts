@@ -493,7 +493,10 @@ const guide: Guide = {
   "relatedGuides": [
     "texas-marketplace-2027",
     "texas-marketplace-2027-faq",
-    "carrollton-2027"
+    "carrollton-2027",
+    "tarrant-county-2027",
+    "collin-county-2027",
+    "denton-county-2027"
   ],
   "parentGuideId": "texas-marketplace-2027"
 };

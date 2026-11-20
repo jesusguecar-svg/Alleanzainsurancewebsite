@@ -54,8 +54,11 @@ export type Guide = {
   author: string;
   /** The licensed agent's name. No NPN. */
   reviewer: string;
-  /** YYYY-MM-DD */
-  reviewedDate: string;
+  /**
+   * YYYY-MM-DD. Left unset until the reviewer approves the guide: a guide without it never reaches
+   * production, and its preview byline says the review is pending.
+   */
+  reviewedDate?: string;
   /** YYYY-MM-DD. Becomes the sitemap lastmod and the Article dateModified. */
   updatedDate: string;
   /**
