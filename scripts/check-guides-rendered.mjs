@@ -91,7 +91,8 @@ for (const g of shown) {
     for (const s of v.inlineStrings(c)) for (const l of inline.links(s)) if (hiddenPaths.includes(inline.internalPath(l.href))) check(text.includes(l.label), `${where}: unlinked label "${l.label}" still shown`);
     for (const sec of c.sections) check(text.includes(sec.heading), `${where}: no-JS section "${sec.heading.slice(0, 30)}"`);
     check(c.keyFacts.every((f) => text.includes(f.label) && text.includes(f.value)), `${where}: no-JS key facts`);
-    check(c.sources.every((s) => html.includes(`href="${s.url}"`)), `${where}: Sources listed`);
+    // React escapes "&" in attributes, so a source URL with a query string appears as "&amp;".
+    check(c.sources.every((s) => html.includes(`href="${s.url.replace(/&/g, "&amp;")}"`)), `${where}: Sources listed`);
     check(html.includes(`href="${p.es}"`) && html.includes(`href="${p.en}"`), `${where}: language switch links`);
     const article_ = html.split('id="contacto"')[0];
     const articleOnly = html.match(/<article[^>]*data-cta-location="guide"[\s\S]*?<\/article>/)?.[0] ?? "";
