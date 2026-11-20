@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { AnalyticsRuntime } from "@/components/analytics/AnalyticsRuntime";
 import { VercelObservability } from "@/components/analytics/VercelObservability";
 import { HealthTransition } from "@/components/transitions/HealthTransition";
+import { consentStorageKey, consentVersion } from "@/lib/analytics/config";
 import { isProductionDeploy, siteUrl } from "@/lib/config/site";
 
 /**
@@ -17,8 +18,11 @@ import { isProductionDeploy, siteUrl } from "@/lib/config/site";
  * Inter is the brand's only typeface (brandbook pp. 21-22). Self-hosted from the
  * committed variable font so the site never depends on a third-party font CDN.
  */
+// Inter-V-latin.woff2 is Inter-V.ttf subset to Latin, Latin-1, Latin Extended-A, punctuation and
+// every other character the site's copy uses, with the slant axis pinned upright (the site never
+// set it): 67 KB instead of the 805 KB TTF. Rebuild it from Inter-V.ttf when the copy adds a script.
 const inter = localFont({
-  src: "../../public/fonts/Inter-V.ttf",
+  src: "../../public/fonts/Inter-V-latin.woff2",
   variable: "--font-inter",
   weight: "100 900",
   display: "swap",
@@ -65,11 +69,23 @@ gtag("consent","default",{ad_storage:"denied",ad_user_data:"denied",ad_personali
 gtag("set","ads_data_redaction",true);gtag("set","url_passthrough",false);
 gtag("set",{allow_google_signals:false,allow_ad_personalization_signals:false});`;
 
+/**
+ * The consent banner is in the server HTML. Before first paint, this marks <html> when a valid
+ * choice is already stored (same test as readStoredChoice in lib/analytics/consent.ts), and
+ * globals.css hides the not-yet-hydrated banner for that visitor. It only reads storage.
+ */
+const consentState = `try{var c=JSON.parse(localStorage.getItem(${JSON.stringify(consentStorageKey)})||"null");if(c&&c.v===${consentVersion})document.documentElement.setAttribute("data-consent-chosen","")}catch(e){}`;
+/** Without JavaScript nothing optional can load and the buttons can't work, so the banner stays hidden, as before. */
+const noScriptConsent = "<style>[data-consent-banner]{display:none}</style>";
+
 export function RootDocument({ locale, children }: { locale: SiteLocale; children: ReactNode }) {
   return (
-    <html lang={locale} className={`${inter.variable} scroll-smooth`}>
+    // suppressHydrationWarning: consentState may add data-consent-chosen to <html> before React hydrates.
+    <html lang={locale} className={`${inter.variable} scroll-smooth`} suppressHydrationWarning>
       <head>
         <script id="consent-defaults" dangerouslySetInnerHTML={{ __html: consentDefaults }} />
+        <script id="consent-state" dangerouslySetInnerHTML={{ __html: consentState }} />
+        <noscript dangerouslySetInnerHTML={{ __html: noScriptConsent }} />
       </head>
       <body>
         {children}

@@ -41,10 +41,12 @@ function GalleryMedia({ item, active, play = true }: { item: GalleryItem; active
       <video
         ref={videoRef}
         src={item.src}
+        poster={item.poster}
         muted
         loop
         playsInline
-        preload={shouldPlay ? "auto" : "metadata"}
+        // Only the playing card downloads its video; the others (and the reflection) show the poster.
+        preload={shouldPlay ? "auto" : "none"}
         aria-label={active ? `Opciones de ${item.label} presentadas por Alleanza Insurance Corp.` : undefined}
         className="h-full w-full object-cover"
         style={{ objectPosition: item.position ?? "center" }}

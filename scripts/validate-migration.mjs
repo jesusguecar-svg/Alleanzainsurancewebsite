@@ -116,6 +116,10 @@ if (EXPECT_INDEXABLE) {
     const groups = robotsGroup(agent);
     check(groups.length === 1 && groups[0].allowed && !groups[0].blocked, `robots.txt allows ${agent}`);
   }
+  for (const agent of ["*", "Googlebot", "Bingbot", "OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "Claude-User", "PerplexityBot", "Perplexity-User", "Google-Extended"]) {
+    const block = robots.split(/\n\s*\n/).find((b) => [...b.matchAll(/^User-Agent:\s*(.+)$/gim)].some((m) => m[1].trim().toLowerCase() === agent.toLowerCase())) ?? "";
+    check(["/api/", "/wp-admin/", "/wp-login.php"].every((path) => block.includes(`Disallow: ${path}`)), `robots.txt keeps ${agent} out of the private paths`);
+  }
   for (const agent of ["GPTBot", "ClaudeBot"]) {
     const groups = robotsGroup(agent);
     check(groups.length === 1 && groups[0].blocked && !groups[0].allowed, `robots.txt disallows ${agent}`);
@@ -314,6 +318,15 @@ for (const [path, html] of htmlCache) {
     const other = htmlCache.get(target) ?? (await (await get(target)).text());
     check([...hreflangs(other).values()].includes(self), `${path}: hreflang ${lang} -> ${target} links back`);
   }
+}
+
+// The consent banner is in the server HTML (it used to wait for JavaScript), with the same text,
+// hidden before first paint only for visitors who already chose, and never shown without JavaScript.
+for (const [path, accept, reject] of [["/", "Aceptar analítica", "Rechazar analítica"], ["/health", "Aceptar analítica", "Rechazar analítica"], ["/en/health", "Accept analytics", "Decline analytics"]]) {
+  const html = htmlCache.get(path) ?? (await (await get(path)).text());
+  check(/data-consent-banner="pending"/.test(html) && html.includes(accept) && html.includes(reject), `${path}: consent banner is in the server HTML`);
+  check(html.includes('id="consent-state"') && html.includes("data-consent-chosen") && /<noscript><style>\[data-consent-banner\]\{display:none\}<\/style><\/noscript>/.test(html), `${path}: consent banner hides for a stored choice and without JavaScript`);
+  check(html.indexOf('id="consent-defaults"') < html.indexOf('id="consent-state"') && html.indexOf('id="consent-state"') < html.indexOf("<body"), `${path}: consent scripts run in <head>, defaults first`);
 }
 
 const missing = await get("/ruta-que-no-existe-validacion");

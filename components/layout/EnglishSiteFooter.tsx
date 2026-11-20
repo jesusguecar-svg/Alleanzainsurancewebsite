@@ -12,7 +12,7 @@ export function EnglishSiteFooter() {
     <div className={f.columns}>
       <div><h2>Office</h2><address>{officeAddressLines.map((line) => <span key={line}>{line}</span>)}</address><h2>Hours</h2><dl>{officeHoursEn.map((entry) => <div key={entry.days}><dt>{entry.days}</dt><dd>{entry.hours}</dd></div>)}</dl></div>
       <div><h2>Contact</h2>{publicContactLines.map((line) => <a key={line.id} href={line.href} {...(line.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{line.labelEn}: {line.display}</a>)}</div>
-      <nav aria-label="Explore Alleanza"><h2>Explore</h2>{activePortalRoutes.map((route) => <a key={route.id} href={route.id === "health" ? "/en/health" : route.href} {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{routeLabels[route.id]}{route.external ? " ↗" : ""}</a>)}</nav>
+      <nav aria-label="Explore Alleanza"><h2>Explore</h2>{activePortalRoutes.map((route) => <a key={route.id} href={route.id === "health" ? "/en/health" : route.href} {...(route.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{routeLabels[route.id]}{route.external ? " ↗" : ""}</a>)}<a href="/en/learn">Learn</a></nav>
     </div>
     <div className={f.legal}><p>© {new Date().getFullYear()} Alleanza Insurance Corp.</p><nav aria-label="Legal information">{legalRoutes.map((route) => <a key={route.href} href={route.hrefEn}>{route.labelEn}</a>)}</nav></div>
     <p className={f.note}>Alleanza Insurance Corp. is an independent insurance agency. Policies and coverage are issued by the applicable insurance companies and remain subject to availability, eligibility, terms, and conditions.</p>

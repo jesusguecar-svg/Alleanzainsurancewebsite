@@ -1,0 +1,43 @@
+# After each successful Vercel production deploy, tell Bing (IndexNow) which sitemap URLs are new or
+# changed. Vercel's GitHub integration reports deploys as GitHub deployment statuses.
+# The key is read from the live /indexnow-key.txt, so this workflow needs no secret.
+name: IndexNow
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/indexnow-submit.mjs
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Fingerprints from the previous run; a cache miss means "submit everything once".
+      - uses: actions/cache/restore@v4
+        with:
+          path: .indexnow
+          key: indexnow-state-${{ github.run_id }}
+          restore-keys: indexnow-state-
+      - run: node scripts/indexnow-submit.mjs
+        env:
+          SITE: https://alleanzainsurance.org
+          STATE: .indexnow/state.json
+      - uses: actions/cache/save@v4
+        if: success()
+        with:
+          path: .indexnow
+          key: indexnow-state-${{ github.run_id }}

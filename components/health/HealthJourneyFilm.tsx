@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from "
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { Check } from "lucide-react";
 import s from "./journey-film.module.css";
+import { responsiveImg } from "@/lib/responsive-image";
 
 type Locale = "es" | "en";
 
@@ -147,7 +148,7 @@ function SceneArt({ scene }: { scene: JourneyScene }) {
   return <div className={s.art} data-layout={scene.layout}>
     <div className={s.photoWrap}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={s.photo} src={scene.image} alt={scene.alt} width={1800} height={1012} style={{ objectPosition: scene.position }} />
+      <img className={s.photo} {...responsiveImg({ src: scene.image, width: 1800, height: 1012, alt: scene.alt, sizes: "(max-width: 767px) 100vw, 66vw" })} style={{ objectPosition: scene.position }} />
     </div>
     <div className={s.shade} aria-hidden="true" />
     <div className={s.copy}><span className={s.num}>{scene.number}</span><h3>{scene.title}</h3><p>{scene.text}</p></div>
@@ -169,7 +170,7 @@ function FilmPlate({ scene, index, count, progress, active }: { scene: JourneySc
   return <motion.div className={s.scene} data-layout={scene.layout} style={{ opacity, x }} inert={active ? undefined : true} aria-hidden={active ? undefined : true}>
     <motion.div className={s.photoWrap} style={{ scale }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={s.photo} src={scene.image} alt={scene.alt} width={1800} height={1012} style={{ objectPosition: scene.position }} draggable={false} />
+      <img className={s.photo} {...responsiveImg({ src: scene.image, width: 1800, height: 1012, alt: scene.alt, sizes: "(max-width: 767px) 100vw, 66vw" })} style={{ objectPosition: scene.position }} draggable={false} />
     </motion.div>
     <div className={s.shade} aria-hidden="true" />
     <div className={s.copy}><span className={s.num}>{scene.number}</span><h3>{scene.title}</h3><p>{scene.text}</p></div>

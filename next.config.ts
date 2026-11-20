@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
   // Do not add a catch-all "/:path+/" redirect here: on Vercel the Next.js builder moves such a
   // rule ahead of every other redirect, which brought back the second hop.
   skipTrailingSlashRedirect: true,
+  // AVIF first, WebP fallback. Quality 60 is for full-bleed backgrounds under a dark grade.
+  images: { formats: ["image/avif", "image/webp"], qualities: [60, 75] },
   async redirects() {
     return [
       { source: "/pc", destination: "/property-casualty", permanent: true },

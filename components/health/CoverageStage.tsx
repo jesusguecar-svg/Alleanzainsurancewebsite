@@ -3,6 +3,7 @@
 import { useEffect, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { acaAgentCertification, healthServices, healthServicesEn, licensingStatement } from "@/lib/content/health";
+import { responsiveImg } from "@/lib/responsive-image";
 import p from "./platform.module.css";
 import s from "./coverage-stage.module.css";
 
@@ -92,10 +93,7 @@ export function CoverageStage({ locale }: { locale: Locale }) {
             <img
               key={plate.id}
               className={s.plate}
-              src={plate.src}
-              alt={index === active ? alts[index] : ""}
-              width={2400}
-              height={1350}
+              {...responsiveImg({ src: plate.src, width: 2400, height: 1350, alt: index === active ? alts[index] : "", sizes: "(max-width: 767px) 100vw, 70vw" })}
               data-active={index === active}
               aria-hidden={index !== active}
               style={{ "--plate-pos": plate.position } as CSSProperties}

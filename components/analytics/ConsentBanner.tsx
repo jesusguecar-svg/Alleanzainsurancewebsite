@@ -9,16 +9,17 @@ import { consentChoice, openPreferencesEvent, saveConsent } from "@/lib/analytic
  * Asks once whether analytics may run. Necessary storage (this choice, form protection) needs no
  * consent; nothing optional loads before the visitor accepts. The privacy policy's
  * "Cambiar mis preferencias de medición" button reopens it.
+ *
+ * It is in the server HTML, so it paints with the page instead of waiting for JavaScript. Until
+ * the stored choice is read (`ready`), the inline script in RootDocument hides it before first
+ * paint for visitors who already chose; after that, it shows only when there is no stored choice.
  */
 export function ConsentBanner({ ready }: { ready: boolean }) {
   const pathname = usePathname();
   const english = pathname.startsWith("/employers") || pathname.startsWith("/en/");
-  const [open, setOpen] = useState(false);
+  // null = the visitor hasn't acted on this page: follow the stored choice.
+  const [open, setOpen] = useState<boolean | null>(null);
   const [reopened, setReopened] = useState(false);
-
-  useEffect(() => {
-    if (ready && !consentChoice()) setOpen(true);
-  }, [ready]);
 
   useEffect(() => {
     const reopen = () => {
@@ -37,7 +38,7 @@ export function ConsentBanner({ ready }: { ready: boolean }) {
     setReopened(false);
   }
 
-  if (!open) return null;
+  if (!(open ?? (!ready || !consentChoice()))) return null;
 
   const accepted = consentChoice()?.analytics === true;
   const t = english
@@ -59,7 +60,7 @@ export function ConsentBanner({ ready }: { ready: boolean }) {
   const button = "rounded-full px-5 py-2.5 text-xs font-semibold";
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[120] px-4 pb-4" role="dialog" aria-live="polite" aria-label={english ? "Measurement preferences" : "Preferencias de medición"}>
+    <div data-consent-banner={ready ? "live" : "pending"} className="fixed inset-x-0 bottom-0 z-[120] px-4 pb-4" role="dialog" aria-live="polite" aria-label={english ? "Measurement preferences" : "Preferencias de medición"}>
       <div className="mx-auto flex max-w-4xl flex-col gap-4 rounded-2xl border border-navy/10 bg-white/95 p-5 shadow-[0_18px_50px_-28px_rgba(6,20,49,.55)] backdrop-blur md:flex-row md:items-center md:justify-between">
         <div className="text-sm leading-relaxed text-navy/70">
           <p>
