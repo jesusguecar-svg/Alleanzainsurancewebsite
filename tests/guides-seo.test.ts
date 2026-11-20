@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { allGuides, guidePath } from "@/lib/content/guides";
 import { guideArticleSchema, guideBreadcrumbSchema, guideMetadata } from "@/lib/seo/guides";
+import { organizationId } from "@/lib/seo/schema";
+import { siteUrl } from "@/lib/config/site";
 
 // In tests (not a production deploy) every guide is shown, so parents and paths resolve.
 
@@ -27,7 +29,13 @@ test("structured data is Article and BreadcrumbList only: no FAQPage, Offer or P
       const serialized = JSON.stringify(nodes);
       for (const forbidden of ["FAQPage", "Offer", "Product", "GovernmentService", "AggregateRating"]) assert.ok(!serialized.includes(forbidden), `${guide.id} ${forbidden}`);
       const article = nodes[0] as ReturnType<typeof guideArticleSchema>;
-      assert.equal(article.publisher["@type"], "InsuranceAgency");
+      // Organization, not InsuranceAgency: Google reads an InsuranceAgency as a separate local business.
+      assert.equal(article.publisher["@type"], "Organization");
+      assert.equal(article.publisher["@id"], organizationId);
+      assert.match(article.dateModified, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-0[56]:00$/);
+      assert.ok(article.dateModified.startsWith(`${guide.updatedDate}T`), guide.id);
+      assert.equal(article.author.url, `${siteUrl}${locale === "es" ? "/agentes" : "/en/agents"}/jesus-esteban-guerra`);
+      assert.ok(article.image.width >= 1200 && article.image.url.endsWith(`/og/guides/${guide.id}-${locale}.png`), guide.id);
       assert.equal(article.inLanguage, `${locale}-US`);
       assert.equal(article.mainEntityOfPage.reviewedBy.name, guide.reviewer);
       // Article citation lists the page's Sources, in order.

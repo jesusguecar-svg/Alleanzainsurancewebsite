@@ -279,7 +279,13 @@ for (const guide of publicGuides) {
     check(article?.publisher?.["@id"] === organizationId, `${path}: Article JSON-LD publisher references the organization`);
     check(article?.author?.name === guide.author && article?.mainEntityOfPage?.reviewedBy?.name === guide.reviewer, `${path}: Article JSON-LD author and reviewer`);
     check(JSON.stringify(article?.citation?.map((item) => item.url)) === JSON.stringify(content.sources.map((source) => source.url)), `${path}: Article JSON-LD citation lists the Sources`);
-    check(article?.dateModified === guide.updatedDate && article?.inLanguage === `${locale}-US`, `${path}: Article JSON-LD dateModified and inLanguage`);
+    check(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/.test(article?.dateModified ?? "") && article.dateModified.startsWith(`${guide.updatedDate}T`) && article?.inLanguage === `${locale}-US`, `${path}: Article JSON-LD dateModified (full timestamp with offset, on updatedDate) and inLanguage`);
+    check(article?.publisher?.["@type"] === "Organization" && !nodes.some((node) => JSON.stringify(node).includes('"InsuranceAgency"')), `${path}: no InsuranceAgency node (read by Google as a local business with missing fields)`);
+    check(/^https:\/\/alleanzainsurance\.org\/(agentes|en\/agents)\/[a-z-]+$/.test(article?.author?.url ?? "") && (await get(article.author.url.replace(CANONICAL, ""))).status === 200, `${path}: Article author.url is a live agent profile (${article?.author?.url})`);
+    const imageUrl = article?.image?.url ?? "";
+    const image = imageUrl.startsWith(CANONICAL + "/") ? await get(imageUrl.replace(CANONICAL, "")) : null;
+    check(article?.image?.width >= 1200 && image?.status === 200 && (image.headers.get("content-type") ?? "").startsWith("image/"), `${path}: Article image is at least 1200 px wide and served (${imageUrl})`);
+    check(html.includes(`<meta property="og:image" content="${imageUrl}"`), `${path}: og:image matches the Article image`);
     const crumbs = nodes.find((node) => node["@type"] === "BreadcrumbList")?.itemListElement ?? [];
     check(crumbs.at(-1)?.item === CANONICAL + path, `${path}: BreadcrumbList ends on the guide`);
     check(!nodes.some((node) => node["@type"] === "FAQPage"), `${path}: no FAQPage`);
@@ -324,7 +330,8 @@ check(!/<link rel="canonical"/.test(missingHtml), "404 page: no canonical");
 check((missingHtml.match(/<h1[\s>]/g)?.length ?? 0) === 1, "404 page: exactly one <h1>");
 
 // The address and hours may be written only in lib/config/contact.ts.
-const napLiteral = /Midcourt|75006|\b\d{1,2}:00\b|Lunes a viernes|Monday.Friday/;
+// Hours like "9:00"; times inside ISO timestamps ("T18:07:00-06:00") are not office hours.
+const napLiteral = /Midcourt|75006|(?<![T:+\-\d])\d{1,2}:00\b(?!:\d)|Lunes a viernes|Monday.Friday/;
 const sourceFiles = (dir) => readdirSync(new URL(`../${dir}/`, import.meta.url), { recursive: true, withFileTypes: true })
   .filter((entry) => entry.isFile() && /\.tsx?$/.test(entry.name))
   .map((entry) => `${entry.parentPath ?? entry.path}/${entry.name}`);
