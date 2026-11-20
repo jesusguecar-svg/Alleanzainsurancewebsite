@@ -559,7 +559,9 @@ const guide: Guide = {
     "collin-county-2027",
     "denton-county-2027",
     "dallas-2027",
-    "fort-worth-2027"
+    "fort-worth-2027",
+    "grand-prairie-2027",
+    "frisco-2027"
   ]
 };
 
