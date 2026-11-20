@@ -1,6 +1,9 @@
 import { isProductionDeploy } from "@/lib/config/site";
 import carrollton2027 from "./entries/carrollton-2027";
+import collinCounty2027 from "./entries/collin-county-2027";
 import dallasCounty2027 from "./entries/dallas-county-2027";
+import dentonCounty2027 from "./entries/denton-county-2027";
+import tarrantCounty2027 from "./entries/tarrant-county-2027";
 import texasMarketplace2027 from "./entries/texas-marketplace-2027";
 import texasMarketplace2027Faq from "./entries/texas-marketplace-2027-faq";
 import type { Guide, GuideLocale } from "./types";
@@ -9,7 +12,16 @@ import { guidePathFor, hiddenGuidePathsFor, isPublishableGuide, shownParentOf, v
 export type { Guide, GuideBlock, GuideCopy, GuideLocale, GuideSection, GuideTable } from "./types";
 
 /** Add new guides here. */
-export const allGuides: readonly Guide[] = [texasMarketplace2027, dallasCounty2027, texasMarketplace2027Faq, carrollton2027];
+export const allGuides: readonly Guide[] = [
+  texasMarketplace2027,
+  dallasCounty2027,
+  texasMarketplace2027Faq,
+  carrollton2027,
+  // Preview only until approved (no reviewedDate / editorialApprovedDate): production leaves them out.
+  tarrantCounty2027,
+  collinCounty2027,
+  dentonCounty2027,
+];
 
 // Importing this module during `next build` is what makes a bad guide fail the build.
 const problems = validateGuides(allGuides);

@@ -37,7 +37,11 @@ test("structured data is Article and BreadcrumbList only: no FAQPage, Offer or P
       assert.equal(article.author.url, `${siteUrl}${locale === "es" ? "/agentes" : "/en/agents"}/jesus-esteban-guerra`);
       assert.ok(article.image.width >= 1200 && article.image.url.endsWith(`/og/guides/${guide.id}-${locale}.png`), guide.id);
       assert.equal(article.inLanguage, `${locale}-US`);
-      assert.equal(article.mainEntityOfPage.reviewedBy.name, guide.reviewer);
+      // Review markup only once the reviewer has approved (reviewedDate set); drafts carry none.
+      if (guide.reviewedDate) {
+        assert.equal(article.mainEntityOfPage.reviewedBy?.name, guide.reviewer);
+        assert.equal(article.mainEntityOfPage.lastReviewed, guide.reviewedDate);
+      } else assert.ok(!("reviewedBy" in article.mainEntityOfPage) && !("lastReviewed" in article.mainEntityOfPage), guide.id);
       // Article citation lists the page's Sources, in order.
       assert.deepEqual(article.citation.map((item) => item.url), guide[locale].sources.map((source) => source.url));
     }

@@ -82,7 +82,7 @@ export function GuidePage({ guide, locale }: { guide: Guide; locale: GuideLocale
         </nav>
         <h1 className="mt-6 font-display text-4xl font-bold tracking-tight md:text-5xl">{content.h1}</h1>
         <p className="mt-5 text-sm text-navy/65">
-          {copy.updated} <time dateTime={guide.updatedDate}>{formatGuideDate(guide.updatedDate, locale)}</time> · {copy.reviewedBy} {guide.reviewer}, {copy.licensedAgent}
+          {copy.updated} <time dateTime={guide.updatedDate}>{formatGuideDate(guide.updatedDate, locale)}</time> · {guide.reviewedDate ? copy.reviewedBy : copy.reviewPending} {guide.reviewer}, {copy.licensedAgent}
         </p>
         <p className="mt-8 border-l-4 border-cyan pl-5 text-lg leading-relaxed">{content.summary}</p>
 

@@ -30,7 +30,7 @@ export const guidePublicationBlockers: readonly string[] = [];
 
 /** Production shows a guide only with no placeholder text, editorial approval and no open blocker. */
 export function isPublishableGuide(guide: Guide, blockers: readonly string[] = guidePublicationBlockers) {
-  return !isPlaceholderGuide(guide) && Boolean(guide.editorialApprovedDate) && blockers.length === 0;
+  return !isPlaceholderGuide(guide) && Boolean(guide.reviewedDate) && Boolean(guide.editorialApprovedDate) && blockers.length === 0;
 }
 
 /** ISO 8601 date-time with an explicit UTC offset, not in the future. */
@@ -159,7 +159,8 @@ export function validateGuides(guides: readonly Guide[]): string[] {
     if (!hasText(guide.reviewer)) errors.push(`${label}: reviewer is required`);
     if (/\d/.test(guide.reviewer ?? "")) errors.push(`${label}: reviewer must be a name only`);
     if (/\bNPN\b/i.test(JSON.stringify(guide))) errors.push(`${label}: NPNs are not published`);
-    if (!isPastDate(guide.reviewedDate)) errors.push(`${label}: reviewedDate must be YYYY-MM-DD, not in the future`);
+    if (guide.reviewedDate !== undefined && !isPastDate(guide.reviewedDate)) errors.push(`${label}: reviewedDate must be YYYY-MM-DD, not in the future`);
+    if (guide.reviewedDate === undefined && guide.editorialApprovedDate !== undefined) errors.push(`${label}: reviewedDate is required once the guide is approved`);
     if (!isPastDate(guide.updatedDate)) errors.push(`${label}: updatedDate must be YYYY-MM-DD, not in the future`);
     if (guide.updatedAt !== undefined) {
       if (!isPastTimestamp(guide.updatedAt)) errors.push(`${label}: updatedAt must be YYYY-MM-DDTHH:MM:SS±HH:MM, not in the future`);
